@@ -3,8 +3,8 @@
 
 ## `/server/` - Server-level Operations
 
-- POST ENC `/server/login/` - `Username, Password hash` - Logs into server as user - Returns/Creates `User` from DB
-- POST ENC `/server/login/create/` - `Username, Password hash` - Creates new user and logs in - Returns/Creates `User`, Adds to DB
+- POST `/server/login/` - `Username, Password hash` - Logs into server as user - Returns/Creates `User` from DB
+- POST `/server/login/create/` - `Username, Password hash` - Creates new user and logs in - Returns/Creates `User`, Adds to DB
 - POST `/server/connection/new/` - `fingerprint, public key` - Generates new connection to API - Returns `"server publickey", "connection id"`, Creates `Connection`
 - GET `/server/connection/status/{connection id}` - Gets refresh status of all endpoints for busy waiting from connection - Returns `{endpoints:status}`
 
