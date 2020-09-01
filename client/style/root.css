@@ -1,0 +1,73 @@
+/*Definitions*/
+
+:root {
+    --background: rgb(85, 83, 94);
+    --foreground1: rgb(48, 44, 54);
+    --foreground2: rgb(29, 28, 34);
+    --font-color: rgb(250, 250, 250);
+}
+
+/*Fonts*/
+
+@font-face {
+    font-family: raleway-regular;
+    src: url(../assets/fonts/raleway/Raleway-Regular.ttf);
+}
+
+/*CSS Start*/
+
+button:focus {
+    outline: none;
+}
+
+html, body {
+    margin: 0px;
+    padding: 0px;
+    background-color: var(--background);
+}
+
+#top-bar {
+    background-color: var(--foreground1);
+    box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.32);
+    position: absolute;
+    width: 100vw;
+    height: 5vh;
+    left: 0px;
+    top: 0px;
+}
+
+#top-bar > img {
+    position: absolute;
+    display: inline-block;
+    width: 4vh;
+    height: 4vh;
+    left: 0.5vh;
+    top: 0.5vh;
+}
+
+#login {
+    position: absolute;
+    height: 5vh;
+    width: auto;
+    background-color: var(--foreground1);
+    border: none;
+    color: var(--font-color);
+    right: 0px;
+    top: 0px;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    font-size: 3vh;
+    font-family: raleway-regular;
+    transition: background-color 0.1s;
+}
+
+#login img {
+    height: 4vh;
+    width: 4vh;
+    margin-top: 0.5vh;
+}
+
+#login:hover {
+    background-color: var(--foreground2);
+}
+

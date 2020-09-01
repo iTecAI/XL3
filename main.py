@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse
 import uvicorn
 import rsa
 import os
@@ -47,10 +47,17 @@ class Server:
             pass
         else:
             self.connections: Connection = {}
+            self.users: dict = {}
 
 class Connection:
-    def __init__(self,key):
+    def __init__(self):
         self.user = None
+
+class User:
+    def __init__(self,uid,usn,pswhash):
+        self.uid = uid
+        self.username = usn
+        self.password_hash = pswhash
 
 # App
 
@@ -94,18 +101,19 @@ for f in files:
 
     for fn in f[2]:
         ext = os.path.splitext(fn)[1]
-        if ext == '.html':
-            ext = 'HTML'
-        elif ext == '.css':
-            ext = 'CSS'
-        elif ext == '.js' or 'js' in ext:
-            ext = 'JS'
-        code = '\n'.join([
-            '@app.get("/'+new_path+fn+'", response_class=HTMLResponse)',
-            'async def web_'+fn.replace('.','_')+'():',
-            '\twith open("'+dirpath+aux+fn+'","r") as f:',
-            '\t\treturn f.read()'
-        ])
+        if ext in []:
+            code = '\n'.join([
+                '@app.get("/'+new_path+fn+'", response_class=HTMLResponse)',
+                'async def web_'+fn.replace('.','_').replace('-','_').replace(' ','_').replace('\'','').replace('"','')+'():',
+                '\twith open("'+dirpath+aux+fn+'","r") as f:',
+                '\t\treturn f.read()'
+            ])
+        else:
+            code = '\n'.join([
+                '@app.get("/'+new_path+fn+'")',
+                'async def web_'+fn.replace('.','_').replace('-','_').replace(' ','_').replace('\'','').replace('"','')+'():',
+                '\treturn FileResponse("'+dirpath+aux+fn+'")'
+            ])
         exec(
             code,
             globals(),

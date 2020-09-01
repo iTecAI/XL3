@@ -5,7 +5,7 @@
 
         <!-- Styles -->
         <link rel="stylesheet" type="text/css" href="style/root.css">
-        <link rel="stylesheet" type="text/css" href="style/themes.css">
+        <link rel="stylesheet" type="text/css" href="style/tooltips.css">
 
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -15,6 +15,7 @@
             crossorigin="anonymous">
         </script>
         <script src="https://cdn.jsdelivr.net/npm/js-base64@3.4.5/base64.min.js"></script>
+        <script src='lib/cookies.min.js'></script>
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
@@ -22,6 +23,9 @@
         
     </head>
     <body>
-
+        <div id='top-bar'>
+            <img src='assets/logo.png'>
+            <button id='login' data-tooltip="Login or Sign Up" data-tooltip-location="left"><img src="assets/icons/user.png"></button>
+        </div>
     </body>
 </html>
