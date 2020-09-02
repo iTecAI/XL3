@@ -30,9 +30,9 @@
   border-radius: 6px;
   font-size: 14px;
 /*   font-size: 0.73rem; */
-  background-color: var(--foreground2);
+  background-color: var(--foreground3);
   box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.2);
-  color: #fff;
+  color: var(--fg-font-color);
   text-align: center;
   white-space: pre-wrap;
   transform: translate(-50%, -5px) scale(0.5);
@@ -44,7 +44,7 @@
   content: '';
   border-style: solid;
   border-width: 5px 5px 0px 5px;
-  border-color: var(--foreground2) transparent transparent transparent;
+  border-color: var(--foreground3) transparent transparent transparent;
   transition-duration: 0s; /* If the mouse leaves the element, 
                               the transition effects for the 
                               tooltip arrow are "turned off" */
@@ -99,7 +99,7 @@
 /* Arrow */
 [data-tooltip-location="left"]:after {
   border-width: 5px 0px 5px 5px;
-  border-color: transparent transparent transparent var(--foreground2);
+  border-color: transparent transparent transparent var(--foreground3);
   transform-origin: left;
   transform: translateY(50%) scaleX(0);
 }
@@ -125,7 +125,7 @@
 
 [data-tooltip-location="right"]:after {
   border-width: 5px 5px 5px 0px;
-  border-color: transparent var(--foreground2) transparent transparent;
+  border-color: transparent var(--foreground3) transparent transparent;
   transform-origin: right;
   transform: translateY(50%) scaleX(0);
 }
@@ -151,6 +151,6 @@
 
 [data-tooltip-location="bottom"]:after {
   border-width: 0px 5px 5px 5px;
-  border-color: transparent transparent var(--foreground2) transparent;
+  border-color: transparent transparent var(--foreground3) transparent;
   transform-origin: bottom;
 }

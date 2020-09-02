@@ -112,3 +112,46 @@ function base64ToArrayBuffer(base64) { // Convert from urlsafe base64 to array b
     }
     return bytes.buffer;
 }
+
+function getFormValues(submitSelector) {
+    var inputs = $(submitSelector).attr('data-inputs').split(',');
+    var data = {};
+    for (var i=0;i<inputs.length;i++) {
+        data[inputs[i]] = $('#'+inputs[i]).val();
+    }
+    return data;
+}
+
+function cpost(endpoint,data,alert,callback) {
+    var alert = alert;
+    $.post({
+        url: 'http://'+window.location.host+endpoint,
+        data: JSON.stringify(data),
+        success: callback,
+        error: function(xhr){
+            if (alert) {
+                bootbox.alert({
+                    'title':'Error '+xhr.status,
+                    'message':xhr.responseJSON.result
+                });
+            }
+        }
+    });
+}
+
+function cget(endpoint,data,alert,callback) {
+    var alert = alert;
+    $.get({
+        url: 'http://'+window.location.host+endpoint,
+        data: JSON.stringify(data),
+        success: callback,
+        error: function(xhr){
+            if (alert) {
+                bootbox.alert({
+                    'title':'Error '+xhr.status,
+                    'message':xhr.responseJSON.result
+                });
+            }
+        }
+    });
+}

@@ -1,0 +1,16 @@
+{
+    "metadata":[
+        {
+            "name":"client",
+            "description":"Endpoint for dealing with the user's User object"
+        },
+        {
+            "name":"user",
+            "description":"Endpoint for fetching data about other users."
+        },
+        {
+            "name":"server",
+            "description":"Endpoint for server operations."
+        }
+    ]
+}

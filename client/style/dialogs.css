@@ -1,0 +1,84 @@
+.dialog {
+    width: 20vw;
+    height: auto;
+    position: absolute;
+    top: 50vh;
+    left: 40vw;
+    border-radius: 10px;
+    background-color: var(--foreground1);
+    transform: translate(0px,-50%);
+    z-index: 1000;
+    box-shadow: 0px 0px 9px 5px rgba(0,0,0,0.32);
+}
+
+.dialog > .title {
+    position: relative;
+    background-color: var(--foreground3);
+    font-family: raleway-regular;
+    border-radius: 10px 10px 0px 0px;
+    height: 7vh;
+    color: var(--fg-font-color);
+    font-size: 1.4vw;
+}
+
+.title > span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.dialog > .form > .form-submit {
+    background-color: var(--foreground4);
+    width: 60%;
+    height: 4vh;
+    margin: 5px;
+    margin-left: 20%;
+    border: none;
+    color: var(--fg-font-color);
+    border-radius: 2vh;
+    font-size: 2vh;
+    box-shadow: inset 0px 0px 0.5vh 0px rgba(0,0,0,0.8);
+    font-family: raleway-heavy;
+    transition: background-color 0.1s;
+}
+
+.dialog > .form > .form-submit:hover {
+    background-color: var(--fg-em1);
+}
+
+.dialog > .form > input {
+    width: 90%;
+    height: 5vh;
+    margin: 5px;
+    margin-left: 5%;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 0.75vh;
+    border: none;
+    box-shadow: inset 0px 0px 0.3vh 0px rgba(0,0,0,0.8);
+    font-family: raleway-light;
+    font-size: 2vh;
+}
+
+.dialog > .form > * {
+    display: inline-block;
+}
+
+.dialog > .form {
+    padding: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.dialog .extralink {
+    margin-bottom: 10px;
+    margin-left: 5%;
+    font-family: raleway-regular;
+    font-size: 14px;
+    color: var(--fg-font-color);
+}
+
+.dialog .extralink a {
+    font-family: raleway-heavy;
+}

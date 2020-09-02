@@ -1,10 +1,17 @@
 /*Definitions*/
 
 :root {
-    --background: rgb(85, 83, 94);
-    --foreground1: rgb(48, 44, 54);
-    --foreground2: rgb(29, 28, 34);
-    --font-color: rgb(250, 250, 250);
+    --background: #e3ebf0;
+    --background2: #b3b8bb;
+    --foreground1: #6b6e70;
+    --foreground2: #474b4f;
+    --foreground3: #222629;
+    --foreground4: #86c232;
+    --fg-em1: #71a32b;
+    --bg-font-color: rgb(6, 0, 29);
+    --fg-font-color: rgb(246, 239, 255);
+    --em-font-color: #61892f;
+    --em-font-color2:rgb(155, 228, 67);
 }
 
 /*Fonts*/
@@ -14,10 +21,28 @@
     src: url(../assets/fonts/raleway/Raleway-Regular.ttf);
 }
 
+@font-face {
+    font-family: raleway-light;
+    src: url(../assets/fonts/raleway/Raleway-Light.ttf);
+}
+
+@font-face {
+    font-family: raleway-heavy;
+    src: url(../assets/fonts/raleway/Raleway-SemiBold.ttf);
+}
+
 /*CSS Start*/
 
-button:focus {
+button:focus, input:focus {
     outline: none;
+}
+
+.transient {
+    display: none;
+}
+
+.transient.active {
+    display: inline-block;
 }
 
 html, body {
@@ -26,14 +51,25 @@ html, body {
     background-color: var(--background);
 }
 
+.noselect, .title {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
 #top-bar {
-    background-color: var(--foreground1);
+    background-color: var(--foreground2);
     box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.32);
     position: absolute;
     width: 100vw;
     height: 5vh;
     left: 0px;
     top: 0px;
+    z-index: 500;
 }
 
 #top-bar > img {
@@ -49,9 +85,9 @@ html, body {
     position: absolute;
     height: 5vh;
     width: auto;
-    background-color: var(--foreground1);
+    background-color: var(--foreground2);
     border: none;
-    color: var(--font-color);
+    color: var(--fg-font-color);
     right: 0px;
     top: 0px;
     padding-left: 1vh;
@@ -68,6 +104,23 @@ html, body {
 }
 
 #login:hover {
-    background-color: var(--foreground2);
+    background-color: var(--foreground3);
+    color: var(--fg-font-color);
+}
+
+.emp-link, .emp-link:focus, .emp-link:visited {
+    color: var(--em-font-color2);
+    text-decoration: none;
+    font-family: raleway-regular;
+}
+
+#modal {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.479);
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
 }
 

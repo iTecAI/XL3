@@ -4,8 +4,11 @@
         <title>XL3</title>
 
         <!-- Styles -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="style/root.css">
         <link rel="stylesheet" type="text/css" href="style/tooltips.css">
+        <link rel="stylesheet" type="text/css" href="style/dialogs.css">
+        
 
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -15,17 +18,43 @@
             crossorigin="anonymous">
         </script>
         <script src="https://cdn.jsdelivr.net/npm/js-base64@3.4.5/base64.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
         <script src='lib/cookies.min.js'></script>
+        <script src='lib/sha.js'></script>
+        <script src='lib/crc.js'></script>
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
         <script src='script/index.js'></script>
-        
+        <script src='script/refresh_index.js'></script>
+
     </head>
     <body>
         <div id='top-bar'>
             <img src='assets/logo.png'>
-            <button id='login' data-tooltip="Login or Sign Up" data-tooltip-location="left"><img src="assets/icons/user.png"></button>
+            <button id='login' data-tooltip="Login or Create Account" data-tooltip-location="left"><img src="assets/icons/user.png"></button>
+        </div>
+
+        <div id='modal' class='transient'></div>
+        <div id='login-window' class='form dialog transient'>
+            <div class='title'><span>Log In</span></div>
+            <div class='form'>
+                <input type='text' id='login-email' placeholder="E-Mail">
+                <input type='password' id='login-password' placeholder="Password">
+                <button class='form-submit' data-inputs='login-email,login-password' id='login-submit'>Log In</button>
+            </div>
+            <div class='extralink noselect'>Don't have an account? <a href='#' class='emp-link' id='create-acct-ref-btn'>Create One</a></div>
+        </div>
+        <div id='sign-up-window' class='form dialog transient'>
+            <div class='title'><span>Create Account</span></div>
+            <div class='form'>
+                <input type='text' id='sign-up-email' placeholder="E-Mail">
+                <input type='password' id='sign-up-password' placeholder="Password">
+                <button class='form-submit' data-inputs='sign-up-email,sign-up-password' id='create-acct-submit'>Sign Up</button>
+            </div>
+            <div class='extralink noselect'>Got an account? <a href='#' class='emp-link' id='login-ref-btn'>Log In</a></div>
         </div>
     </body>
 </html>
