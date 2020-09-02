@@ -2,7 +2,8 @@
 
 :root {
     --background: #e3ebf0;
-    --background2: #b3b8bb;
+    --background2: #cad3d8;
+    --background3: #b3b8bb;
     --foreground1: #6b6e70;
     --foreground2: #474b4f;
     --foreground3: #222629;
@@ -122,5 +123,34 @@ html, body {
     width: 100vw;
     height: 100vh;
     z-index: 999;
+}
+
+#user-actions {
+    width: 10vw;
+    height: auto;
+    background-color: var(--background);
+    border-radius: 0 0 5px 5px;
+    position: absolute;
+    top: 5vh;
+    right: 1vh;
+    box-shadow: 0px 0px 9px 2px rgba(0,0,0,0.32);
+}
+
+#user-actions button {
+    margin: 0px;
+    width: 100%;
+    height: 4vh;
+    display: inline-block;
+    border: 0px solid white;
+    font-family: raleway-heavy;
+    transition: background-color 0.1s;
+}
+
+#user-actions button:last-child {
+    border-radius: 0 0 5px 5px;
+}
+
+#user-actions button:hover {
+    background-color: var(--background2);
 }
 

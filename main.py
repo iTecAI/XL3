@@ -66,17 +66,18 @@ class Server:
 
 class BaseItem:
     def __init__(self):
-        self.update = False
+        self.updated = False
     def update(self):
-        self.update = True
+        self.updated = True
     def check(self):
-        temp = self.update
-        self.update = False
+        temp = self.updated
+        self.updated = False
         return temp
 class Connection(BaseItem):
     def __init__(self):
         super().__init__()
         self.user: User = User('','','',cache=False)
+        self.logged_in = False
 
 class User(BaseItem):
     def __init__(self,uid,usn,pswhash,cache=True):
@@ -91,41 +92,44 @@ class User(BaseItem):
 
 server = Server() # Instantiate server instance - todo add stateful cache
 app = FastAPI(openapi_tags=tags_meta)
-    
+
+# Server Endpoints
+
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root
 async def root():
     with open(os.path.join('client','index.html'),'r') as f:
         return f.read()
     
 @app.get('/server/connection/status/{fingerprint}/',tags=['server']) # Get connection status
-async def get_updated_endpoints(fingerprint: str, response: Response):
+async def connection_status(fingerprint: str, response: Response):
     if fingerprint in server.connections.keys():
         return {
             'result':'Fetched data.',
             'endpoints':{
                 'client':server.connections[fingerprint].user.check(),
                 'connection':server.connections[fingerprint].check()
-            }
+            },
+            'loggedIn':server.connections[fingerprint].logged_in
         }
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection ID not in system. Create a connection.'}
 
-class NewConnectionModel(BaseModel):
+class ConnectionModel(BaseModel):
     fingerprint: str
 @app.post('/server/connection/new/',tags=['server']) # Make new connection
-async def new_connection(model: NewConnectionModel):
+async def new_connection(model: ConnectionModel):
     logger.info('User '+model.fingerprint+' connected to server.')
     if not model.fingerprint in server.connections.keys():
         server.connections[model.fingerprint] = Connection()
     return {}
 
-class loginModel(BaseModel):
+class LoginModel(BaseModel):
     fingerprint: str
     username: str
     hashword: str
-@app.post('/server/login/',tags=['server'])
-async def login(model: loginModel, response: Response):
+@app.post('/server/login/',tags=['server']) # Logs into server
+async def login(model: LoginModel, response: Response):
     if not model.fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -141,6 +145,7 @@ async def login(model: loginModel, response: Response):
     if uid != None:
         if model.hashword == server.users[uid].password_hash:
             server.connections[model.fingerprint].user = server.users[uid]
+            server.connections[model.fingerprint].logged_in = True
             logger.info('Logged in: '+model.username)
             server.users[uid].update()
             return {'result':'Success.'}
@@ -150,8 +155,8 @@ async def login(model: loginModel, response: Response):
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Email does not have an associated account.'}
-@app.post('/server/login/new/',tags=['server'])
-async def new_user(model: loginModel, response: Response):
+@app.post('/server/login/new/',tags=['server']) # Adds new account, or logs in if one already exists
+async def new_user(model: LoginModel, response: Response):
     if not model.fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -165,6 +170,7 @@ async def new_user(model: loginModel, response: Response):
     if uid != None:
         if model.hashword == server.users[model.username].password_hash:
             server.connections[model.fingerprint].user = server.users[uid]
+            server.connections[model.fingerprint].logged_in = True
             logger.info('Logged in: '+model.username)
             server.users[uid].update()
             return {'result':'User exists, logged in.'}
@@ -176,8 +182,28 @@ async def new_user(model: loginModel, response: Response):
         uid = hashlib.sha256(str(random.random()).encode('utf-8')).hexdigest()
         server.users[uid] = User(uid,model.username,model.hashword)
         server.connections[model.fingerprint].user = server.users[uid]
+        server.connections[model.fingerprint].logged_in = True
         server.users[uid].update()
         return {'result':'Success.','uid':uid}
+@app.post('/server/login/exit/',tags=['server']) # Logs out
+async def logout(model: ConnectionModel, response: Response):
+    if not model.fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    
+    if server.connections[model.fingerprint].logged_in:
+        server.connections[model.fingerprint].user = User('','','',cache=False)
+        server.connections[model.fingerprint].logged_in = False
+        logger.info('User '+model.fingerprint+' logged out.');
+        return {'result':'Success.'}
+    else:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'User is not logged in.'}
+
+
+# Client Endpoints
+
+
 
 
 # Load web server

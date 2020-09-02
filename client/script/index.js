@@ -56,6 +56,12 @@ $(document).ready(async function(){
         setTimeout(function(){activating=false},200);
     }
 
+    function activateitem(selector) {
+        activating = true;
+        $(selector).toggleClass('active',true);
+        setTimeout(function(){activating=false},200);
+    }
+
     $(document).click(function(event){
         if (!$(event.target).hasClass('transient') && !activating && $(event.target).parents('.transient').length == 0) {
             $('.transient').toggleClass('active',false);
@@ -67,7 +73,18 @@ $(document).ready(async function(){
     });
 
     $('#login').click(function(){
-        activateDialog('#login-window');
+        if (loggedIn) {
+            activateitem('#user-actions');
+        } else {
+            activateDialog('#login-window');
+        }
+    });
+    $('#login').mouseenter(function(){
+        if (loggedIn) {
+            $('#login').attr('data-tooltip','Account');
+        } else {
+            $('#login').attr('data-tooltip','Login or Create Account');
+        }
     });
 
     $('#create-acct-ref-btn').click(function(){
@@ -106,6 +123,23 @@ $(document).ready(async function(){
             },
             true,function(){$(document).click();bootbox.alert('Logged in.')}
         );
+    });
+
+    $('#logout-btn').click(function(){
+        if (loggedIn) {
+            $(document).click();
+            bootbox.confirm('Log out?',function(confirmed){
+                if (confirmed) {
+                    cpost(
+                        '/server/login/exit/',
+                        {
+                            'fingerprint':fingerprint
+                        },
+                        true
+                    );
+                }
+            });
+        }
     });
 
 });
