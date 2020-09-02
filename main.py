@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, Body, Response, status
 from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse
+from fastapi_utils.tasks import repeat_every
 import uvicorn
 import rsa
 import os
@@ -13,6 +14,7 @@ import logging
 import base64
 import json
 import random
+import time
 
 # Configs
 VERSION = 0
@@ -78,15 +80,17 @@ class Connection(BaseItem):
         super().__init__()
         self.user: User = User('','','',cache=False)
         self.logged_in = False
+        self.timeout = time.time()+5
 
 class User(BaseItem):
-    def __init__(self,uid,usn,pswhash,cache=True):
+    def __init__(self,uid,usn,pswhash,cache=True,connection=None):
         super().__init__()
         self.uid: str = uid
         self.username: str = usn
         self.password_hash: str = pswhash
         if cache:
             self.cachePath = os.path.join('database','users',self.uid+'.pkl')
+        self.connection = connection
 
 # App
 
@@ -103,6 +107,7 @@ async def root():
 @app.get('/server/connection/status/{fingerprint}/',tags=['server']) # Get connection status
 async def connection_status(fingerprint: str, response: Response):
     if fingerprint in server.connections.keys():
+        server.connections[fingerprint].timeout = time.time()+5
         return {
             'result':'Fetched data.',
             'endpoints':{
@@ -119,9 +124,13 @@ class ConnectionModel(BaseModel):
     fingerprint: str
 @app.post('/server/connection/new/',tags=['server']) # Make new connection
 async def new_connection(model: ConnectionModel):
-    logger.info('User '+model.fingerprint+' connected to server.')
     if not model.fingerprint in server.connections.keys():
+        logger.info('User '+model.fingerprint+' connected to server.')
         server.connections[model.fingerprint] = Connection()
+        for u in server.users.keys():
+            if server.users[u].connection == model.fingerprint:
+                server.connections[model.fingerprint].user = server.users[u]
+                server.connections[model.fingerprint].logged_in = True
     return {}
 
 class LoginModel(BaseModel):
@@ -144,6 +153,7 @@ async def login(model: LoginModel, response: Response):
 
     if uid != None:
         if model.hashword == server.users[uid].password_hash:
+            server.users[uid].connection = model.fingerprint
             server.connections[model.fingerprint].user = server.users[uid]
             server.connections[model.fingerprint].logged_in = True
             logger.info('Logged in: '+model.username)
@@ -169,6 +179,7 @@ async def new_user(model: LoginModel, response: Response):
 
     if uid != None:
         if model.hashword == server.users[model.username].password_hash:
+            server.users[uid].connection = model.fingerprint
             server.connections[model.fingerprint].user = server.users[uid]
             server.connections[model.fingerprint].logged_in = True
             logger.info('Logged in: '+model.username)
@@ -181,6 +192,7 @@ async def new_user(model: LoginModel, response: Response):
         logger.info('New user: '+model.username)
         uid = hashlib.sha256(str(random.random()).encode('utf-8')).hexdigest()
         server.users[uid] = User(uid,model.username,model.hashword)
+        server.users[uid].connection = model.fingerprint
         server.connections[model.fingerprint].user = server.users[uid]
         server.connections[model.fingerprint].logged_in = True
         server.users[uid].update()
@@ -192,6 +204,7 @@ async def logout(model: ConnectionModel, response: Response):
         return {'result':'Connection not found for user.'}
     
     if server.connections[model.fingerprint].logged_in:
+        server.connections[model.fingerprint].user.connection = None
         server.connections[model.fingerprint].user = User('','','',cache=False)
         server.connections[model.fingerprint].logged_in = False
         logger.info('User '+model.fingerprint+' logged out.');
@@ -237,6 +250,18 @@ for f in files:
             locals()
         )
 
+# Load periodic functions
+@app.on_event('startup')
+@repeat_every(seconds=5)
+def check_connections_task():
+    newconn = {}
+    oldconn = server.connections.copy()
+    for conn in oldconn.keys():
+        if oldconn[conn].timeout >= time.time():
+            newconn = oldconn[conn]
+        else:
+            logger.info('Timed out connection '+conn)
+    server.connections = newconn.copy()
 
 
 
