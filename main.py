@@ -15,6 +15,7 @@ import base64
 import json
 import random
 import time
+import pickle
 
 # Configs
 VERSION = 0
@@ -49,6 +50,8 @@ folders = ['users','sessions','campaigns']
 for f in folders:
     try:
         os.makedirs(os.path.join('database',f))
+        with open(os.path.join('database',f,'registry.json'),'w') as reg:
+            reg.write('{}')
     except FileExistsError:
         pass
 
@@ -79,6 +82,7 @@ class Connection(BaseItem):
     def __init__(self):
         super().__init__()
         self.user: User = User('','','',cache=False)
+        self.uid = None
         self.logged_in = False
         self.timeout = time.time()+5
 
@@ -91,6 +95,41 @@ class User(BaseItem):
         if cache:
             self.cachePath = os.path.join('database','users',self.uid+'.pkl')
         self.connection = connection
+    def update(self):
+        super().update()
+        store_user(self.uid)
+
+# Utilities
+
+def update_user_registry(uid):
+    if type(server.users[uid]) != str:
+        with open(os.path.join('database','users','registry.json'),'r') as f:
+            reg = json.load(f)
+        reg[uid] = {'username':server.users[uid].username,'connection':server.users[uid].connection}
+        with open(os.path.join('database','users','registry.json'),'w') as f:
+            json.dump(reg,f)
+def get_user_registry():
+    with open(os.path.join('database','users','registry.json'),'r') as f:
+        reg = json.load(f)
+    return reg
+
+def cache_user(uid):
+    if type(server.users[uid]) != str and hasattr(server.users[uid],'cachePath'):
+        with open(server.users[uid].cachePath,'wb') as cache:
+            pickle.dump(server.users[uid],cache)
+        update_user_registry(uid)
+        server.users[uid] = server.users[uid].cachePath
+def store_user(uid):
+    if type(server.users[uid]) != str and hasattr(server.users[uid],'cachePath'):
+        with open(server.users[uid].cachePath,'wb') as cache:
+            pickle.dump(server.users[uid],cache)
+        update_user_registry(uid)
+def load_user(uid):
+    if type(server.users[uid]) == str:
+        with open(server.users[uid],'rb') as cache:
+            server.users[uid] = pickle.load(cache)
+        update_user_registry(uid)
+
 
 # App
 
@@ -127,9 +166,12 @@ async def new_connection(model: ConnectionModel):
     if not model.fingerprint in server.connections.keys():
         logger.info('User '+model.fingerprint+' connected to server.')
         server.connections[model.fingerprint] = Connection()
-        for u in server.users.keys():
-            if server.users[u].connection == model.fingerprint:
+        registry: dict = get_user_registry()
+        for u in registry.keys():
+            if registry[u]['connection'] == model.fingerprint:
+                load_user(u)
                 server.connections[model.fingerprint].user = server.users[u]
+                server.connections[model.fingerprint].uid = u
                 server.connections[model.fingerprint].logged_in = True
     return {}
 
@@ -146,16 +188,19 @@ async def login(model: LoginModel, response: Response):
     logger.info('User '+model.fingerprint+' logging in.')
 
     uid = None
-    for user in server.users.keys():
-        if server.users[user].username == model.username:
+    registry: dict = get_user_registry()
+    for user in registry.keys():
+        if registry[user]['username'] == model.username:
             uid = user
             break
 
     if uid != None:
+        load_user(uid)
         if model.hashword == server.users[uid].password_hash:
             server.users[uid].connection = model.fingerprint
             server.connections[model.fingerprint].user = server.users[uid]
             server.connections[model.fingerprint].logged_in = True
+            server.connections[model.fingerprint].uid = uid
             logger.info('Logged in: '+model.username)
             server.users[uid].update()
             return {'result':'Success.'}
@@ -171,17 +216,21 @@ async def new_user(model: LoginModel, response: Response):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
     logger.info('User '+model.fingerprint+' creating new acct.')
+
     uid = None
-    for user in server.users.keys():
-        if server.users[user].username == model.username:
+    registry = get_user_registry()
+    for user in registry.keys():
+        if registry[user]['username'] == model.username:
             uid = user
             break
 
     if uid != None:
+        load_user(uid)
         if model.hashword == server.users[model.username].password_hash:
             server.users[uid].connection = model.fingerprint
             server.connections[model.fingerprint].user = server.users[uid]
             server.connections[model.fingerprint].logged_in = True
+            server.connections[model.fingerprint].uid = uid
             logger.info('Logged in: '+model.username)
             server.users[uid].update()
             return {'result':'User exists, logged in.'}
@@ -195,6 +244,7 @@ async def new_user(model: LoginModel, response: Response):
         server.users[uid].connection = model.fingerprint
         server.connections[model.fingerprint].user = server.users[uid]
         server.connections[model.fingerprint].logged_in = True
+        server.connections[model.fingerprint].uid = uid
         server.users[uid].update()
         return {'result':'Success.','uid':uid}
 @app.post('/server/login/exit/',tags=['server']) # Logs out
@@ -204,9 +254,11 @@ async def logout(model: ConnectionModel, response: Response):
         return {'result':'Connection not found for user.'}
     
     if server.connections[model.fingerprint].logged_in:
+        cache_user(server.connections[model.fingerprint].uid)
         server.connections[model.fingerprint].user.connection = None
         server.connections[model.fingerprint].user = User('','','',cache=False)
         server.connections[model.fingerprint].logged_in = False
+        server.connections[model.fingerprint].uid = None
         logger.info('User '+model.fingerprint+' logged out.');
         return {'result':'Success.'}
     else:
@@ -250,10 +302,18 @@ for f in files:
             locals()
         )
 
+# Start tasks
+@app.on_event('startup')
+async def load_users():
+    reg = get_user_registry()
+    for u in reg.keys():
+        if os.path.exists(os.path.join('database','users',u+'.pkl')):
+            server.users[u] = os.path.join('database','users',u+'.pkl')
+
 # Load periodic functions
 @app.on_event('startup')
 @repeat_every(seconds=5)
-def check_connections_task():
+async def check_connections_task():
     newconn = {}
     oldconn = server.connections.copy()
     for conn in oldconn.keys():
@@ -261,6 +321,7 @@ def check_connections_task():
             newconn = oldconn[conn]
         else:
             logger.info('Timed out connection '+conn)
+            cache_user(server.connections[conn].uid)
     server.connections = newconn.copy()
 
 
