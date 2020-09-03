@@ -4,6 +4,7 @@ from classes import *
 from _runtime import server
 import logging, random, hashlib
 from pydantic import BaseModel
+from models import *
 logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
@@ -76,7 +77,7 @@ async def login(model: LoginModel, response: Response):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Email does not have an associated account.'}
 @router.post('/login/new/') # Adds new account, or logs in if one already exists
-async def new_user(model: LoginModel, response: Response):
+async def new_user(model: SignUpModel, response: Response):
     if not model.fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -103,9 +104,9 @@ async def new_user(model: LoginModel, response: Response):
             response.status_code = status.HTTP_403_FORBIDDEN
             return {'result':'User already exists, password is incorrect.'}
     else:
-        logger.info('New user: '+model.username)
+        logger.info('New user: '+model.username+' - '+model.name)
         uid = hashlib.sha256(str(random.random()).encode('utf-8')).hexdigest()
-        server.users[uid] = User(uid,model.username,model.hashword)
+        server.users[uid] = User(uid,model.username,model.hashword,model.name)
         server.users[uid].connection = model.fingerprint
         server.connections[model.fingerprint].user = server.users[uid]
         server.connections[model.fingerprint].logged_in = True

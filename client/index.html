@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="style/root.css">
         <link rel="stylesheet" type="text/css" href="style/tooltips.css">
         <link rel="stylesheet" type="text/css" href="style/dialogs.css">
+        <link rel="stylesheet" type="text/css" href="style/switches.css">
         
 
         <!-- Libraries -->
@@ -54,11 +55,26 @@
         <div id='sign-up-window' class='form dialog transient'>
             <div class='title'><span>Create Account</span></div>
             <div class='form'>
+                <input type='text' id='sign-up-name' placeholder="Display Name">
                 <input type='text' id='sign-up-email' placeholder="E-Mail">
                 <input type='password' id='sign-up-password' placeholder="Password">
-                <button class='form-submit' data-inputs='sign-up-email,sign-up-password' id='create-acct-submit'>Sign Up</button>
+                <button class='form-submit' data-inputs='sign-up-name,sign-up-email,sign-up-password' id='create-acct-submit'>Sign Up</button>
             </div>
             <div class='extralink noselect'>Got an account? <a href='#' class='emp-link' id='login-ref-btn'>Log In</a></div>
+        </div>
+        <div id='user-settings-window' class='settings dialog transient'>
+            <div class='title'><span>User Settings</span></div>
+            <div class='tabs'>
+                <div class='tab active' id='tab_acct-settings' data-tab='acct-settings'><span>Account</span></div>
+            </div>
+            <div class='settings-area'>
+                <div class='page active' id='acct-settings'>
+                    <div class='setting'>
+                        <span>Display Name</span>
+                        <input id='user_settings-display-name' type="text" placeholder="Display Name...">
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

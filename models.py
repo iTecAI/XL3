@@ -8,3 +8,9 @@ class LoginModel(BaseModel): # Login model
     fingerprint: str
     username: str
     hashword: str
+
+class SignUpModel(BaseModel): # Login model
+    fingerprint: str
+    username: str
+    hashword: str
+    name: str

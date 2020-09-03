@@ -14,17 +14,20 @@ class BaseItem:
 class Connection(BaseItem):
     def __init__(self):
         super().__init__()
-        self.user: User = User('','','',cache=False)
+        self.user: User = User('','','','',cache=False)
         self.uid = None
         self.logged_in = False
         self.timeout = time.time()+5
 
 class User(BaseItem):
-    def __init__(self,uid,usn,pswhash,cache=True,connection=None):
+    def __init__(self,uid,usn,pswhash,display_name,cache=True,connection=None):
         super().__init__()
         self.uid: str = uid
         self.username: str = usn
         self.password_hash: str = pswhash
+        self.settings = {
+            'display_name':display_name
+        }
         if cache:
             self.cachePath = os.path.join('database','users',self.uid+'.pkl')
         self.connection = connection

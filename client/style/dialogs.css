@@ -11,6 +11,14 @@
     box-shadow: 0px 0px 9px 5px rgba(0,0,0,0.32);
 }
 
+.dialog.settings {
+    width: 80vw;
+    height: 80vh;
+    position: absolute;
+    top: 50vh;
+    left: 10vw;
+}
+
 .dialog > .title {
     position: relative;
     background-color: var(--foreground3);
@@ -81,4 +89,109 @@
 
 .dialog .extralink a {
     font-family: raleway-heavy;
+}
+
+.dialog .tabs {
+    display: table;
+    width: 80vw;
+    height: 3vh;
+    font-family: raleway-regular;
+    color: var(--fg-font-color);
+    table-layout: fixed;
+    border: none;
+    margin: none;
+}
+
+.dialog .tabs .tab {
+    display: table-cell;
+    position: relative;
+    height: 5vh;
+    border-collapse: collapse;
+    background-color: var(--foreground2);
+    transition: color 0.1s;
+}
+
+.dialog .tabs .tab:hover {
+    color: var(--fg-em1);
+}
+
+.dialog .tabs .tab.active {
+    background-color: var(--foreground1-2);
+}
+
+.dialog .tabs .tab span {
+    font-size: 2.4vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.dialog.settings .settings-area .page {
+    display: none;
+    height: 68vh;
+    background-color: var(--foreground1);
+    width: 80vw;
+    border-radius: 0 0 10px 10px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    overflow-y: scroll;
+}
+
+.dialog.settings .settings-area .page.active {
+    display: inline-block;
+}
+
+/* width */
+.dialog.settings .settings-area .page::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.dialog.settings .settings-area .page::-webkit-scrollbar-track {
+    background: var(--foreground1);
+    border-bottom-right-radius: 10px;
+}
+
+/* Handle */
+.dialog.settings .settings-area .page::-webkit-scrollbar-thumb {
+    background: var(--foreground1-2);
+    transition: background 0.1s;
+}
+
+/* Handle on hover */
+.dialog.settings .settings-area .page::-webkit-scrollbar-thumb:hover {
+    background: var(--foreground2);
+}
+
+.dialog .page > .setting {
+    display: table;
+    width: 90%;
+    margin: 5px;
+    margin-left: 5%;
+}
+
+.dialog .page > .setting > span {
+    width: 30%;
+    margin-right: 5%;
+    font-size: 3vh;
+    font-family: raleway-light;
+    color: var(--fg-font-color);
+}
+
+.dialog .page > .setting > input {
+    border-collapse: collapse;
+    position: relative;
+    display: table-cell;
+    height: 5vh;
+    margin: 5px;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 0.75vh;
+    border: none;
+    box-shadow: inset 0px 0px 0.3vh 0px rgba(0,0,0,0.8);
+    font-family: raleway-light;
+    font-size: 2vh;
+    width: 70%;
 }

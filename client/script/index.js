@@ -114,12 +114,14 @@ $(document).ready(async function(){
         var data = getFormValues('#create-acct-submit');
         var username = data['sign-up-email'];
         var hashword = sha256(data['sign-up-password']);
+        var displayName = data['sign-up-name'];
         cpost(
             '/server/login/new/',
             {
                 'fingerprint':fingerprint,
                 'username':username,
-                'hashword':hashword
+                'hashword':hashword,
+                'name':displayName
             },
             true,function(){$(document).click();bootbox.alert('Logged in.')}
         );
@@ -141,5 +143,15 @@ $(document).ready(async function(){
             });
         }
     });
+
+    $('.tab').click(function(event){
+        $('.tab').toggleClass('active',false);
+        $(event.target).toggleClass('active',true);
+        $('.page').toggleClass('active',false);
+        $('#'+$(event.target).attr('data-tab')).toggleClass('active',true);
+
+    });
+
+    $('#user-settings-btn').click(function(){$(document).click();activateDialog('#user-settings-window');});
 
 });
