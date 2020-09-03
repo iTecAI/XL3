@@ -122,13 +122,14 @@ function getFormValues(submitSelector) {
     return data;
 }
 
-function cpost(endpoint,data,alert,callback) {
-    var alert = alert;
-    $.post({
-        url: 'http://'+window.location.host+endpoint,
-        data: JSON.stringify(data),
-        success: callback,
-        error: function(xhr){
+function cpost(endpoint,data,callback,options) {
+    if (!options) {
+        options = {};
+    }
+    var alert = options.alert;
+    var error = options.error;
+    if (!error) {
+        error = function(xhr){
             if (alert) {
                 bootbox.alert({
                     'title':'Error '+xhr.status,
@@ -136,6 +137,12 @@ function cpost(endpoint,data,alert,callback) {
                 });
             }
         }
+    }
+    $.post({
+        url: 'http://'+window.location.host+endpoint,
+        data: JSON.stringify(data),
+        success: callback,
+        error: error
     });
 }
 
@@ -146,6 +153,7 @@ function cget(endpoint,data,alert,callback) {
         data: JSON.stringify(data),
         success: callback,
         error: function(xhr){
+            console.log(xhr);
             if (alert) {
                 bootbox.alert({
                     'title':'Error '+xhr.status,
@@ -155,3 +163,36 @@ function cget(endpoint,data,alert,callback) {
         }
     });
 }
+
+$(document).ready(function(){
+    $('.settings-input').change(function(event){
+        if ($(event.target).attr('type') == 'checkbox') {
+            var val = $(event.target).prop('checked').toString();
+        } else {
+            var val = $(event.target).val();
+        }
+        if (val == '') {
+            return;
+        }
+        cpost(
+            '/client/'+fingerprint+'/settings/set/'+$(event.target).attr('data-setting')+'/',
+            {
+                value: val
+            },
+            function(data){
+                $(event.target).toggleClass('valid',true);
+                window.setTimeout(function(){$(event.target).toggleClass('valid',false)},2000);
+            },
+            {
+                error: function(xhr) {
+                    $(event.target).toggleClass('invalid',true);
+                    window.setTimeout(function(){$(event.target).toggleClass('invalid',false)},2000);
+                    bootbox.alert({
+                        'title':'Error '+xhr.status,
+                        'message':xhr.responseJSON.result
+                    });
+                }
+            }
+        );
+    });
+});

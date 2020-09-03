@@ -17,7 +17,7 @@ import json
 import random
 import time
 import pickle
-from endpoints import server_endpoint
+from endpoints import server_endpoint, client_endpoint
 from _runtime import server
 
 # Configs
@@ -74,6 +74,11 @@ app.include_router(
     server_endpoint.router,
     prefix='/server',
     tags=['server']
+)
+app.include_router(
+    client_endpoint.router,
+    prefix='/client/{fingerprint}',
+    tags=['client']
 )
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root

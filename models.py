@@ -14,3 +14,13 @@ class SignUpModel(BaseModel): # Login model
     username: str
     hashword: str
     name: str
+
+class ClientSettingsModel(BaseModel):
+    value: str
+
+class PasswordCheckModel(BaseModel):
+    hashword: str
+
+class PasswordChangeModel(BaseModel):
+    hashword: str
+    new_hashword: str

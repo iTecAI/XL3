@@ -15,7 +15,6 @@ $(document).ready(async function(){
         {
             'fingerprint':fingerprint
         },
-        false,
         function(data){
             console.log('Created connection with fingerprint '+fingerprint);
             cget(
@@ -40,7 +39,6 @@ $(document).ready(async function(){
                     {
                         'fingerprint':fingerprint
                     },
-                    false,
                     function(data){
                         console.log('Created connection with fingerprint '+fingerprint);
                     }
@@ -107,7 +105,10 @@ $(document).ready(async function(){
                 'username':username,
                 'hashword':hashword
             },
-            true,function(){$(document).click();bootbox.alert('Logged in.')}
+            true,function(){$(document).click();bootbox.alert('Logged in.')},
+            {
+                alert: true
+            }
         );
     });
     $('#create-acct-submit').click(function(){
@@ -123,7 +124,10 @@ $(document).ready(async function(){
                 'hashword':hashword,
                 'name':displayName
             },
-            true,function(){$(document).click();bootbox.alert('Logged in.')}
+            function(){$(document).click();bootbox.alert('Logged in.')},
+            {
+                alert: true
+            }
         );
     });
 
@@ -137,7 +141,10 @@ $(document).ready(async function(){
                         {
                             'fingerprint':fingerprint
                         },
-                        true
+                        undefined,
+                        {
+                            alert: true
+                        }
                     );
                 }
             });
@@ -152,6 +159,81 @@ $(document).ready(async function(){
 
     });
 
-    $('#user-settings-btn').click(function(){$(document).click();activateDialog('#user-settings-window');});
+    $('#user-settings-btn').click(function(){
+        $('#user-settings-window input').val('');
+        $(document).click();
+
+        cget(
+            '/client/'+fingerprint+'/settings/',
+            {},
+            true,
+            function(data) {
+                var settings = Object.keys(data.settings);
+                for (var s=0;s<settings.length;s++) {
+                    $('#client-settings-'+settings[s]).attr('placeholder','Display Name: '+data.settings[settings[s]]);
+                }
+                console.log('update');
+            }
+        );
+
+        activateDialog('#user-settings-window');
+    });
+
+    $('#client-password-current').change(function(event){
+        if ($(event.target).val() != '') {
+            cpost(
+                '/client/'+fingerprint+'/password/check/',
+                {
+                    hashword: sha256($(event.target).val())
+                },
+                function(data) {
+                    $('#client-password-current').toggleClass('valid',data.match);
+                    $('#client-password-current').toggleClass('invalid',!data.match);
+                    if (data.match) {
+                        window.setTimeout(function(){$(event.target).toggleClass('valid',false)},2000);
+                    } else {
+                        window.setTimeout(function(){$(event.target).toggleClass('invalid',false)},2000);
+                    }
+                }
+            );
+        }
+    });
+
+    $('#change-psw-btn').click(function(){
+        if ($('#client-password-current').val() != '' && $('#client-password-new').val() != '') {
+            bootbox.confirm('Are you sure you want to change your password?',function(confirmed){
+                cpost(
+                    '/client/'+fingerprint+'/password/check/',
+                    {
+                        hashword: sha256($('#client-password-current').val())
+                    },
+                    function(data) {
+                        $('#client-password-current').toggleClass('valid',data.match);
+                        $('#client-password-current').toggleClass('invalid',!data.match);
+                        if (data.match) {
+                            window.setTimeout(function(){$('#client-password-current').toggleClass('valid',false)},2000);
+                            cpost(
+                                '/client/'+fingerprint+'/password/change/',
+                                {
+                                    hashword: sha256($('#client-password-current').val()),
+                                    new_hashword: sha256($('#client-password-new').val())
+                                },
+                                function(data) {
+                                    bootbox.alert('Password changed.');
+                                },
+                                {
+                                    alert: true
+                                }
+                            );
+                        } else {
+                            window.setTimeout(function(){$('#client-password-current').toggleClass('invalid',false)},2000);
+                        }
+                    }
+                );
+            });
+        } else {
+            bootbox.alert('Please fill both inputs.');
+        }
+    });
 
 });

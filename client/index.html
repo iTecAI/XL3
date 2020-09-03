@@ -71,7 +71,17 @@
                 <div class='page active' id='acct-settings'>
                     <div class='setting'>
                         <span>Display Name</span>
-                        <input id='user_settings-display-name' type="text" placeholder="Display Name...">
+                        <input id='client-settings-display_name' type="text" placeholder="Display Name..." class='settings-input' data-setting='display_name'>
+                    </div>
+                    <div class='setting'>
+                        <span>E-Mail</span>
+                        <input id='client-settings-email' type="text" placeholder="Email" class='settings-input' data-setting='email'>
+                    </div>
+                    <div class='setting' id='settings-change-psw'>
+                        <span>Change Password</span>
+                        <input id='client-password-current' type="password" placeholder="Current Password">
+                        <input id='client-password-new' type="password" placeholder="New Password">
+                        <button id='change-psw-btn'>Change Password</button>
                     </div>
                 </div>
             </div>

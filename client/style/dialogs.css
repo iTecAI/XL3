@@ -173,11 +173,13 @@
 }
 
 .dialog .page > .setting > span {
+    display: table-cell;
     width: 30%;
     margin-right: 5%;
     font-size: 3vh;
     font-family: raleway-light;
     color: var(--fg-font-color);
+    text-align: center;
 }
 
 .dialog .page > .setting > input {
@@ -189,9 +191,49 @@
     box-sizing: border-box;
     padding: 10px;
     border-radius: 0.75vh;
-    border: none;
+    border: 0px solid #71a32b00;
     box-shadow: inset 0px 0px 0.3vh 0px rgba(0,0,0,0.8);
     font-family: raleway-light;
     font-size: 2vh;
-    width: 70%;
+    width: 100%;
+    transition: border-color 0.1s, border-width 0.1s;
+}
+
+.dialog .page > .setting > input.valid:not([type="checkbox"]) {
+    border-color: #71a32bff;
+    border-width: 5px;
+}
+.dialog .page > .setting > input.invalid:not([type="checkbox"]) {
+    border-color: rgb(201, 28, 28);
+    border-width: 5px;
+}
+
+.dialog .page > .setting > button {
+    width: (100% / 3);
+    border-collapse: collapse;
+    position: relative;
+    display: table-cell;
+    height: 5vh;
+    margin: 5px;
+    margin-right: 0px;
+    margin-left: 5px;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 0.75vh;
+    border: none;
+    color: var(--fg-font-color);
+    font-size: 2vh;
+    box-shadow: inset 0px 0px 0.5vh 0px rgba(0,0,0,0.8);
+    font-family: raleway-heavy;
+    transition: background-color 0.1s;
+    background-color: var(--foreground4);
+    box-sizing: border-box;
+}
+
+.dialog .page > .setting > button:hover {
+    background-color: var(--fg-em1);
+}
+
+#settings-change-psw input {
+    width: calc((100% / 3) + 6.3%);
 }
