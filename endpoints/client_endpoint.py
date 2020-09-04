@@ -9,7 +9,11 @@ logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 
-@router.post('/settings/set/{setting}/')
+@router.post('/settings/set/{setting}/',responses={
+    404: {'model':SimpleResult,'description':'Connection or Setting not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'Cannot edit client settings, as the user is not logged in.','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    200: {'model':SimpleResult,'description':'Successful. Setting is changed','content':{'application/json':{'example':{'result':'Success.'}}}}
+})
 async def edit_client_settings(fingerprint: str, setting: str, model: ClientSettingsModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -33,7 +37,11 @@ async def edit_client_settings(fingerprint: str, setting: str, model: ClientSett
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to do that.'}
 
-@router.get('/settings/{setting}/')
+@router.get('/settings/{setting}/',responses={
+    404: {'model':SimpleResult,'description':'Connection or Setting not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'Cannot get client settings, as the user is not logged in.','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    200: {'model':SettingResponseModel,'description':'Successful. Returns setting value.','content':{'application/json':{'example':{'result':'Success.','setting':'Setting Name','value':'Setting Value'}}}}
+})
 async def get_specific_client_setting(fingerprint: str, setting: str, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -51,7 +59,11 @@ async def get_specific_client_setting(fingerprint: str, setting: str, response: 
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to do that.'}
 
-@router.get('/settings/')
+@router.get('/settings/',responses={
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'Cannot get client settings, as the user is not logged in.','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    200: {'model':AllSettingsResponseModel,'description':'Successful. Returns setting value.','content':{'application/json':{'example':{'result':'Success.','settings':{'Setting Name':'Setting Value','Foo':'Bar'}}}}}
+})
 async def get_client_settings(fingerprint: str, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -65,7 +77,11 @@ async def get_client_settings(fingerprint: str, response: Response):
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to do that.'}
 
-@router.post('/password/check/')
+@router.post('/password/check/',responses={
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'Cannot check password, as the user is not logged in.','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    200: {'model':PasswordCheckResponseModel,'description':'Successful. Returns whether the password matches.','content':{'application/json':{'example':{'result':'Success.','match':True}}}}
+})
 async def check_password(fingerprint: str, model: PasswordCheckModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -80,7 +96,12 @@ async def check_password(fingerprint: str, model: PasswordCheckModel, response: 
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to do that.'}
 
-@router.post('/password/change/')
+@router.post('/password/change/',responses={
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'Cannot change password, as the user is not logged in.','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    403: {'model':SimpleResult,'description':'Cannot change password, as the previous password provided was incorrect.','content':{'application/json':{'example':{'result':'Previous password incorrect.'}}}},
+    200: {'model':SimpleResult,'description':'Successful. Returns whether the password matches.','content':{'application/json':{'example':{'result':'Success.'}}}}
+})
 async def change_password(fingerprint: str, model: PasswordChangeModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -89,7 +110,7 @@ async def change_password(fingerprint: str, model: PasswordChangeModel, response
     if server.connections[fingerprint].logged_in:
         if server.connections[fingerprint].user.password_hash == model.hashword:
             server.connections[fingerprint].user.password_hash = model.new_hashword
-            return {'result':'Success'}
+            return {'result':'Success.'}
         else:
             response.status_code = status.HTTP_403_FORBIDDEN
             return {'result':'Previous password incorrect.'}

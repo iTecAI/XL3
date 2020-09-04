@@ -2,15 +2,15 @@
     "metadata":[
         {
             "name":"client",
-            "description":"Endpoint for dealing with the user's User object"
+            "description":"Endpoint for dealing with the user's User object - Endpoint: <code>/client/{fingerprint}/</code>"
         },
         {
             "name":"user",
-            "description":"Endpoint for fetching data about other users."
+            "description":"Endpoint for fetching data about other users - Endpoint: <code>/user/{id}/</code>"
         },
         {
             "name":"server",
-            "description":"Endpoint for server operations."
+            "description":"Endpoint for server operations - Endpoint: <code>/server/</code>"
         }
     ]
 }

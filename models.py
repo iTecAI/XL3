@@ -2,7 +2,6 @@ from pydantic import BaseModel, create_model
 
 class ConnectionModel(BaseModel): # Connection model
     fingerprint: str
-    publicKey: str
 
 class LoginModel(BaseModel): # Login model
     fingerprint: str
@@ -24,3 +23,24 @@ class PasswordCheckModel(BaseModel):
 class PasswordChangeModel(BaseModel):
     hashword: str
     new_hashword: str
+
+class SimpleResult(BaseModel):
+    result: str
+
+class StatusResponseModel(BaseModel):
+    result: str
+    endpoints: dict
+    loggedIn: bool
+
+class SettingResponseModel(BaseModel):
+    result: str
+    setting: str
+    value: str
+
+class AllSettingsResponseModel(BaseModel):
+    result: str
+    settings: dict
+
+class PasswordCheckResponseModel(BaseModel):
+    result: str
+    match: bool
