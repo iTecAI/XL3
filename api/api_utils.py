@@ -367,4 +367,32 @@ class Creature:
         self.type = self.data['type']
         self.alignment = self.data['alignment']
 
+    def save(self,ability,advdis=''): #advdis = "adv" or "dis"
+        additional = {
+            'adv':'kh1',
+            'dis':'kl1',
+            '':''
+        }[advdis]
+        if self.abilities[ability]['save'] >= 0:
+            return d20.roll('d20'+additional+'+'+str(self.abilities[ability]['save']))
+        else:
+            return d20.roll('d20'+additional+str(self.abilities[ability]['save']))
+    
+    def check(self,skill_or_ability,advdis=''): #advdis = "adv" or "dis"
+        additional = {
+            'adv':'kh1',
+            'dis':'kl1',
+            '':''
+        }[advdis]
+        if skill_or_ability in SKILLS.keys():
+            if self.skills[skill_or_ability] >= 0:
+                return d20.roll('d20'+additional+'+'+str(self.skills[skill_or_ability]))
+            else:
+                return d20.roll('d20'+additional+str(self.skills[skill_or_ability]))
+        elif skill_or_ability in ABILITIES:
+            if self.abilities[skill_or_ability]['modifier'] >= 0:
+                return d20.roll('d20'+additional+'+'+str(self.abilities[skill_or_ability]['modifier']))
+            else:
+                return d20.roll('d20'+additional+str(self.abilities[skill_or_ability]['modifier']))
+    
     
