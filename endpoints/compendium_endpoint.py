@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from models import *
 from _api import *
 logger = logging.getLogger("uvicorn.error")
+import requests
+from bs4 import BeautifulSoup
 
 router = APIRouter()
 
@@ -25,9 +27,8 @@ async def get_comp_section(name: str, response: Response):
     200: {'model':CompSectionResponseModel,'description':'List of results is returned.','content':{'application/json':{'example':{'result':'Success.','search_results':[]}}}},
     404: {'model':SimpleResult,'description':'Endpoint not found.','content':{'application/json':{'example':{'result':'Endpoint not found.'}}}}
 })
-async def search_comp(endpoint: str, response: Response, search: str = ''):
-    if search == '#':
-        return get5e(endpoint,limit=1500)
+async def search_comp(endpoint: str, response: Response, search: str = '', limit: str = '0'):
+    if search == '':
+        return get5e(endpoint,limit=int(limit))
     else:
-        return get5e(endpoint,search=search,limit=1500)
-
+        return get5e(endpoint,search=search,limit=int(limit))

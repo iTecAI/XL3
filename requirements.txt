@@ -7,3 +7,4 @@ google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
 markdown2==2.3.10
+bs4==0.0.1

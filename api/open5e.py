@@ -15,7 +15,7 @@ if __name__ == "__main__":
 else:
     from api.api_utils import *
 
-def get5e(endpoint,passed={},**kwargs):
+def get5e(endpoint,passed={},limit=0,**kwargs):
     full = []
     page = 1
     while True:
@@ -25,7 +25,10 @@ def get5e(endpoint,passed={},**kwargs):
         payload['page'] = str(page)
 
         response = requests.get('https://api.open5e.com/'+endpoint+'/',params=payload)
-        full.extend(response.json()['results'])
+        for i in response.json()['results']:
+            full.append(i)
+            if limit != 0 and len(full) >= limit:
+                return full
         if response.json()['next'] == None:
             break
         page += 1

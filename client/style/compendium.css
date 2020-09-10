@@ -117,16 +117,16 @@
     text-align: center;
 }
 
-#comp-content-box table {
+#comp-content-box > table {
     border-spacing: 10px;
     margin: 15px 0px;
 }
 
-#comp-content-box table thead {
+#comp-content-box > table thead {
     border-bottom: 4px solid rgb(167, 167, 167);
 }
 
-#comp-content-box table tr {
+#comp-content-box > table tr {
     border-bottom: 1px solid rgb(167, 167, 167);
 }
 
@@ -171,5 +171,57 @@
 .compendium-subcontent {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+.horiz-sep {
+    background-color: var(--dnd1);
+    background: linear-gradient(to right, var(--dnd1), rgba(0,0,0,0));
+    width: 100%;
+    height: 2px;
+}
+
+.monster-basic-info {
+    border: none;
+    width: 100%;
+    margin-left: 0px;
+    margin-top: 0px;
+    border-collapse: collapse;
+}
+.monster-basic-info tr, .monster-basic-info th, .monster-basic-info td {
+    border: 0px solid black;
+    padding-left: 10px;
+    margin-top: 0px;
+    width: 20%;
+}
+
+.monster-basic-info th {
+    text-decoration: underline;
+    font-family: raleway-heavy;
+    background-color: var(--background3);
+    margin-top: 0px;
+}
+
+.monster-display {
+    width: 100%;
+    height: auto;
+    margin-top: 0px;
+    border: 2px solid var(--background3);
+    border-top-width: 0px;
+    padding-top: 0px;
+}
+
+.monster-expanded {
+    padding: 1%;
+}
+
+.comp-cont-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+    font-family: raleway-heavy;
+    color: var(--bg-font-color);
+    font-size: 5vh;
 }
 
