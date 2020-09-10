@@ -59,8 +59,7 @@ def ep_reload(endpoint):
 
 def reload_open5e_cache(endpoints=['spells','monsters','sections','magicitems']):
     for endpoint in endpoints:
-        t = Thread(name='reload_ep_'+endpoint,target=ep_reload,args=[endpoint])
-        t.start()
+        ep_reload(endpoint)
 
 # Setup
 '''Build database'''

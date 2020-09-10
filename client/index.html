@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>XL3</title>
+        <title>XL3 - Compendium</title>
 
         <!-- Styles -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -9,6 +9,7 @@
         <link rel="stylesheet" type="text/css" href="style/tooltips.css">
         <link rel="stylesheet" type="text/css" href="style/dialogs.css">
         <link rel="stylesheet" type="text/css" href="style/switches.css">
+        <link rel="stylesheet" type="text/css" href="style/compendium.css">
         
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -24,12 +25,13 @@
         <script src='lib/cookies.min.js'></script>
         <script src='lib/sha.js'></script>
         <script src='lib/crc.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js" integrity="sha512-L03kznCrNOfVxOUovR6ESfCz9Gfny7gihUX/huVbQB9zjODtYpxaVtIaAkpetoiyV2eqWbvxMH9fiSv5enX7bw==" crossorigin="anonymous"></script>
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
-        <script src='script/index.js'></script>
-        <script src='script/refresh.js'></script>
         <script src='script/root.js'></script>
+        <script src='script/refresh.js'></script>
+        <script src='script/compendium.js'></script>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
@@ -40,9 +42,9 @@
         <div id='top-bar'>
             <img src='assets/logo.png'>
             <div id='topnav'>
-                <button class='top-nav' id='campaigns-nav' onclick="window.location='/'">Campaigns</button>
+                <button class='top-nav' id='compendium-nav' onclick="window.location='/'">Compendium</button>
                 <button class='top-nav' id='characters-nav' onclick="window.location='/characters.html'">Characters</button>
-                <button class='top-nav' id='compendium-nav' onclick="window.location='/compendium.html'">Compendium</button>
+                <button class='top-nav' id='campaigns-nav' onclick="window.location='/campaigns.html'">Campaigns</button>
                 <button class='top-nav' id='help-nav' onclick="window.location='/help.html'">Help</button>
             </div>
             <button id='login' data-tooltip="Login or Create Account" data-tooltip-location="left"><img src="assets/icons/user.png"></button>
@@ -96,5 +98,53 @@
                 </div>
             </div>
         </div>
+
+        <div id='endpoint-sidebar' class='noselect'>
+            <div id='sidebar-title'><span class='noselect'>Compendium</span></div>
+            <div id='sidebar-content'>
+                <button id='magic-items-side'>Magic Items</button>
+                <button id='spells-side'>Spells</button>
+                <button id='monsters-side'>Monsters</button>
+                <div class='ep-section'>
+                    <div class='ep-section-title'><span>Characters</span></div>
+                    <div class='ep-section-content'>
+                        <button data-endpoint='alignment'>Alignment</button>
+                        <button data-endpoint='inspiration'>Inspiration</button>
+                        <button data-endpoint='languages'>Languages</button>
+                        <button data-endpoint='leveling-up'>Leveling Up</button>
+                        <button data-endpoint='multiclassing'>Multiclassing</button>
+                    </div>
+                </div>
+                <div class='ep-section'>
+                    <div class='ep-section-title'><span>Equipment</span></div>
+                    <div class='ep-section-content'>
+                        <button data-endpoint="adventuring-gear">Adventuring Gear</button>
+                        <button data-endpoint="armor">Armor</button>
+                        <button data-endpoint="equipment">Equipment</button>
+                        <button data-endpoint="equipment-packs">Equipment Packs</button>
+                        <button data-endpoint="expenses">Expenses</button>
+                        <button data-endpoint="mounts-and-vehicles">Mounts and Vehicles</button>
+                        <button data-endpoint="selling-treasure">Selling Treasure</button>
+                        <button data-endpoint="tools">Tools</button>
+                        <button data-endpoint="trade-goods">Trade Goods</button>
+                        <button data-endpoint="weapons">Weapons</button>
+                    </div>
+                </div>
+                <div class='ep-section'>
+                    <div class='ep-section-title'><span>Appendices</span></div>
+                    <div class='ep-section-content'>
+                        <button data-endpoint='conditions'>Conditions</button>
+                        <button data-endpoint='diseases'>Diseases</button>
+                        <button data-endpoint='madness'>Madness</button>
+                        <button data-endpoint='objects'>Objects</button>
+                        <button data-endpoint='poisons'>Poisons</button>
+                        <button data-endpoint='traps'>Traps</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id='comp-title-box' class='noselect'><span>Compendium</span></div>
+        <div id='comp-content-box'><img src='assets/logo_large.png'></div>
+        <span class="comp-cont-loading">Loading...</span>
     </body>
 </html>

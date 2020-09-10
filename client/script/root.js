@@ -1,12 +1,15 @@
 var theme = 'light';
 var activating = false;
 
-$(document).ready(async function(){
+var keyPair = null;
+var fingerprint = null;
+
+$(document).ready(function(){
     $('#top-bar .top-nav').toggleClass('active',false);
     if (window.location.pathname == '/') {
-        $('#campaigns-nav').toggleClass('active',true);
-    } else if (window.location.pathname == '/compendium.html') {
         $('#compendium-nav').toggleClass('active',true);
+    } else if (window.location.pathname == '/campaigns.html') {
+        $('#campaigns-nav').toggleClass('active',true);
     } else if (window.location.pathname == '/characters.html') {
         $('#characters-nav').toggleClass('active',true);
     } else if (window.location.pathname == '/help.html') {
@@ -103,6 +106,7 @@ $(document).ready(async function(){
     });
 
     $('#login-submit').click(function(){
+        $(document).click();
         var data = getFormValues('#login-submit');
         var username = data['login-email'];
         var hashword = sha256(data['login-password']);
@@ -120,6 +124,7 @@ $(document).ready(async function(){
         );
     });
     $('#create-acct-submit').click(function(){
+        $(document).click();
         var data = getFormValues('#create-acct-submit');
         var username = data['sign-up-email'];
         var hashword = sha256(data['sign-up-password']);
