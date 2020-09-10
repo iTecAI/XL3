@@ -119,7 +119,7 @@ class GSheet(Character):
             'n100:n104','x100:x104','e107','ak113','e119','ak124','e129','ak134','e138','ak142','n106:n110','x106:x110','ah106:ah110',
             'd112:d117','n112:n117','x112:x117','n118:n121','x118:x121','ah118:ah121','d123:d126','n123:n126','x123:x126',
             'n128:n131','x128:x131','ah128:ah131','d133:d135','n133:n135','x133:x135','n137:n139','x137:x139','ah137:ah139',
-            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91'
+            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','t69:t79','ab69:ab79','ai69:ai79'
             ]
         self.preload_all(all_ranges)
 
@@ -261,19 +261,30 @@ class GSheet(Character):
                     self.spellcasting[spcls]['spells'][k] = {
                             'spells':spells
                         }
-    
-    def to_dict(self):
-        items = [
-            'name','race','class_display','classes','level','xp','prof','speed','alignment','ac','max_hp','hp','init','attacks','abilities','skills','other_profs','spellcasting'
-            ]
-        return {i:getattr(self,i,None) for i in items}
-
-    def to_json(self,indent=None):
-        return json.dumps(self.to_dict(),indent=indent)
+            
+            rlist = {'resistances':'t69:t79','immunities':'ab69:ab79','vulnerabilities':'ai69:ai79'}
+            self.resist = {}
+            self.vuln = {}
+            self.immune = {}
+            for k in rlist.keys():
+                dat = self.get(rlist[k])
+                for i in dat:
+                    item = {
+                        'damage_condition':[]
+                    }
+                    parts = i.split(' ')
+                    for part in parts:
+                        if part in ['magical','nonmagical','adamantine','silvered']:
+                            item['damage_condition'].append(part)
+                        elif part in DAMAGETYPES:
+                            getattr(self,k)[part] = item
+                            break
+                        else:
+                            pass
 
 sheet = GSheet(sheet_id='1aKNfgfVDxXygYfsmTkZvqF5ui_yjZ3y-ugLCB1Gh9ug') # Aadi
 #sheet = GSheet(sheet_id='1Mmu8ZJ8EHccROYzFG4BrPSpLiIV4HD_BL_9cgdBc5Hw') # Ansh
 
-with open('out.json','w') as f:
+with open('outc.json','w') as f:
     f.write(sheet.to_json(indent=4))
         

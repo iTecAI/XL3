@@ -33,10 +33,10 @@ class Creature5e(Creature):
     def get_creature_info(self, kwargs):
         return kwargs['data']
 
-'''dat = get_creatures(type='celestial')
+dat = get_creatures(type='celestial')
 #print('\n\n======\n\n'.join([i+':\n\n'+dat[i].json(indent=4) for i in dat.keys()]))
 with open('out.json','w') as f:
-    json.dump({i:dat[i].to_dict() for i in dat.keys()},f,indent=4)'''
+    json.dump({i:dat[i].to_dict() for i in dat.keys()},f,indent=4)
 
 
         
