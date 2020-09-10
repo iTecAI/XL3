@@ -4,9 +4,6 @@ import d20
 import fractions
 import urllib.parse
 
-token = None
-user_id = None
-
 __all__ = ['get_critterdb']
 
 
