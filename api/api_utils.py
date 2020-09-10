@@ -1,5 +1,10 @@
 import d20, re, json
 
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+
 SKILLS = {
     'acrobatics':'dexterity',
     'animal_handling':'wisdom',
@@ -37,6 +42,12 @@ def split_on(string,seps):
             nret.extend(item.split(sep))
         ret = nret[:]
     return ret
+
+def base10(string):
+    return ''.join(re.findall(r'[0-9]',string))
+
+def alpha(string):
+    return ''.join(re.findall(r'[a-zA-Z ]',string))
 
 def defaults(inp, default):
     for k in default.keys():
@@ -394,5 +405,10 @@ class Creature:
                 return d20.roll('d20'+additional+'+'+str(self.abilities[skill_or_ability]['modifier']))
             else:
                 return d20.roll('d20'+additional+str(self.abilities[skill_or_ability]['modifier']))
-    
-    
+
+def get_gapi(path,scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']): # From https://developers.google.com/sheets/api/quickstart/python
+    creds = service_account.Credentials.from_service_account_file(path, scopes=scopes)
+    return build('sheets', 'v4', credentials=creds)
+
+
+

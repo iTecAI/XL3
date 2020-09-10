@@ -131,3 +131,7 @@ dmypy.json
 jsconfig.json
 *.pem
 database/
+lock/
+*.pkl
+*.pickle
+out.json
