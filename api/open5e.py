@@ -59,7 +59,7 @@ def get_section(section,to_html=True):
 
         if out:
             if to_html:
-                return markdown2.markdown(out['desc'],extras=EXTRAS)
+                return markdown2.markdown(out['desc'].replace('*\n|','*\n\n|'),extras=EXTRAS)
             else:
                 return out['desc']
         else:
