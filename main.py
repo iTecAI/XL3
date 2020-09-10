@@ -17,8 +17,9 @@ import json
 import random
 import time
 import pickle
-from endpoints import server_endpoint, client_endpoint
+from endpoints import server_endpoint, client_endpoint, compendium_endpoint
 from _runtime import server
+from _api import *
 
 # Configs
 VERSION = 0
@@ -49,7 +50,7 @@ else:
 
 # Setup
 '''Build database'''
-folders = ['users','sessions','campaigns']
+folders = ['users','sessions','campaigns','characters']
 for f in folders:
     try:
         os.makedirs(os.path.join('database',f))
@@ -79,6 +80,11 @@ app.include_router(
     client_endpoint.router,
     prefix='/client/{fingerprint}',
     tags=['client']
+)
+app.include_router(
+    compendium_endpoint.router,
+    prefix='/compendium',
+    tags=['compendium']
 )
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root

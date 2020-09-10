@@ -9,6 +9,8 @@
     --foreground3: #222629;
     --foreground4: #86c232;
     --foreground1-2: #5d6163;
+    --foreground2-2: #3c3f42;
+    --foreground3-2: #15181a;
     --fg-em1: #71a32b;
     --bg-font-color: rgb(6, 0, 29);
     --fg-font-color: rgb(246, 239, 255);
@@ -81,6 +83,42 @@ html, body {
     height: 4vh;
     left: 0.5vh;
     top: 0.5vh;
+}
+
+#top-bar .top-nav {
+    width: 200px;
+    height: 5vh;
+    display: inline-block;
+    margin: 0px;
+    background-color: var(--foreground2);
+    border: none;
+    font-family: raleway-regular;
+    color: var(--fg-font-color);
+    font-size: 2vh;
+    transition: background-color 0.1s, color 0.1s;
+    border-collapse: collapse;
+}
+
+#top-bar .top-nav:hover {
+    background-color: var(--foreground3);
+    color: var(--fg-em1);
+}
+
+#top-bar .top-nav.active {
+    background-color: var(--foreground2-2);
+}
+
+#top-bar .top-nav.active:hover {
+    background-color: var(--foreground3);
+    color: var(--fg-em1);
+}
+
+#topnav {
+    font-size: 0px;
+    position: absolute;
+    left: 5.2vh;
+    top: 0px;
+    height: 5vh;
 }
 
 #login {

@@ -146,7 +146,7 @@ async def logout(model: ConnectionModel, response: Response):
     if server.connections[model.fingerprint].logged_in:
         cache_user(server.connections[model.fingerprint].uid)
         server.connections[model.fingerprint].user.connection = None
-        server.connections[model.fingerprint].user = User('','','',cache=False)
+        server.connections[model.fingerprint].user = User('','','','',cache=False)
         server.connections[model.fingerprint].logged_in = False
         server.connections[model.fingerprint].uid = None
         logger.info('User '+model.fingerprint+' logged out.');

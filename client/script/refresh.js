@@ -1,10 +1,9 @@
 // Globals
 var loggedIn = null;
 
-function refresh_index(data) {
+function refresh(data) {
     var endpoints = data.endpoints;
     loggedIn = data.loggedIn;
-    console.log(data.endpoints.client);
     if (endpoints.client) {
         cget(
             '/client/'+fingerprint+'/settings/',

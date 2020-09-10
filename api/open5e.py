@@ -1,4 +1,14 @@
-import requests,json
+import requests,json,markdown2
+
+EXTRAS = [
+    'break-on-newline',
+    'cuddled-lists',
+    'header-ids',
+    'nofollow',
+    'strike',
+    'target-blank-links',
+    'tables'
+]
 
 if __name__ == "__main__":
     from api_utils import *
@@ -22,6 +32,15 @@ def get5e(endpoint,passed={},**kwargs):
         page += 1
     return full
 
+def get_section(section,to_html=True):
+    try:
+        if to_html:
+            return markdown2.markdown(requests.get('https://api.open5e.com/sections/'+section+'/').json()['desc'],extras=EXTRAS)
+        else:
+            return requests.get('https://api.open5e.com/sections/'+section+'/').json()['desc']
+    except KeyError:
+        raise ValueError('Could not fetch section '+section+' as it does not exist.')
+
 def get_creatures(**kwargs):
     results = get5e('monsters',kwargs)
     creatures = {}
@@ -33,6 +52,4 @@ class Creature5e(Creature):
     def get_creature_info(self, kwargs):
         self.src = 'open5e'
         return kwargs['data']
-
-
         

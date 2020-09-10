@@ -11,6 +11,10 @@
         {
             "name":"server",
             "description":"Endpoint for server operations - Endpoint: <code>/server/</code>"
+        },
+        {
+            "name":"compendium",
+            "description":"Endpoint for getting information from the Open5e Compendium - Endpoint: <code>/compendium/</code>"
         }
     ]
 }

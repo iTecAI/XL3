@@ -44,3 +44,7 @@ class AllSettingsResponseModel(BaseModel):
 class PasswordCheckResponseModel(BaseModel):
     result: str
     match: bool
+
+class CompSectionResponseModel(BaseModel):
+    result: str
+    content: str

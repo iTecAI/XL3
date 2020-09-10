@@ -26,7 +26,7 @@ async def edit_client_settings(fingerprint: str, setting: str, model: ClientSett
             server.connections[fingerprint].user.update()
             return {'result':'Success'}
         elif setting == 'email':
-            server.connections[fingerprint].user.email = model.value
+            server.connections[fingerprint].user.username = model.value
             logger.info('User '+server.connections[fingerprint].user.username+' changed a setting: '+setting+' = '+model.value)
             server.connections[fingerprint].user.update()
             return {'result':'Success'}
@@ -71,7 +71,7 @@ async def get_client_settings(fingerprint: str, response: Response):
     
     if server.connections[fingerprint].logged_in:
         _settings = server.connections[fingerprint].user.settings.copy()
-        _settings['email'] = server.connections[fingerprint].user.email
+        _settings['email'] = server.connections[fingerprint].user.username
         return {'result':'Success','settings':_settings}
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED

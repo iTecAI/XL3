@@ -1,0 +1,156 @@
+#endpoint-sidebar {
+    width: 200px;
+    height: 95vh;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    background-color: var(--foreground2);
+    font-family: raleway-regular;
+}
+
+#sidebar-content {
+    overflow-y: auto;
+    height: 88vh;
+}
+
+.ep-section-title {
+    background-color: var(--foreground3);
+    color: var(--fg-font-color);
+    height: 5vh;
+    position: relative;
+    width: 100%;
+    font-family: raleway-heavy;
+}
+
+.ep-section-title > span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#endpoint-sidebar * {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#endpoint-sidebar .ep-section-content button {
+    background-color: var(--foreground2);
+    color: var(--fg-font-color);
+    border: none;
+    height: calc(95vh / 27);
+    height: 5vh;
+}
+
+#sidebar-content > button {
+    background-color: var(--foreground3);
+    color: var(--fg-font-color);
+    border: none;
+    height: 5vh;
+    font-family: raleway-heavy;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+#sidebar-content::-webkit-scrollbar {
+    display: none;
+}
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+#sidebar-content {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+#endpoint-sidebar button {
+    transition: color 0.1s;
+}
+
+#endpoint-sidebar button:hover {
+    color: var(--fg-em1);
+}
+
+#sidebar-title {
+    height: 7vh;
+    width: 100%;
+    background-color: var(--foreground3-2);
+    color: var(--fg-font-color);
+    font-family: raleway-heavy;
+    position: relative;
+    font-size: 20px;
+}
+
+#sidebar-title span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#endpoint-sidebar input {
+    background-color: var(--foreground3);
+    border: none;
+    color: var(--fg-font-color);
+    height: 6vh;
+    padding: 1vh;
+    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+#comp-content-box {
+    position: absolute;
+    width: calc(100vw - 200px);
+    height: 88vh;
+    right: 0px;
+    bottom: 0px;
+    overflow-y: auto;
+    padding: 3vh;
+    font-family: raleway-regular;
+}
+
+#comp-title-box {
+    height: 7vh;
+    width: calc(100vw - 200px);
+    position: absolute;
+    top: 5vh;
+    right: 0px;
+    background-color: var(--foreground3);
+    color: var(--fg-font-color);
+    font-family: raleway-heavy;
+    font-size: 40px;
+}
+
+#comp-title-box span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#comp-content-box table {
+    border-spacing: 10px;
+    margin: 15px 0px;
+}
+
+#comp-content-box table thead {
+    border-bottom: 4px solid rgb(167, 167, 167);
+}
+
+#comp-content-box table tr {
+    border-bottom: 1px solid rgb(167, 167, 167);
+}
+
+#comp-content-box table td, #comp-content-box table th {
+    padding: 5px 10px;
+}
+
+#comp-content-box img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+

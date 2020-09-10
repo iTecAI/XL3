@@ -6,3 +6,4 @@ fastapi_utils==0.2.1
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
+markdown2==2.3.10
