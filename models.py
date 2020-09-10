@@ -48,3 +48,7 @@ class PasswordCheckResponseModel(BaseModel):
 class CompSectionResponseModel(BaseModel):
     result: str
     content: str
+
+class CompSearchResponseModel(BaseModel):
+    result: str
+    search_results: list

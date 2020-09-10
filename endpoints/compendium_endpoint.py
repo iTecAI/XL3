@@ -21,3 +21,13 @@ async def get_comp_section(name: str, response: Response):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Section not found.'}
 
+@router.get('/search/{endpoint}/',responses={
+    200: {'model':CompSectionResponseModel,'description':'List of results is returned.','content':{'application/json':{'example':{'result':'Success.','search_results':[]}}}},
+    404: {'model':SimpleResult,'description':'Endpoint not found.','content':{'application/json':{'example':{'result':'Endpoint not found.'}}}}
+})
+async def search_comp(endpoint: str, response: Response, search: str = ''):
+    if search == '#':
+        return get5e(endpoint,limit=1500)
+    else:
+        return get5e(endpoint,search=search,limit=1500)
+

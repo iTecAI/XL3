@@ -25,7 +25,6 @@ def get5e(endpoint,passed={},**kwargs):
         payload['page'] = str(page)
 
         response = requests.get('https://api.open5e.com/'+endpoint+'/',params=payload)
-        print(response.url)
         full.extend(response.json()['results'])
         if response.json()['next'] == None:
             break

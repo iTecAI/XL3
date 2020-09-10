@@ -25,6 +25,7 @@
         <script src='lib/cookies.min.js'></script>
         <script src='lib/sha.js'></script>
         <script src='lib/crc.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js" integrity="sha512-L03kznCrNOfVxOUovR6ESfCz9Gfny7gihUX/huVbQB9zjODtYpxaVtIaAkpetoiyV2eqWbvxMH9fiSv5enX7bw==" crossorigin="anonymous"></script>
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
@@ -99,9 +100,8 @@
         </div>
 
         <div id='endpoint-sidebar' class='noselect'>
-            <div id='sidebar-title'><span>Compendium</span></div>
+            <div id='sidebar-title'><span class='noselect'>Compendium</span></div>
             <div id='sidebar-content'>
-                <input id='general-search' placeholder="Search Compendium">
                 <button id='magic-items-side'>Magic Items</button>
                 <button id='spells-side'>Spells</button>
                 <button id='monsters-side'>Monsters</button>
@@ -143,7 +143,7 @@
                 </div>
             </div>
         </div>
-        <div id='comp-title-box'><span>Compendium</span></div>
+        <div id='comp-title-box' class='noselect'><span>Compendium</span></div>
         <div id='comp-content-box'><img src='assets/logo_large.png'></div>
     </body>
 </html>
