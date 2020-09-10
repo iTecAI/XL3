@@ -15,7 +15,7 @@ if __name__ == "__main__":
 else:
     from api.api_utils import *
 
-def get5e(endpoint,passed={},limit=0,**kwargs):
+def get5e_direct(endpoint,passed={},limit=0,**kwargs):
     full = []
     page = 1
     while True:
@@ -34,17 +34,40 @@ def get5e(endpoint,passed={},limit=0,**kwargs):
         page += 1
     return full
 
-def get_section(section,to_html=True):
-    try:
-        if to_html:
-            return markdown2.markdown(requests.get('https://api.open5e.com/sections/'+section+'/').json()['desc'],extras=EXTRAS)
-        else:
-            return requests.get('https://api.open5e.com/sections/'+section+'/').json()['desc']
-    except KeyError:
-        raise ValueError('Could not fetch section '+section+' as it does not exist.')
+def get5e(endpoint,limit=0,search=''):
+    full = []
+    if os.path.exists(os.path.join('database','cached','open5e',endpoint+'.json')):
+        with open(os.path.join('database','cached','open5e',endpoint+'.json'),'r') as f:
+            data = json.load(f)
+            for item in data:
+                if search in item['slug']:
+                    full.append(item)
+                if len(full) >= limit and limit > 0:
+                    return full
+        return full
+    else:
+        raise ValueError('Endpoint is incorrect or does not exist in database.')
 
-def get_creatures(**kwargs):
-    results = get5e('monsters',kwargs)
+def get_section(section,to_html=True):
+    out = None
+    if os.path.exists(os.path.join('database','cached','open5e','sections.json')):
+        with open(os.path.join('database','cached','open5e','sections.json'),'r') as f:
+            data = json.load(f)
+            for item in data:
+                if section == item['slug']:
+                    out = item
+
+        if out:
+            if to_html:
+                return markdown2.markdown(out['desc'],extras=EXTRAS)
+            else:
+                return out['desc']
+        else:
+            raise ValueError('Could not fetch section '+section+' as it does not exist.')
+        
+
+def get_creatures(limit=0,search=''):
+    results = get5e('monsters',limit=limit,search=search)
     creatures = {}
     for result in results:
         creatures[result['name']] = Creature5e(data=result)

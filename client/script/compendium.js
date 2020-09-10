@@ -337,7 +337,7 @@ $(document).ready(function(){
             $('.comp-cont-loading').show();
             $('#comp-content-box .compendium-subcontent').html('');
             cget(
-                '/compendium/search/monsters/?limit=200&search='+$(event.target).val(),
+                '/compendium/search/monsters/?limit=300&search='+$(event.target).val(),
                 {},false,
                 assembleMonsters
             );
@@ -346,7 +346,7 @@ $(document).ready(function(){
             '<div class="compendium-subcontent"></div>'
         ));
         cget(
-            '/compendium/search/monsters/?limit=200',
+            '/compendium/search/monsters/?limit=300',
             {},false,
             assembleMonsters
         );

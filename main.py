@@ -20,6 +20,7 @@ import pickle
 from endpoints import server_endpoint, client_endpoint, compendium_endpoint
 from _runtime import server
 from _api import *
+from threading import Thread
 
 # Configs
 VERSION = 0
@@ -48,9 +49,22 @@ else:
     with open('prikey.pem','wb') as pri:
         pri.write(PRIVATE_KEY.save_pkcs1())'''
 
+def ep_reload(endpoint):
+    try:
+        with open(os.path.join('database','cached','open5e',endpoint+'.json'),'w') as f:
+            json.dump(get5e_direct(endpoint),f)
+        logger.info('Reloaded '+endpoint)
+    except:
+        logger.warning('Open5e Endpoint '+endpoint+' is not accessible.')
+
+def reload_open5e_cache(endpoints=['spells','monsters','sections','magicitems']):
+    for endpoint in endpoints:
+        t = Thread(name='reload_ep_'+endpoint,target=ep_reload,args=[endpoint])
+        t.start()
+
 # Setup
 '''Build database'''
-folders = ['users','sessions','campaigns','characters']
+folders = ['users','sessions','campaigns','characters','cached',os.path.join('cached','open5e')]
 for f in folders:
     try:
         os.makedirs(os.path.join('database',f))
@@ -58,6 +72,11 @@ for f in folders:
             reg.write('{}')
     except FileExistsError:
         pass
+
+'''reload_open5e_cache()
+with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
+    f.write(str(int(time.time())))
+logger.info('Reloaded Open5e Cache.')'''
 
 '''Get OpenAPI configs'''
 with open(os.path.join('config','openapi.json'),'r') as c:
@@ -144,6 +163,22 @@ async def check_connections_task():
             logger.info('Timed out connection '+conn)
             cache_user(server.connections[conn].uid)
     server.connections = newconn.copy()
+
+
+@app.on_event('startup')
+@repeat_every(seconds=60)
+async def reload_cached():
+    if not os.path.exists(os.path.join('database','cached','open5e','last_update.ini')):
+        with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
+            f.write(str(int(time.time())))
+            reload_open5e_cache()
+    else:
+        with open(os.path.join('database','cached','open5e','last_update.ini'),'r') as f:
+            dat = f.read()
+        if int(dat)+300 < time.time():
+            with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
+                f.write(str(int(time.time())))
+                reload_open5e_cache()
 
 
 
