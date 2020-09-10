@@ -166,7 +166,7 @@ async def check_connections_task():
 
 
 @app.on_event('startup')
-@repeat_every(seconds=60)
+@repeat_every(seconds=10)
 async def reload_cached():
     if not os.path.exists(os.path.join('database','cached','open5e','last_update.ini')):
         with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
@@ -179,6 +179,14 @@ async def reload_cached():
             with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
                 f.write(str(int(time.time())))
                 reload_open5e_cache()
+    
+    for ep in ['spells','monsters','sections','magicitems']:
+        try:
+            with open(os.path.join('database','cached','open5e',ep+'.json'),'r') as f:
+                json.load(f)
+        except json.JSONDecodeError:
+            ep_reload(ep)
+            logger.warning('Endpoint cache '+ep+' was malformed. Reloaded.')
 
 
 
