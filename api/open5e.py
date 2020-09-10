@@ -31,12 +31,8 @@ def get_creatures(**kwargs):
 
 class Creature5e(Creature):
     def get_creature_info(self, kwargs):
+        self.src = 'open5e'
         return kwargs['data']
-
-dat = get_creatures(type='celestial')
-#print('\n\n======\n\n'.join([i+':\n\n'+dat[i].json(indent=4) for i in dat.keys()]))
-with open('out.json','w') as f:
-    json.dump({i:dat[i].to_dict() for i in dat.keys()},f,indent=4)
 
 
         

@@ -281,10 +281,4 @@ class GSheet(Character):
                             break
                         else:
                             pass
-
-sheet = GSheet(sheet_id='1aKNfgfVDxXygYfsmTkZvqF5ui_yjZ3y-ugLCB1Gh9ug') # Aadi
-#sheet = GSheet(sheet_id='1Mmu8ZJ8EHccROYzFG4BrPSpLiIV4HD_BL_9cgdBc5Hw') # Ansh
-
-with open('outc.json','w') as f:
-    f.write(sheet.to_json(indent=4))
         

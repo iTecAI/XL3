@@ -316,7 +316,7 @@ class Creature:
             }
         }
     
-    def json(self,indent=None):
+    def to_json(self,indent=None):
         return json.dumps(self.to_dict(),indent=indent)
 
     def setup(self):
