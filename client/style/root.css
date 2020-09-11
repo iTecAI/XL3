@@ -195,3 +195,23 @@ html, body {
     background-color: var(--background2);
 }
 
+#noconn {
+    background-color: rgb(233, 34, 34);
+    color: var(--fg-font-color);
+    width: 100vw;
+    height: 3vh;
+    z-index: 1001;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    font-family: raleway-heavy;
+}
+
+#noconn span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+

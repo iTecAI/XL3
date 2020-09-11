@@ -5,6 +5,7 @@ var keyPair = null;
 var fingerprint = null;
 
 $(document).ready(function(){
+    $('#noconn').hide();
     $('#top-bar .top-nav').toggleClass('active',false);
     if (window.location.pathname == '/') {
         $('#compendium-nav').toggleClass('active',true);
@@ -28,15 +29,19 @@ $(document).ready(function(){
             data: {},
             success: refresh,
             error: function(xhr){
-                cpost(
-                    '/server/connection/new/',
-                    {
-                        'fingerprint':fingerprint
-                    },
-                    function(data){
-                        console.log('Created connection with fingerprint '+fingerprint);
-                    }
-                );
+                if (xhr.status == 0) {
+                    $('#noconn').show();
+                } else {
+                    cpost(
+                        '/server/connection/new/',
+                        {
+                            'fingerprint':fingerprint
+                        },
+                        function(data){
+                            console.log('Created connection with fingerprint '+fingerprint);
+                        }
+                    );
+                }
             }
         });
     },200);

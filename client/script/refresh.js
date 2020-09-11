@@ -3,6 +3,7 @@ var loggedIn = null;
 
 function refresh(data) {
     var endpoints = data.endpoints;
+    $('#noconn').hide();
     loggedIn = data.loggedIn;
     if (loggedIn) {
         $('#characters-nav').show(250);
