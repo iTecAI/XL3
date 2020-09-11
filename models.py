@@ -52,3 +52,7 @@ class CompSectionResponseModel(BaseModel):
 class CompSearchResponseModel(BaseModel):
     result: str
     search_results: list
+
+class OwnedListResponseModel(BaseModel):
+    result: str
+    owned: list

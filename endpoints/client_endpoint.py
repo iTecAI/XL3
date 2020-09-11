@@ -117,3 +117,35 @@ async def change_password(fingerprint: str, model: PasswordChangeModel, response
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to do that.'}
+
+@router.get('/characters/',responses={
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'User must be logged in','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    200: {'model':OwnedListResponseModel,'description':'List of owned character IDs','content':{'application/json':{'example':{'result':'Success.','owned':[]}}}}
+})
+async def get_characters(fingerprint: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found.'}
+    
+    if server.connections[fingerprint].logged_in:
+        return {'result':'Success.','owned':server.connections[fingerprint].user.owned_characters}
+    else:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to do that.'}
+
+@router.get('/campaigns/',responses={
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example.':{'result':'You must be logged in to do that.'}}}},
+    405: {'model':SimpleResult,'description':'User must be logged in','content':{'application/json':{'example':{'result':'User is not logged in.'}}}},
+    200: {'model':OwnedListResponseModel,'description':'List of owned campaign IDs','content':{'application/json':{'example':{'result':'Success.','owned':[]}}}}
+})
+async def get_campaigns(fingerprint: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found.'}
+    
+    if server.connections[fingerprint].logged_in:
+        return {'result':'Success.','owned':server.connections[fingerprint].user.owned_campaigns}
+    else:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to do that.'}

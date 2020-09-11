@@ -25,12 +25,14 @@ class User(BaseItem):
         self.uid: str = uid
         self.username: str = usn
         self.password_hash: str = pswhash
-        self.settings = {
+        self.settings: dict = {
             'display_name':display_name
         }
         if cache:
-            self.cachePath = os.path.join('database','users',self.uid+'.pkl')
-        self.connection = connection
+            self.cachePath: str = os.path.join('database','users',self.uid+'.pkl')
+        self.connection: Connection = connection
+        self.owned_characters: list = []
+        self.owned_campaigns: list = []
     def update(self):
         super().update()
         store_user(self.uid)
