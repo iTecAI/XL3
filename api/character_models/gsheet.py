@@ -49,7 +49,7 @@ class GSheet(Character):
                     if len(data) > 1:
                         ret = []
                         for d in data:
-                            if len(d) > 1:
+                            if len(d) > 1 or len(d) == 0:
                                 ret.append(d)
                             else:
                                 ret.append(d[0])
@@ -119,7 +119,7 @@ class GSheet(Character):
             'n100:n104','x100:x104','e107','ak113','e119','ak124','e129','ak134','e138','ak142','n106:n110','x106:x110','ah106:ah110',
             'd112:d117','n112:n117','x112:x117','n118:n121','x118:x121','ah118:ah121','d123:d126','n123:n126','x123:x126',
             'n128:n131','x128:x131','ah128:ah131','d133:d135','n133:n135','x133:x135','n137:n139','x137:x139','ah137:ah139',
-            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','t69:t79','ab69:ab79','ai69:ai79'
+            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','Additional!t69:t79','Additional!ab69:ab79','Additional!ai69:ai79'
             ]
         self.preload_all(all_ranges)
 
@@ -262,23 +262,24 @@ class GSheet(Character):
                             'spells':spells
                         }
             
-            rlist = {'resistances':'t69:t79','immunities':'ab69:ab79','vulnerabilities':'ai69:ai79'}
-            self.resist = {}
-            self.vuln = {}
-            self.immune = {}
-            for k in rlist.keys():
-                dat = self.get(rlist[k])
-                for i in dat:
-                    item = {
-                        'damage_condition':[]
-                    }
-                    parts = i.split(' ')
-                    for part in parts:
-                        if part in ['magical','nonmagical','adamantine','silvered']:
-                            item['damage_condition'].append(part)
-                        elif part in DAMAGETYPES:
-                            getattr(self,k)[part] = item
-                            break
-                        else:
-                            pass
+        rlist = {'resist':'Additional!t69:t79','immune':'Additional!ab69:ab79','vuln':'Additional!ai69:ai79'}
+        self.resist = {}
+        self.vuln = {}
+        self.immune = {}
+        for k in rlist.keys():
+            dat = self.get(rlist[k])
+            for i in dat:
+                if i == []:
+                    continue
+                item = {
+                    'damage_condition':[]
+                }
+                parts = i.split(' ')
+                for part in parts:
+                    if part in ['magical','nonmagical','adamantine','silvered']:
+                        item['damage_condition'].append(part)
+                    elif part in DAMAGETYPES:
+                        getattr(self,k)[part] = item
+                        break
+
         
