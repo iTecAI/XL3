@@ -1,8 +1,11 @@
+import configparser, os
+CONFIG = configparser.ConfigParser()
+CONFIG.read(os.path.join('config','server.config'))
+
 class Server:
-    def __init__(self,state=None):
-        if state:
-            pass
-        else:
-            self.connections = {}
-            self.users = {}
+    def __init__(self):
+        self.connections = {}
+        self.users = {}
+        self.characters = {}
+        self.campaigns = {}
 server = Server()

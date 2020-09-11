@@ -164,6 +164,35 @@ function cget(endpoint,data,alert,callback) {
     });
 }
 
+function buildCharacter(item) {
+    var data = item.data;
+    if (data.image.length == 0) {
+        var img = 'assets/logo_med.png';
+    } else {
+        var img = data.image;
+    }
+    var element = $('<div class="character-panel"></div>')
+    .attr('id','character_panel_'+item.cid)
+    .attr('data-id',item.cid)
+    .append(
+        $('<div class="char-caption"></div>')
+        .append($('<h4></h4>').text(data.name)).css('font-family','raleway-heavy')
+        .append(
+            $('<span class="race-class-line"></span>')
+            .text(data.race+' - '+data.class_display+' (Level '+data.level+')')
+            .css({
+                'font-style':'italic',
+                'font-family':'raleway-regular'
+            })
+        )
+    );
+    element.append(
+        $('<div class="char-img"></div>').append($('<img alt="Character Image" src="'+img+'">'))
+    )
+
+    return element;
+}
+
 $(document).ready(function(){
     $('.settings-input').change(function(event){
         if ($(event.target).attr('type') == 'checkbox') {

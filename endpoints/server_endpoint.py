@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Request, Response
 from util import *
 from classes import *
-from _runtime import server
+from _runtime import server, CONFIG
 import logging, random, hashlib
 from pydantic import BaseModel
 from models import *
@@ -35,7 +35,9 @@ async def connection_status(fingerprint: str, response: Response):
             'result':'Fetched data.',
             'endpoints':{
                 'client':server.connections[fingerprint].user.check(),
-                'connection':server.connections[fingerprint].check()
+                'connection':server.connections[fingerprint].check(),
+                'characters':any([i.check() for i in server.characters.values()]),
+                'campaigns':any([i.check() for i in server.campaigns.values()])
             },
             'loggedIn':server.connections[fingerprint].logged_in
         }

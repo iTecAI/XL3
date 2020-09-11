@@ -27,4 +27,29 @@ function refresh(data) {
             }
         );
     }
+    if (endpoints.characters) {
+        $('#info-max-characters').text(MAX_CHARACTERS);
+        cget(
+            '/client/'+fingerprint+'/characters/',
+            {},false,
+            function(data){
+                $('#info-cur-characters').text(data.owned.length);
+                if (data.owned.length > 0) {
+                    cget(
+                        '/characters/'+fingerprint+'/',
+                        {},false,
+                        function(data){
+                            $('#character-list').html('');
+                            console.log(data);
+                            var chars = data.characters;
+                            for (var c=0;c<chars.length;c++) {
+                                var el = buildCharacter(chars[c]);
+                                $('#character-list').append(el);
+                            }
+                        }
+                    );
+                }
+            }
+        );
+    }
 }

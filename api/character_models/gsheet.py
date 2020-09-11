@@ -3,27 +3,28 @@ from api.character_models.base import Character
 import os
 from googleapiclient.errors import HttpError
 import re, json
+from _runtime import server, CONFIG
 
 API_ENGINE = get_gapi(os.path.join('lock','gapi.json'))
-API_ACCT = 'xl30-778@lair3-289018.iam.gserviceaccount.com'
+API_ACCT = CONFIG['CHARACTERS']['xl3_email']
 
 class GSheet(Character):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sheet_id = kwargs['sheet_id']
 
-        self.service = API_ENGINE
-        self.sheet_engine = self.service.spreadsheets()
+        service = API_ENGINE
+        sheet_engine = service.spreadsheets()
 
         self.preload = {}
 
         try:
-            self.sheet_engine.values().get(spreadsheetId=self.sheet_id,range='a1').execute()
+            sheet_engine.values().get(spreadsheetId=self.sheet_id,range='a1').execute()
         except HttpError as err:
             if err.resp.status == 404:
                 raise ValueError('XL3 cannot access that sheet. Make sure it is readable by link sharing, or that it is shared with '+API_ACCT+' .')
         
-        self.load_character()
+        self.load_character(sheet_engine)
     
     def get(self,r):
         if type(r) == list:
@@ -40,8 +41,8 @@ class GSheet(Character):
             except KeyError:
                 raise KeyError('Range '+r+' has not been preloaded.')
 
-    def preload_all(self,ranges):
-        dat = self.sheet_engine.values().batchGet(spreadsheetId=self.sheet_id,ranges=ranges).execute().get('valueRanges',[])
+    def preload_all(self,ranges,engine):
+        dat = engine.values().batchGet(spreadsheetId=self.sheet_id,ranges=ranges).execute().get('valueRanges',[])
         for r in range(len(ranges)):
             try:
                 data = dat[r]['values']
@@ -112,16 +113,16 @@ class GSheet(Character):
         return ret
         
     
-    def load_character(self):
+    def load_character(self,engine):
         all_ranges = [
             'c6','t7','t5','al6','ae7','h14','z12','aj28','r12','u16','v12','r32:r36','y32:y36','ac32:ac36','c15','c20',
             'c25','c30','c35','c40','i17:i22','i25:i42','i51','i52','i53','n96:n98','x96:x98','ah96:ah98','ak101','d100:d104',
             'n100:n104','x100:x104','e107','ak113','e119','ak124','e129','ak134','e138','ak142','n106:n110','x106:x110','ah106:ah110',
             'd112:d117','n112:n117','x112:x117','n118:n121','x118:x121','ah118:ah121','d123:d126','n123:n126','x123:x126',
             'n128:n131','x128:x131','ah128:ah131','d133:d135','n133:n135','x133:x135','n137:n139','x137:x139','ah137:ah139',
-            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','Additional!t69:t79','Additional!ab69:ab79','Additional!ai69:ai79'
+            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','Additional!t69:t79','Additional!ab69:ab79','Additional!ai69:ai79','c176'
             ]
-        self.preload_all(all_ranges)
+        self.preload_all(all_ranges,engine)
 
         # Base character info
         self.name = self.get('c6')
@@ -144,17 +145,18 @@ class GSheet(Character):
                 c = 0
                 continue
             c += 1
-        self.player_level = int(self.get('al6'))
+        self.level = int(self.get('al6'))
         self.xp = int(base10(self.get('ae7')))
         self.proficiency_bonus = int(self.get('h14'))
         self.speed = int(base10(self.get('z12')))
         self.alignment = self.get('aj28')
+        self.image = self.get('c176')
 
         # Combat stats
         self.ac = int(self.get('r12'))
         self.max_hp = int(self.get('u16'))
         self.hp = self.max_hp+0
-        self.initiative = int(base10(self.get('v12')))
+        self.init = int(base10(self.get('v12')))
 
         ## Attacks
         atk_names = self.get('r32:r36')

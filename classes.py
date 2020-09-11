@@ -1,6 +1,6 @@
 from util import *
 import os, time
-from _runtime import server
+from _runtime import server, CONFIG
 
 class BaseItem:
     def __init__(self):

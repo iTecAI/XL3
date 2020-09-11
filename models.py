@@ -56,3 +56,22 @@ class CompSearchResponseModel(BaseModel):
 class OwnedListResponseModel(BaseModel):
     result: str
     owned: list
+
+class SingleCharacterResponseModel(BaseModel):
+    result: str
+    cid: str
+    owner: str
+    campaign: str
+    public: bool
+    data: dict
+
+class NewCharacterModel(BaseModel):
+    url: str
+
+class NewCharacterResponseModel(BaseModel):
+    result: str
+    cid: str
+
+class MultipleCharacterResponseModel(BaseModel):
+    result: str
+    characters: list

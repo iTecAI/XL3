@@ -1,3 +1,5 @@
+from _runtime import server, CONFIG
+
 from fastapi import FastAPI, Request, Body, Response, status
 from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse
 from fastapi_utils.tasks import repeat_every
@@ -17,8 +19,7 @@ import json
 import random
 import time
 import pickle
-from endpoints import server_endpoint, client_endpoint, compendium_endpoint
-from _runtime import server
+from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint
 from _api import *
 from threading import Thread
 
@@ -104,6 +105,11 @@ app.include_router(
     prefix='/compendium',
     tags=['compendium']
 )
+app.include_router(
+    character_endpoint.router,
+    prefix='/characters/{fingerprint}',
+    tags=['characters']
+)
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root
 async def root():
@@ -174,10 +180,14 @@ async def reload_cached():
     else:
         with open(os.path.join('database','cached','open5e','last_update.ini'),'r') as f:
             dat = f.read()
-        if int(dat)+300 < time.time():
+        if dat == '':
+            dat = 0
+        if int(dat)+300 < time.time() or dat == '':
+            reload_open5e_cache()
             with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
                 f.write(str(int(time.time())))
-                reload_open5e_cache()
+                
+                
     
     for ep in ['spells','monsters','sections','magicitems']:
         try:

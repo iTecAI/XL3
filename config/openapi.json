@@ -15,6 +15,10 @@
         {
             "name":"compendium",
             "description":"Endpoint for getting information from the Open5e Compendium - Endpoint: <code>/compendium/</code>"
+        },
+        {
+            "name":"characters",
+            "description":"Endpoint for getting character information - Endpoint: <code>/characters/{fingerprint}/</code>"
         }
     ]
 }
