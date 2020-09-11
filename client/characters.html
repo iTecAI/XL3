@@ -9,6 +9,7 @@
         <link rel="stylesheet" type="text/css" href="style/tooltips.css">
         <link rel="stylesheet" type="text/css" href="style/dialogs.css">
         <link rel="stylesheet" type="text/css" href="style/switches.css">
+        <link rel="stylesheet" type="text/css" href="style/characters.css">
         
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -27,9 +28,9 @@
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
-        <script src='script/index.js'></script>
         <script src='script/refresh.js'></script>
         <script src='script/root.js'></script>
+        <script src='script/characters.js'></script>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
@@ -100,8 +101,9 @@
             </div>
         </div>
 
-        <div id='character-info-bar'>
-            
+        <div id='character-info-bar' class='noselect'>
+            <span>Characters: <span id='info-cur-characters'>0</span> / <span id='info-max-characters'>0</span></span>
+            <button id='new-character-btn'>New Character</button>
         </div>
     </body>
 </html>
