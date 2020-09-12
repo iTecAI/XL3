@@ -12,6 +12,10 @@ class GSheet(Character):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sheet_id = kwargs['sheet_id']
+        if 'init_load' in kwargs.keys():
+            self.init_load = kwargs['init_load']
+        else:
+            self.init_load = True
 
         service = API_ENGINE
         sheet_engine = service.spreadsheets()
@@ -61,11 +65,12 @@ class GSheet(Character):
                         else:
                             out = data[:][0][0]
                 else:
-                    out = data[:]
+                    out = ''
+
 
                 self.preload[ranges[r]] = out
             except KeyError:
-                self.preload[ranges[r]] = []
+                self.preload[ranges[r]] = ''
     
     def parse_attack(self,name,bonus,desc):
         ret = {
@@ -111,6 +116,13 @@ class GSheet(Character):
         except:
             pass
         return ret
+
+    def map_adv(self,astr):
+        if astr == 'adv':
+            return '2d20kh1'
+        if astr == 'dis':
+            return '2d20kl1'
+        return 'd20'
         
     
     def load_character(self,engine):
@@ -120,9 +132,40 @@ class GSheet(Character):
             'n100:n104','x100:x104','e107','ak113','e119','ak124','e129','ak134','e138','ak142','n106:n110','x106:x110','ah106:ah110',
             'd112:d117','n112:n117','x112:x117','n118:n121','x118:x121','ah118:ah121','d123:d126','n123:n126','x123:x126',
             'n128:n131','x128:x131','ah128:ah131','d133:d135','n133:n135','x133:x135','n137:n139','x137:x139','ah137:ah139',
-            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','Additional!t69:t79','Additional!ab69:ab79','Additional!ai69:ai79','c176'
+            'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','Additional!t69:t79','Additional!ab69:ab79','Additional!ai69:ai79','c176',
+            'aj11','ae12:ae14','ae16:ae18','ae20:ae22','ae24:ae26','h11','r45:r56','ac45:ac56','r25','c148','f148','i148',
+            'l148','c150','f150','i150','l150','r165:r177','c59:c84','p59:p84','ac59:ac84','i54','Inventory!d3','Inventory!d6','Inventory!d9',
+            'Inventory!d12','Inventory!d15','Inventory!j3:j76','Inventory!aa3:aa76','Inventory!aq3:aq76','Inventory!ar3:ar76',
+            'Inventory!as3:as76','Inventory!at3:at76','v15','c45'
             ]
+        all_ranges.extend(['p'+str(i) for i in range(17,23)])
+        all_ranges.extend(['p'+str(i) for i in range(25,43)])
+
+        all_ranges.extend(['Inventory!i'+str(i) for i in range(3,77)])
+        all_ranges.extend(['Inventory!z'+str(i) for i in range(3,77)])
         self.preload_all(all_ranges,engine)
+
+        # RP info
+        self.background = self.get('aj11')
+        self.traits = {
+            'personality_traits':'\n'.join(self.get('ae12:ae14')),
+            'ideals':'\n'.join(self.get('ae16:ae18')),
+            'bonds':'\n'.join(self.get('ae20:ae22')),
+            'flaws':'\n'.join(self.get('ae24:ae26'))
+        }
+        self.languages = self.get('r45:r56');
+        self.physical = {
+            'age':int(base10(self.get('c148'))),
+            'height':self.get('f148'),
+            'weight':self.get('i148'),
+            'size':self.get('l148'),
+            'gender':self.get('c150'),
+            'eyes':self.get('f150'),
+            'hair':self.get('i150'),
+            'skin':self.get('i150'),
+        }
+        self.backstory = ' '.join(self.get('r165:r177')).replace('  ',' ')
+
 
         # Base character info
         self.name = self.get('c6')
@@ -148,15 +191,43 @@ class GSheet(Character):
         self.level = int(self.get('al6'))
         self.xp = int(base10(self.get('ae7')))
         self.proficiency_bonus = int(self.get('h14'))
-        self.speed = int(base10(self.get('z12')))
+
+        self.speed = {
+            'walk':int(base10(self.get('z12')))
+        }
+        others = self.get('i54')
+        if others != '-':
+            for i in others.split(', '):
+                parts = i.split(' ft. ')
+                self.speed[parts[1].lower()] = int(base10(parts[0]))
+
         self.alignment = self.get('aj28')
         self.image = self.get('c176')
+        if '✧' == self.get('h11'):
+            self.inspiration = True
+        else:
+            self.inspiration = False
+        self.equipped_items = self.get('ac45:ac56')
+        self.death_saves = {
+            'success':0,
+            'fail':0
+        }
+        hd_raw = self.get('r25')
+        self.hit_dice = {
+            'raw':hd_raw,
+            'die_size':int(base10(hd_raw.split('d')[1])),
+            'max':int(base10(hd_raw.split('d')[0])),
+            'current':int(base10(hd_raw.split('d')[0]))
+        }
+        self.passive_perception = int(base10(self.get('c45')))
 
         # Combat stats
         self.ac = int(self.get('r12'))
         self.max_hp = int(self.get('u16'))
         self.hp = self.max_hp+0
+        self.thp = 0
         self.init = int(base10(self.get('v12')))
+        self.init_adv = self.map_adv(self.get('v15'))
 
         ## Attacks
         atk_names = self.get('r32:r36')
@@ -170,17 +241,23 @@ class GSheet(Character):
         scores = [int(i) for i in self.get(['c15','c20','c25','c30','c35','c40']).values()]
         saves = [int(base10(i)) for i in self.get('i17:i22')]
         mods = [getmod(i) for i in scores]
+        advs = [self.map_adv(str(self.get('p'+str(i))).strip('[]')) for i in range(17,23)]
         self.abilities = {}
         for a in range(len(ABILITIES)):
             self.abilities[ABILITIES[a]] = {
                 'score':scores[a],
                 'mod':mods[a],
-                'save':saves[a]
+                'save':saves[a],
+                'adv':advs[a]
             }
         self.skills = {}
         skillvals = [int(base10(i)) for i in self.get('i25:i42')]
+        advs = [self.map_adv(str(self.get('p'+str(i))).strip('[]')) for i in range(25,43)]
         for s in range(len(list(SKILLS.keys()))):
-            self.skills[list(SKILLS.keys())[s]] = skillvals[s]
+            self.skills[list(SKILLS.keys())[s]] = {
+                'value':skillvals[s],
+                'adv':advs[s]
+            }
         self.other_profs = {}
         for p in ['i51','i52','i53']:
             try:
@@ -194,11 +271,11 @@ class GSheet(Character):
         # Spellcasting
         self.spellcasting = {}
         spcls = self.get('c91')
-        if spcls != []:
+        if spcls != '':
             self.spellcasting[spcls] = {}
             self.spellcasting[spcls]['ability'] = self.get('u91')
-            self.spellcasting[spcls]['save_dc'] = self.get('ab91')
-            self.spellcasting[spcls]['attack_bonus'] = self.get('ai91')
+            self.spellcasting[spcls]['save_dc'] = int(base10(self.get('ab91')))
+            self.spellcasting[spcls]['attack_bonus'] = int(base10(self.get('ai91')))
 
             spelloc = {
                 0:{
@@ -250,17 +327,17 @@ class GSheet(Character):
                 if k > 0:
                     try:
                         slots = int(base10(self.get(spelloc[k]['slots'])))
-                        self.spellcasting[spcls]['spells'][k] = {
+                        self.spellcasting[spcls]['spells'][int(k)] = {
                             'slots':slots,
                             'spells':spells
                         }
                     except:
-                        self.spellcasting[spcls]['spells'][k] = {
+                        self.spellcasting[spcls]['spells'][int(k)] = {
                             'slots':0,
                             'spells':[]
                         }
                 else:
-                    self.spellcasting[spcls]['spells'][k] = {
+                    self.spellcasting[spcls]['spells'][int(k)] = {
                             'spells':spells
                         }
             
@@ -283,5 +360,111 @@ class GSheet(Character):
                     elif part in DAMAGETYPES:
                         getattr(self,k)[part] = item
                         break
+        
+        # Other
+        self.features = []
+        self.features.extend(self.get('c59:c84'))
+        self.features.extend(self.get('p59:p84'))
+        self.features.extend(self.get('ac59:ac84'))
+
+        if not self.init_load:
+            return
+
+        # Inventory
+        self.inventory = {
+            'carry_capacity':self.abilities['strength']['score']*15,
+            'variant_encumbrance':{
+                'encumbered':self.abilities['strength']['score']*5,
+                'heavily_encumbered':self.abilities['strength']['score']*10
+            },
+            'current_weight':0,
+            'containers':[
+                {
+                    'name':'inventory',
+                    'apply_weight':True,
+                    'removable':False,
+                    'max_weight':self.abilities['strength']['score']*15,
+                    'current_weight':0,
+                    'coin_container':True,
+                    'items':[]
+                }
+            ],
+            'coin':[
+                {
+                    'name':'cp',
+                    'conversion':0.01,
+                    'amount':int(base10(self.get('Inventory!d3'))),
+                    'weight':0.02
+                },
+                {
+                    'name':'sp',
+                    'conversion':0.1,
+                    'amount':int(base10(self.get('Inventory!d6'))),
+                    'weight':0.02
+                },
+                {
+                    'name':'ep',
+                    'conversion':0.5,
+                    'amount':int(base10(self.get('Inventory!d9'))),
+                    'weight':0.02
+                },
+                {
+                    'name':'gp',
+                    'conversion':1,
+                    'amount':int(base10(self.get('Inventory!d12'))),
+                    'weight':0.02
+                },
+                {
+                    'name':'pp',
+                    'conversion':10,
+                    'amount':int(base10(self.get('Inventory!d15'))),
+                    'weight':0.02
+                },
+            ]
+        }
+
+        # First column
+        items = self.get('Inventory!j3:j76')
+        qt = [int(base10(self.get('Inventory!i'+str(i)))) for i in range(3,77)]
+        cost = [float(i) for i in self.get('Inventory!aq3:aq76')]
+        wt = [float(i.split(' ')[0]) for i in self.get('Inventory!ar3:ar76')]
+        for i in range(len(items)):
+            if qt[i] < 1:
+                self.inventory['containers'][0]['items'].append({
+                    'name':items[i],
+                    'quantity':0,
+                    'cost':cost[i],
+                    'weight':wt[i]
+                })
+            else:
+                self.inventory['containers'][0]['items'].append({
+                    'name':items[i],
+                    'quantity':qt[i],
+                    'cost':cost[i]/qt[i],
+                    'weight':wt[i]/qt[i]
+                })
+        # Second column
+        items = self.get('Inventory!aa3:aa76')
+        qt = [int(base10(self.get('Inventory!z'+str(i)))) for i in range(3,77)]
+        cost = [float(i) for i in self.get('Inventory!as3:as76')]
+        wt = [float(i.split(' ')[0]) for i in self.get('Inventory!at3:at76')]
+        for i in range(len(items)):
+            if qt[i] < 1:
+                self.inventory['containers'][0]['items'].append({
+                    'name':items[i],
+                    'quantity':0,
+                    'cost':cost[i],
+                    'weight':wt[i]
+                })
+            else:
+                self.inventory['containers'][0]['items'].append({
+                    'name':items[i],
+                    'quantity':qt[i],
+                    'cost':cost[i]/qt[i],
+                    'weight':wt[i]/qt[i]
+                })
+        
+        self.inventory_calculate()
+
 
         

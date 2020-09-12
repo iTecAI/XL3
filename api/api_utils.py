@@ -44,7 +44,10 @@ def split_on(string,seps):
     return ret
 
 def base10(string):
-    return ''.join(re.findall(r'[0-9]',string))
+    dat = ''.join(re.findall(r'[0-9]',string))
+    if dat == '':
+        dat = '0'
+    return dat
 
 def alpha(string):
     return ''.join(re.findall(r'[a-zA-Z ]',string))
