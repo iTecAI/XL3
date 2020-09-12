@@ -23,7 +23,6 @@ function refresh(data) {
                 for (var s=0;s<settings.length;s++) {
                     $('#client-settings-'+settings[s]).attr('placeholder','Current: '+data.settings[settings[s]]);
                 }
-                console.log('update');
             }
         );
     }

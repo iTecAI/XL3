@@ -1,3 +1,3 @@
-$(document).ready(async function(){
+$(document).on('ready',async function(){
 
 });

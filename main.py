@@ -52,15 +52,20 @@ else:
 
 def ep_reload(endpoint):
     try:
+        data = get5e_direct(endpoint)
         with open(os.path.join('database','cached','open5e',endpoint+'.json'),'w') as f:
-            json.dump(get5e_direct(endpoint),f)
-        logger.info('Reloaded '+endpoint)
+            json.dump(data,f)
+        #logger.info('Reloaded '+endpoint)
     except:
         logger.warning('Open5e Endpoint '+endpoint+' is not accessible.')
 
 def reload_open5e_cache(endpoints=['spells','monsters','sections','magicitems']):
+    threads = []
     for endpoint in endpoints:
-        ep_reload(endpoint)
+        t = Thread(target=ep_reload,args=[endpoint])
+        t.start()
+        threads.append(t)
+    return threads
 
 # Setup
 '''Build database'''
@@ -192,9 +197,11 @@ async def reload_cached():
     for ep in ['spells','monsters','sections','magicitems']:
         try:
             with open(os.path.join('database','cached','open5e',ep+'.json'),'r') as f:
+                f.seek(0)
                 json.load(f)
         except json.JSONDecodeError:
-            ep_reload(ep)
+            t = Thread(target=ep_reload,args=[ep])
+            t.start()
             logger.warning('Endpoint cache '+ep+' was malformed. Reloaded.')
 
 

@@ -164,6 +164,19 @@ function cget(endpoint,data,alert,callback) {
     });
 }
 
+function activateDialog(selector) {
+    activating = true;
+    $('#modal').toggleClass('active',true);
+    $(selector).toggleClass('active',true);
+    setTimeout(function(){activating=false},200);
+}
+
+function activateitem(selector) {
+    activating = true;
+    $(selector).toggleClass('active',true);
+    setTimeout(function(){activating=false},200);
+}
+
 function buildCharacter(item) {
     var data = item.data;
     if (data.image.length == 0) {
@@ -188,13 +201,56 @@ function buildCharacter(item) {
     );
     element.append(
         $('<div class="char-img"></div>').append($('<img alt="Character Image" src="'+img+'">'))
-    )
+    );
+    element.append(
+        $('<button class="character-menu-btn"><img src="assets/icons/menu.png"></button>')
+        .on('click',function(event){
+            activateitem($(event.target).parent().parent().children('.character-menu'));
+        })
+    );
+    element.append(
+        $('<div class="character-menu transient"></div>')
+        .append(
+            $('<button></button>')
+            .addClass('character-menu-edit')
+            .addClass('character-menu-item')
+            .attr('data-action','edit')
+            .text('Edit')
+            .on('click',function(event){
+
+            })
+        ).append(
+            $('<button></button>')
+            .addClass('character-menu-duplicate')
+            .addClass('character-menu-item')
+            .attr('data-action','duplicate')
+            .text('Duplicate')
+            .on('click',function(event){
+                cpost(
+                    '/characters/'+fingerprint+'/'+$(event.target).parents('.character-panel').attr('data-id')+'/duplicate/',
+                    {},function(data) {
+                        console.log(data);
+                    },{'alert':true}
+                );
+                $(document).trigger('click');
+            })
+        ).append(
+            $('<button></button>')
+            .addClass('character-menu-delete')
+            .addClass('character-menu-item')
+            .attr('data-action','delete')
+            .text('Delete')
+            .on('click',function(event){
+                
+            })
+        )
+    );
 
     return element;
 }
 
 $(document).ready(function(){
-    $('.settings-input').change(function(event){
+    $('.settings-input').on('change',function(event){
         if ($(event.target).attr('type') == 'checkbox') {
             var val = $(event.target).prop('checked').toString();
         } else {

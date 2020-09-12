@@ -25,7 +25,7 @@ $(document).ready(function(){
         }
     );
 
-    $('#new-character-btn').click(function(){
+    $('#new-character-btn').on('click',function(){
         bootbox.prompt('Enter URL of sheet.',function(result){
             if (result) {
                 cpost(

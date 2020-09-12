@@ -6,8 +6,9 @@ import logging, random, hashlib
 from pydantic import BaseModel
 from models import *
 from _api import *
-import os, pickle
+import os, pickle, time
 from urllib.parse import urlparse
+import re
 logger = logging.getLogger("uvicorn.error")
 
 def decache(cid):
@@ -84,7 +85,7 @@ async def get_all_characters(fingerprint: str, response: Response):
                     'public':server.characters[char].options['public'],
                     'data':server.characters[char].to_dict()
                 })
-            except SystemExit:
+            except ValueError:
                 to_remove.append(char)
     for t in to_remove:
         server.connections[fingerprint].user.owned_characters.remove(t)
@@ -104,11 +105,7 @@ async def get_all_characters(fingerprint: str, response: Response):
         'owner':'fingerprint',
         'campaign':'campaign id, if any',
         'public':True,
-        'data':{i:'some data' for i in [
-            'name','race','class_display','classes','level','xp','prof','speed',
-            'alignment','ac','max_hp','hp','init','attacks','abilities','skills',
-            'other_profs','spellcasting','resist','vuln','immune'
-            ]}
+        'data':{i:'some data' for i in ITEMS}
     }}}}
 })
 async def get_character(fingerprint: str, charid: str, response: Response):
@@ -179,5 +176,73 @@ async def new_character(fingerprint: str, model: NewCharacterModel, response=Res
         server.connections[fingerprint].user.owned_characters.append(sheet.id)
         server.connections[fingerprint].user.update()
         return {'result':'Success.','cid':sheet.id}
+
+# Character actions
+@router.post('/{charid}/duplicate/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Returns duplicated character data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def get_character(fingerprint: str, charid: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    if len(server.connections[fingerprint].user.owned_characters) >= int(CONFIG['CHARACTERS']['max_characters']):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You have reached the maximum allowed characters.'}
+    
+    if charid in server.characters.keys():
+        character_data = server.characters[charid].to_dict()
+    else:
+        try:
+            decache(charid)
+            character_data = server.characters[charid].to_dict()
+        except ValueError:
+            response.status_code = status.HTTP_403_FORBIDDEN
+            return {'result':'You do not own this character.'}
+    character_data['id'] = hashlib.sha256(str(int(time.time())+random.random()).encode('utf-8')).hexdigest()
+    character_data['campaign'] = ''
+    if ' copy_' in character_data['name']:
+        pname = character_data['name'][:re.search(r' copy_[0-9]+$',character_data['name']).span()[0]]
+    else:
+        pname = character_data['name']
+
+    c = 1
+    while True:
+        character_data['name'] = pname+' copy_'+str(c)
+        found = False
+        for i in server.connections[fingerprint].user.owned_characters:
+            if server.characters[i].name == character_data['name']:
+                found = True
+        if not found:
+            break
+        c+=1
+    charid = character_data['id']
+    server.characters[charid] = Character.from_dict(character_data)
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.owned_characters.append(charid)
+    return {
+            'result':'Success.',
+            'cid':charid,
+            'owner':server.characters[charid].owner,
+            'campaign':server.characters[charid].campaign,
+            'public':server.characters[charid].options['public'],
+            'data':server.characters[charid].to_dict()
+        }
 
 

@@ -76,24 +76,24 @@ $(document).ready(function(){
         setTimeout(function(){activating=false},200);
     }
 
-    $(document).click(function(event){
+    $(document).on('click',function(event){
         if (!$(event.target).hasClass('transient') && !activating && $(event.target).parents('.transient').length == 0) {
             $('.transient').toggleClass('active',false);
         }
     });
 
-    $('#modal').click(function(event){
+    $('#modal').on('click',function(event){
         $('.transient').toggleClass('active',false);
     });
 
-    $('#login').click(function(){
+    $('#login').on('click',function(){
         if (loggedIn) {
             activateitem('#user-actions');
         } else {
             activateDialog('#login-window');
         }
     });
-    $('#login').mouseenter(function(){
+    $('#login').on('mouseenter',function(){
         if (loggedIn) {
             $('#login').attr('data-tooltip','Account');
         } else {
@@ -101,17 +101,17 @@ $(document).ready(function(){
         }
     });
 
-    $('#create-acct-ref-btn').click(function(){
-        $(document).click();
+    $('#create-acct-ref-btn').on('click',function(){
+        $(document).on('click',);
         activateDialog('#sign-up-window');
     });
-    $('#login-ref-btn').click(function(){
-        $(document).click();
+    $('#login-ref-btn').on('click',function(){
+        $(document).on('click',);
         activateDialog('#login-window');
     });
 
-    $('#login-submit').click(function(){
-        $(document).click();
+    $('#login-submit').on('click',function(){
+        $(document).on('click',);
         var data = getFormValues('#login-submit');
         var username = data['login-email'];
         var hashword = sha256(data['login-password']);
@@ -122,14 +122,14 @@ $(document).ready(function(){
                 'username':username,
                 'hashword':hashword
             },
-            true,function(){$(document).click();bootbox.alert('Logged in.')},
+            true,function(){$(document).on('click',);bootbox.alert('Logged in.')},
             {
                 alert: true
             }
         );
     });
-    $('#create-acct-submit').click(function(){
-        $(document).click();
+    $('#create-acct-submit').on('click',function(){
+        $(document).on('click',);
         var data = getFormValues('#create-acct-submit');
         var username = data['sign-up-email'];
         var hashword = sha256(data['sign-up-password']);
@@ -142,16 +142,16 @@ $(document).ready(function(){
                 'hashword':hashword,
                 'name':displayName
             },
-            function(){$(document).click();bootbox.alert('Logged in.')},
+            function(){$(document).on('click',);bootbox.alert('Logged in.')},
             {
                 alert: true
             }
         );
     });
 
-    $('#logout-btn').click(function(){
+    $('#logout-btn').on('click',function(){
         if (loggedIn) {
-            $(document).click();
+            $(document).on('click',);
             bootbox.confirm('Log out?',function(confirmed){
                 if (confirmed) {
                     cpost(
@@ -169,7 +169,7 @@ $(document).ready(function(){
         }
     });
 
-    $('.tab').click(function(event){
+    $('.tab').on('click',function(event){
         $('.tab').toggleClass('active',false);
         $(event.target).toggleClass('active',true);
         $('.page').toggleClass('active',false);
@@ -177,9 +177,9 @@ $(document).ready(function(){
 
     });
 
-    $('#user-settings-btn').click(function(){
+    $('#user-settings-btn').on('click',function(){
         $('#user-settings-window input').val('');
-        $(document).click();
+        $(document).on('click',);
 
         cget(
             '/client/'+fingerprint+'/settings/',
@@ -197,7 +197,7 @@ $(document).ready(function(){
         activateDialog('#user-settings-window');
     });
 
-    $('#client-password-current').change(function(event){
+    $('#client-password-current').on('change',function(event){
         if ($(event.target).val() != '') {
             cpost(
                 '/client/'+fingerprint+'/password/check/',
@@ -217,7 +217,7 @@ $(document).ready(function(){
         }
     });
 
-    $('#change-psw-btn').click(function(){
+    $('#change-psw-btn').on('click',function(){
         if ($('#client-password-current').val() != '' && $('#client-password-new').val() != '') {
             bootbox.confirm('Are you sure you want to change your password?',function(confirmed){
                 cpost(

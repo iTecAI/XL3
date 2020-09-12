@@ -200,7 +200,7 @@ function assembleMonsters(data) {
                 )
             )
             .attr('data-slug',item.slug)
-            .click(function(event){
+            .on('click',function(event){
                 $('#expanded_'+$(event.delegateTarget).attr('data-slug')).slideToggle(1);
             })
         )
@@ -267,7 +267,7 @@ function assembleMonsters(data) {
 
 $(document).ready(function(){
     $('.comp-cont-loading').hide();
-    $('.ep-section-content > button').click(function(event){
+    $('.ep-section-content > button').on('click',function(event){
         cget(
             '/compendium/section/'+$(event.target).attr('data-endpoint')+'/',
             {},true,
@@ -278,14 +278,14 @@ $(document).ready(function(){
         );
     });
 
-    $('#magic-items-side').click(function(){
+    $('#magic-items-side').on('click',function(){
         $('#comp-title-box span').text('Magic Items');
         $('#comp-content-box').html('');
         $('#comp-content-box .compendium-subcontent').html('');
         $('.comp-cont-loading').show();
         $('#comp-content-box').append($(
             '<input id="search-magic-items" placeholder="Search" class="comp-search">'
-        ).change(function(event){
+        ).on('change',function(event){
             $('.comp-cont-loading').show();
             $('#comp-content-box .compendium-subcontent').html('');
             cget(
@@ -303,13 +303,13 @@ $(document).ready(function(){
             assembleMagicItems
         );
     });
-    $('#spells-side').click(function(){
+    $('#spells-side').on('click',function(){
         $('#comp-title-box span').text('Spells');
         $('#comp-content-box').html('');
         $('.comp-cont-loading').show();
         $('#comp-content-box').append($(
             '<input id="search-spells" placeholder="Search" class="comp-search">'
-        ).change(function(event){
+        ).on('change',function(event){
             $('.comp-cont-loading').show();
             $('#comp-content-box .compendium-subcontent').html('');
             cget(
@@ -327,13 +327,13 @@ $(document).ready(function(){
             assembleSpells
         );
     });
-    $('#monsters-side').click(function(){
+    $('#monsters-side').on('click',function(){
         $('#comp-title-box span').text('Monsters');
         $('#comp-content-box').html('');
         $('.comp-cont-loading').show();
         $('#comp-content-box').append($(
             '<input id="search-monsters" placeholder="Search" class="comp-search">'
-        ).change(function(event){
+        ).on('change',function(event){
             $('.comp-cont-loading').show();
             $('#comp-content-box .compendium-subcontent').html('');
             cget(
