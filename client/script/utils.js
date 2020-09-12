@@ -241,7 +241,26 @@ function buildCharacter(item) {
             .attr('data-action','delete')
             .text('Delete')
             .on('click',function(event){
-                
+                cpost(
+                    '/characters/'+fingerprint+'/'+$(event.target).parents('.character-panel').attr('data-id')+'/delete/',
+                    {},function(data) {
+                        console.log(data);
+                    },{'alert':true}
+                );
+                $(document).trigger('click');
+                cget(
+                    '/characters/'+fingerprint+'/',
+                    {},false,
+                    function(data){
+                        $('#character-list').html('');
+                        console.log(data);
+                        var chars = data.characters;
+                        for (var c=0;c<chars.length;c++) {
+                            var el = buildCharacter(chars[c]);
+                            $('#character-list').append(el);
+                        }
+                    }
+                );
             })
         )
     );

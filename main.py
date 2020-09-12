@@ -62,9 +62,7 @@ def ep_reload(endpoint):
 def reload_open5e_cache(endpoints=['spells','monsters','sections','magicitems']):
     threads = []
     for endpoint in endpoints:
-        t = Thread(target=ep_reload,args=[endpoint])
-        t.start()
-        threads.append(t)
+        ep_reload(endpoint)
     return threads
 
 # Setup
@@ -176,33 +174,23 @@ async def check_connections_task():
 
 
 @app.on_event('startup')
-@repeat_every(seconds=10)
+@repeat_every(seconds=120)
 async def reload_cached():
     if not os.path.exists(os.path.join('database','cached','open5e','last_update.ini')):
         with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
             f.write(str(int(time.time())))
-            reload_open5e_cache()
+            t = Thread(target=reload_open5e_cache)
+            t.start()
     else:
         with open(os.path.join('database','cached','open5e','last_update.ini'),'r') as f:
             dat = f.read()
         if dat == '':
             dat = 0
-        if int(dat)+300 < time.time() or dat == '':
-            reload_open5e_cache()
+        if int(dat)+600 < time.time() or dat == '':
+            t = Thread(target=reload_open5e_cache)
+            t.start()
             with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
                 f.write(str(int(time.time())))
-                
-                
-    
-    for ep in ['spells','monsters','sections','magicitems']:
-        try:
-            with open(os.path.join('database','cached','open5e',ep+'.json'),'r') as f:
-                f.seek(0)
-                json.load(f)
-        except json.JSONDecodeError:
-            t = Thread(target=ep_reload,args=[ep])
-            t.start()
-            logger.warning('Endpoint cache '+ep+' was malformed. Reloaded.')
 
 
 

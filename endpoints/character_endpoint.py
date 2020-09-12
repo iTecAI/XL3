@@ -191,7 +191,7 @@ async def new_character(fingerprint: str, model: NewCharacterModel, response=Res
         'data':{i:'some data' for i in ITEMS}
     }}}}
 })
-async def get_character(fingerprint: str, charid: str, response: Response):
+async def dupe_character(fingerprint: str, charid: str, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -235,6 +235,7 @@ async def get_character(fingerprint: str, charid: str, response: Response):
     server.characters[charid] = Character.from_dict(character_data)
     server.characters[charid].update()
     server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
     server.connections[fingerprint].user.owned_characters.append(charid)
     return {
             'result':'Success.',
@@ -244,5 +245,41 @@ async def get_character(fingerprint: str, charid: str, response: Response):
             'public':server.characters[charid].options['public'],
             'data':server.characters[charid].to_dict()
         }
+
+@router.post('/{charid}/delete/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SimpleResult,'description':'Deletes character','content':{'application/json':{'example':{'result':'Success.'}}}}
+})
+async def delete_character(fingerprint: str, charid: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    if len(server.connections[fingerprint].user.owned_characters) >= int(CONFIG['CHARACTERS']['max_characters']):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You have reached the maximum allowed characters.'}
+    
+    if charid in server.characters.keys():
+        del server.characters[charid]
+    with open(os.path.join('database','characters','registry.json'),'r') as f:
+        reg = json.load(f)
+    if charid in reg.keys():
+        del reg[charid]
+    if os.path.exists(os.path.join('database','characters',charid+'.pkl')):
+        os.remove(os.path.join('database','characters',charid+'.pkl'))
+    with open(os.path.join('database','characters','registry.json'),'w') as f:
+        json.dump(reg,f)
+    server.connections[fingerprint].user.owned_characters.remove(charid)
+    server.connections[fingerprint].char_update.update()
+    server.connections[fingerprint].user.update()
+    return {'result':'Success.'}
+    
 
 

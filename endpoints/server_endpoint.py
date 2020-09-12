@@ -36,8 +36,8 @@ async def connection_status(fingerprint: str, response: Response):
             'endpoints':{
                 'client':server.connections[fingerprint].user.check(),
                 'connection':server.connections[fingerprint].check(),
-                'characters':any([i.check() for i in server.characters.values()]),
-                'campaigns':any([i.check() for i in server.campaigns.values()])
+                'characters':any([i.check() for i in server.characters.values()]) or server.connections[fingerprint].char_update.check(),
+                'campaigns':any([i.check() for i in server.campaigns.values()]) or server.connections[fingerprint].camp_update.check()
             },
             'loggedIn':server.connections[fingerprint].logged_in
         }

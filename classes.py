@@ -18,6 +18,8 @@ class Connection(BaseItem):
         self.uid = None
         self.logged_in = False
         self.timeout = time.time()+5
+        self.char_update = BaseItem()
+        self.camp_update = BaseItem()
 
 class User(BaseItem):
     def __init__(self,uid,usn,pswhash,display_name,cache=True,connection=None):
