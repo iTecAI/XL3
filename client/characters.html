@@ -31,6 +31,7 @@
         <script src='script/refresh.js'></script>
         <script src='script/root.js'></script>
         <script src='script/characters.js'></script>
+        <script src='script/character_sheet_gen.js'></script>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
@@ -107,6 +108,21 @@
         </div>
         <div id='character-list'>
             
+        </div>
+        <div id='character-sheet-display' class='' data-id=''>
+            <div id='character-header'>
+                <div id='header-img' class='noselect'>
+                    <img src='assets/logo.png'>
+                </div>
+                <div id='header-info'>
+                    <div><input id='char-name' class='head sheet-in' data-path='name'></input></div>
+                    <div class='sub1 noselect'><input id='char-race' class='head sheet-in fit' data-path='race'> - <span id='char-class'></span></div>
+                    <div class='sub2 noselect'>
+                        Level <input id='char-level' class='head sheet-in fit' data-path='level' data-type='number' min='1' style="margin: 0px;">
+                         - <input id='char-xp' class='head sheet-in fit' data-path='xp' data-type='number' min='0' style="margin: 0px;"></span> XP
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

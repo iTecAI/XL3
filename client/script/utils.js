@@ -217,7 +217,12 @@ function buildCharacter(item) {
             .attr('data-action','edit')
             .text('Edit')
             .on('click',function(event){
-
+                cget(
+                    '/characters/'+fingerprint+'/'+$(event.target).parents('.character-panel').attr('data-id')+'/',
+                    {},true,
+                    sheet_gen
+                );
+                $(document).trigger('click');
             })
         ).append(
             $('<button></button>')

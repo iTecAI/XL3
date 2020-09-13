@@ -29,17 +29,21 @@ router = APIRouter()
 def check_access(fp,char):
     try:
         if char in server.connections[fp].user.owned_characters:
+            decache(char)
             if server.characters[char].owner == None:
                 server.characters[char].owner = server.connections[fp].user.uid
             return True
         else:
             if char in server.characters.keys():
-                return server.characters[char].options['public']
+                return server.characters[char].options['public'] or server.characters[char].owner == server.connections[fp].user.uid
             else:
                 with open(os.path.join('database','characters','registry.json'),'r') as f:
                     reg = json.load(f)
                     if char in reg.keys():
                         if reg[char]['public']:
+                            return True
+                        elif reg[char]['owner'] == server.connections[fp].user.uid:
+                            decache(char)
                             return True
                         else:
                             return False
@@ -150,7 +154,7 @@ async def get_character(fingerprint: str, charid: str, response: Response):
     400: {'model':SimpleResult,'description':'The submitted URL was incorrect.','content':{'application/json':{'example':{'result':'The submitted URL was incorrect.'}}}},
     200: {'model':NewCharacterResponseModel,'description':'Success. Character is created and assigned.','content':{'application/json':{'example':{'result':'Success.','cid':'Character ID'}}}}
 })
-async def new_character(fingerprint: str, model: NewCharacterModel, response=Response):
+async def new_character(fingerprint: str, model: NewCharacterModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -280,6 +284,80 @@ async def delete_character(fingerprint: str, charid: str, response: Response):
     server.connections[fingerprint].char_update.update()
     server.connections[fingerprint].user.update()
     return {'result':'Success.'}
+
+@router.post('/{charid}/modify/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection or Character Property not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Modifies character, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def modify_character(fingerprint: str, charid: str, model: ModCharModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    if len(server.connections[fingerprint].user.owned_characters) >= int(CONFIG['CHARACTERS']['max_characters']):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You have reached the maximum allowed characters.'}
+    
+    if charid in server.characters.keys():
+        pass
+    else:
+        try:
+            decache(charid)
+        except ValueError:
+            response.status_code = status.HTTP_403_FORBIDDEN
+            return {'result':'You do not own this character.'}
+    
+    parts = model.path.split('.')
+    if len(parts) == 1:
+        prop = parts[0]
+        path = []
+    else:
+        prop = parts[0]
+        path = parts[1:]
+    if prop == 'id':
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'Cannot edit character ID.'}
+    
+    MODVAL = model.data
+    
+    try:
+        cd = ('server.characters[charid].'+prop+'["'+'"]["'.join(path)+'"] = MODVAL').replace('[""]','')
+        exec(cd,globals(),locals())
+    except KeyError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Could not find the referenced property.'}
+    except AttributeError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Could not find the referenced property.'}
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }
+    
+
+    
+
     
 
 

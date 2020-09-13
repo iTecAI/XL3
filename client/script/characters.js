@@ -48,4 +48,10 @@ $(document).ready(function(){
             }
         });
     });
+
+    cget(
+        '/characters/'+fingerprint+'/d394a22ce008df291f76c3cf41c2a9e0763ab80bb5f9cdd2b84efbac63d41751/',
+        {},true,
+        sheet_gen
+    );
 });

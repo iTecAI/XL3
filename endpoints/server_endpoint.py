@@ -19,7 +19,9 @@ router = APIRouter()
                     'result':'Fetched data.',
                     'endpoints':{
                         'client':True,
-                        'connection':True
+                        'connection':True,
+                        'characters':True,
+                        'campaigns':True
                     },
                     'loggedIn':True
                 }

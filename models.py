@@ -1,4 +1,5 @@
 from pydantic import BaseModel, create_model
+from typing import Any
 
 class ConnectionModel(BaseModel): # Connection model
     fingerprint: str
@@ -55,7 +56,7 @@ class CompSearchResponseModel(BaseModel):
 
 class OwnedListResponseModel(BaseModel):
     result: str
-    owned: list
+    owned: str
 
 class SingleCharacterResponseModel(BaseModel):
     result: str
@@ -63,7 +64,7 @@ class SingleCharacterResponseModel(BaseModel):
     owner: str
     campaign: str
     public: bool
-    data: dict
+    data: str
 
 class NewCharacterModel(BaseModel):
     url: str
@@ -74,4 +75,8 @@ class NewCharacterResponseModel(BaseModel):
 
 class MultipleCharacterResponseModel(BaseModel):
     result: str
-    characters: list
+    characters: str
+
+class ModCharModel(BaseModel):
+    path: str
+    data: Any

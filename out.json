@@ -1,1 +1,675 @@
-{"name":"Viaorem Teige","race":"Changeling","class_display":"Revived Rogue 3 Lore Bard 2","classes":[{"class":"rogue","subclass":"revived","level":3},{"class":"bard","subclass":"lore","level":2}],"level":5,"xp":6500,"prof":null,"speed":{"walk":30},"alignment":"Chaotic Neutral","passive_perception":13,"ac":16,"max_hp":38,"hp":38,"thp":0,"init":5,"init_adv":"d20","inspiration":true,"equipped_items":["Studded Leather","Traveler's Clothes"],"death_saves":{"success":0,"fail":0},"hit_dice":{"raw":"5d8","die_size":8,"max":5,"current":5},"attacks":{"Shortbow":{"name":"Shortbow","bonus":7,"desc":"1d6+4[piercing]|***Simple Ranged Weapon Attack.***\nAmmunition (range 80/320), Two-Handed","damage":[{"roll":"1d6+4","type":"piercing","mods":[]}],"properties":[{"name":"Ammunition","range":"80/320"},{"name":"Two-Handed"}],"automated":true},"Rapier +1":{"name":"Rapier +1","bonus":8,"desc":"1d8+5[magical piercing]|***Martial Melee Weapon Attack.***\nFinesse\n","damage":[{"roll":"1d8+5","type":"piercing","mods":["magical"]}],"properties":[{"name":"Finesse"}],"automated":true},"Offhand Dagger":{"name":"Offhand Dagger","bonus":7,"desc":"1d4[piercing]|***Simple Melee or Ranged Weapon Attack.***\nFinesse, Light, Thrown (range 20/60)\n\n\n","damage":[{"roll":"1d4","type":"piercing","mods":[]}],"properties":[{"name":"Finesse"},{"name":"Light"},{"name":"Thrown","range":"20/60"}],"automated":true},"Dagger":{"name":"Dagger","bonus":7,"desc":"1d4+4[piercing]|***Simple Melee or Ranged Weapon Attack.***\nFinesse, Light, Thrown (range 20/60)\n\n","damage":[{"roll":"1d4+4","type":"piercing","mods":[]}],"properties":[{"name":"Finesse"},{"name":"Light"},{"name":"Thrown","range":"20/60"}],"automated":true},"Light Hammer":{"name":"Light Hammer","bonus":3,"desc":"1d4[bludgeoning]|***Simple Melee or Ranged Weapon Attack.***\nLight, Thrown (range 20/60)\n\n","damage":[{"roll":"1d4","type":"bludgeoning","mods":[]}],"properties":[{"name":"Light"},{"name":"Thrown","range":"20/60"}],"automated":true}},"abilities":{"strength":{"score":10,"mod":0,"save":0,"adv":"d20"},"dexterity":{"score":18,"mod":4,"save":7,"adv":"d20"},"constitution":{"score":14,"mod":2,"save":2,"adv":"d20"},"intelligence":{"score":10,"mod":0,"save":3,"adv":"d20"},"wisdom":{"score":10,"mod":0,"save":0,"adv":"d20"},"charisma":{"score":19,"mod":4,"save":4,"adv":"d20"}},"skills":{"acrobatics":{"value":7,"adv":"d20"},"animal_handling":{"value":3,"adv":"d20"},"arcana":{"value":1,"adv":"d20"},"athletics":{"value":1,"adv":"d20"},"deception":{"value":10,"adv":"d20"},"history":{"value":1,"adv":"d20"},"insight":{"value":3,"adv":"d20"},"intimidation":{"value":5,"adv":"d20"},"investigation":{"value":1,"adv":"d20"},"medicine":{"value":1,"adv":"d20"},"nature":{"value":1,"adv":"d20"},"perception":{"value":3,"adv":"d20"},"performance":{"value":7,"adv":"d20"},"persuasion":{"value":7,"adv":"d20"},"religion":{"value":1,"adv":"2d20kl1"},"sleight_of_hand":{"value":7,"adv":"d20"},"stealth":{"value":10,"adv":"d20"},"survival":{"value":1,"adv":"d20"}},"other_profs":{"theives tools":"Theives' Tools","pan flute":"Pan Flute","smiths tools":"Smith's Tools","playing cards":"Playing Cards"},"spellcasting":{"Bard":{"ability":"Charisma","save_dc":15,"attack_bonus":7,"spells":{"0":{"spells":["Mage Hand","Minor Illusion"]},"1":{"slots":3,"spells":["Dissonant Whispers","Thunderwave","Charm Person","Bane","Hideous Laughter"]},"2":{"slots":0,"spells":[]},"3":{"slots":0,"spells":[]},"4":{"slots":0,"spells":[]},"5":{"slots":0,"spells":[]},"6":{"slots":0,"spells":[]},"7":{"slots":0,"spells":[]},"8":{"slots":0,"spells":[]},"9":{"slots":0,"spells":[]}}}},"resist":{},"vuln":{},"immune":{},"image":"","background":"Far Traveler","traits":{"personality_traits":"I have a joke for \nevery occasion, including \nwhen it is inappropriate","ideals":"Revolution\nChange and evolution are\nthe pillars of progress","bonds":"I had a run in with slavers, \nand I don't know if \nthey're still alive","flaws":"One should never \nreveal one's\n true self"},"languages":["Common","Thieves' Cant","Dwarvish","Elvish","Orc"],"physical":{"age":28,"height":"5'10\"","weight":"126 lb.","size":"","gender":"","eyes":"","hair":"","skin":""},"backstory":"He was a wanderer exploring distand lands for his god, the Traveler (the Giver of Gifts). A few years into his travels, during the Feast of the Traveller (a religious observance), he happens upon a group of slavers carousing in a tavern. He learns that they had decimated a town a little ways down the coast, and captured all the able bodied men to sell as slaves. In the spirit of the Feast, he decides to help free them. He ends up captured instead, and with a painful wound on his leg. Owing to the fact that he has killed a few of their companions, the slavers refuse to even mildly treat him, caring more about revenge than selling him. The wound gets infected, and he has to chop the leg off. The slavers refuse to sell him, instead keeping him on the ship for years. He is able to hide his magical nature form them for the first few years, but they discover his abilities during a failed escape attempt. He decides he has nothing more to lose, and burns the ship down after the most recent slaves have been sold. He fully expects to die himself, but survives, and washes up on the beach of some small coastal town. He spends a few months here, before deciding that he must once again wander the lands, playing cards, and taking up any opportunity he is presented with. ","features":["Change Appearance","Unsettling Visage","Divergent Persona","All Eyes On You","Deathly Nature","Sneak Attack","Cunning Action","Tokens of the Shadowfell","Bolts from the Grave","Bardic Inspiration","Song of Rest"],"inventory":{"carry_capacity":150,"variant_encumbrance":{"encumbered":50,"heavily_encumbered":100},"current_weight":160.08,"containers":[{"name":"inventory","apply_weight":true,"removable":false,"max_weight":150,"current_weight":160.08,"coin_container":true,"items":[{"name":"Traveller's Clothes","quantity":1,"cost":2.0,"weight":4.0},{"name":"Pan Flute","quantity":1,"cost":12.0,"weight":2.0},{"name":"Poorly Drawn Maps of the Area","quantity":1,"cost":0.01,"weight":0.0},{"name":"Jewlery from my Homeland","quantity":1,"cost":10.0,"weight":0.0},{"name":"Playing Cards","quantity":1,"cost":0.5,"weight":0.0},{"name":"Extra-Dimensional Wooden Leg","quantity":1,"cost":60.0,"weight":10.0},{"name":"Magnetic Horseshoe","quantity":1,"cost":5.0,"weight":0.0},{"name":"Empty Vials","quantity":5,"cost":0.0,"weight":0.0},{"name":"Much Fur","quantity":1,"cost":0.0,"weight":0.0},{"name":"Cloak of Many Fashions","quantity":1,"cost":100.0,"weight":2.0},{"name":"Map of Urngor Vurth","quantity":1,"cost":0.0,"weight":0.0},{"name":"Party Items","quantity":1,"cost":0.0,"weight":15.0},{"name":"Scroll of Burning Hands","quantity":1,"cost":0.0,"weight":0.0},{"name":"Potion of Superior Healing","quantity":2,"cost":0.0,"weight":0.0},{"name":"Flame Tongue Transformer","quantity":1,"cost":0.0,"weight":0.0},{"name":"Plus 1 Rapier","quantity":1,"cost":0.0,"weight":0.0},{"name":"Woodcarver's Tools","quantity":1,"cost":0.0,"weight":0.0},{"name":"Books of Language","quantity":5,"cost":0.0,"weight":0.0},{"name":"The Joye of Cooking Cookbook","quantity":1,"cost":0.0,"weight":0.0},{"name":"Rapier","quantity":1,"cost":25.0,"weight":2.0},{"name":"Shortbow","quantity":1,"cost":25.0,"weight":2.0},{"name":"Studded Leather Armor","quantity":1,"cost":45.0,"weight":13.0},{"name":"Daggers","quantity":2,"cost":2.0,"weight":1.0},{"name":"Thieves' Tools","quantity":1,"cost":25.0,"weight":1.0},{"name":"50ft of Hempen Rope","quantity":1,"cost":1.0,"weight":10.0},{"name":"Bag of Ball Bearings","quantity":0,"cost":0.0,"weight":0.0},{"name":"10ft of String","quantity":1,"cost":0.01,"weight":0.0},{"name":"Bell","quantity":1,"cost":1.0,"weight":1.0},{"name":"Candle","quantity":5,"cost":0.01,"weight":0.0},{"name":"Crowbar","quantity":1,"cost":2.0,"weight":5.0},{"name":"Light Hammer","quantity":1,"cost":2.0,"weight":2.0},{"name":"Set of 10 Pitons","quantity":1,"cost":0.5,"weight":5.0},{"name":"Hooded Lantern","quantity":1,"cost":5.0,"weight":2.0},{"name":"Flask of Oil","quantity":2,"cost":0.1,"weight":1.0},{"name":"Caltrops","quantity":13,"cost":1.0,"weight":2.0},{"name":"Tinderbox","quantity":1,"cost":0.5,"weight":1.0},{"name":"Waterskin","quantity":1,"cost":0.2,"weight":5.0},{"name":"Vials of Acid","quantity":2,"cost":50.0,"weight":2.0},{"name":"Vials of Mushroom Poison","quantity":5,"cost":0.0,"weight":0.0}]}],"coin":[{"name":"cp","conversion":0.01,"amount":0,"weight":0.02},{"name":"sp","conversion":0.1,"amount":0,"weight":0.02},{"name":"ep","conversion":0.5,"amount":0,"weight":0.02},{"name":"gp","conversion":1,"amount":2204,"weight":0.02},{"name":"pp","conversion":10,"amount":0,"weight":0.02}],"total_coin":2204.0,"total_wealth":438.97},"options":{"public":true,"variant_encumbrance":false,"coin_weight":true},"owner":"","id":"3eff8f958f9c296f585ece4631ca63ae6d5ee7c0d6e7cbb65547b3882b274891","campaign":""}
+{
+    "name": "Viaorem Teige",
+    "race": "Changeling",
+    "class_display": "Revived Rogue 3 Lore Bard 2",
+    "classes": [
+        {
+            "class": "rogue",
+            "subclass": "revived",
+            "level": 3
+        },
+        {
+            "class": "bard",
+            "subclass": "lore",
+            "level": 2
+        }
+    ],
+    "level": 5,
+    "xp": 6500,
+    "prof": null,
+    "speed": {
+        "walk": 30
+    },
+    "alignment": "Chaotic Neutral",
+    "passive_perception": 13,
+    "ac": 16,
+    "max_hp": 38,
+    "hp": 38,
+    "thp": 0,
+    "init": 5,
+    "init_adv": "d20",
+    "inspiration": true,
+    "equipped_items": [
+        "Studded Leather",
+        "Traveler's Clothes"
+    ],
+    "death_saves": {
+        "success": 0,
+        "fail": 0
+    },
+    "hit_dice": {
+        "raw": "5d8",
+        "die_size": 8,
+        "max": 5,
+        "current": 5
+    },
+    "attacks": {
+        "Shortbow": {
+            "name": "Shortbow",
+            "bonus": 7,
+            "desc": "1d6+4[piercing]|***Simple Ranged Weapon Attack.***\nAmmunition (range 80/320), Two-Handed",
+            "damage": [
+                {
+                    "roll": "1d6+4",
+                    "type": "piercing",
+                    "mods": []
+                }
+            ],
+            "properties": [
+                {
+                    "name": "Ammunition",
+                    "range": "80/320"
+                },
+                {
+                    "name": "Two-Handed"
+                }
+            ],
+            "automated": true
+        },
+        "Rapier +1": {
+            "name": "Rapier +1",
+            "bonus": 8,
+            "desc": "1d8+5[magical piercing]|***Martial Melee Weapon Attack.***\nFinesse\n",
+            "damage": [
+                {
+                    "roll": "1d8+5",
+                    "type": "piercing",
+                    "mods": [
+                        "magical"
+                    ]
+                }
+            ],
+            "properties": [
+                {
+                    "name": "Finesse"
+                }
+            ],
+            "automated": true
+        },
+        "Offhand Dagger": {
+            "name": "Offhand Dagger",
+            "bonus": 7,
+            "desc": "1d4[piercing]|***Simple Melee or Ranged Weapon Attack.***\nFinesse, Light, Thrown (range 20/60)\n\n\n",
+            "damage": [
+                {
+                    "roll": "1d4",
+                    "type": "piercing",
+                    "mods": []
+                }
+            ],
+            "properties": [
+                {
+                    "name": "Finesse"
+                },
+                {
+                    "name": "Light"
+                },
+                {
+                    "name": "Thrown",
+                    "range": "20/60"
+                }
+            ],
+            "automated": true
+        },
+        "Dagger": {
+            "name": "Dagger",
+            "bonus": 7,
+            "desc": "1d4+4[piercing]|***Simple Melee or Ranged Weapon Attack.***\nFinesse, Light, Thrown (range 20/60)\n\n",
+            "damage": [
+                {
+                    "roll": "1d4+4",
+                    "type": "piercing",
+                    "mods": []
+                }
+            ],
+            "properties": [
+                {
+                    "name": "Finesse"
+                },
+                {
+                    "name": "Light"
+                },
+                {
+                    "name": "Thrown",
+                    "range": "20/60"
+                }
+            ],
+            "automated": true
+        },
+        "Light Hammer": {
+            "name": "Light Hammer",
+            "bonus": 3,
+            "desc": "1d4[bludgeoning]|***Simple Melee or Ranged Weapon Attack.***\nLight, Thrown (range 20/60)\n\n",
+            "damage": [
+                {
+                    "roll": "1d4",
+                    "type": "bludgeoning",
+                    "mods": []
+                }
+            ],
+            "properties": [
+                {
+                    "name": "Light"
+                },
+                {
+                    "name": "Thrown",
+                    "range": "20/60"
+                }
+            ],
+            "automated": true
+        }
+    },
+    "abilities": {
+        "strength": {
+            "score": 10,
+            "mod": 0,
+            "save": 0,
+            "adv": "d20"
+        },
+        "dexterity": {
+            "score": 18,
+            "mod": 4,
+            "save": 7,
+            "adv": "d20"
+        },
+        "constitution": {
+            "score": 14,
+            "mod": 2,
+            "save": 2,
+            "adv": "d20"
+        },
+        "intelligence": {
+            "score": 10,
+            "mod": 0,
+            "save": 3,
+            "adv": "d20"
+        },
+        "wisdom": {
+            "score": 10,
+            "mod": 0,
+            "save": 0,
+            "adv": "d20"
+        },
+        "charisma": {
+            "score": 19,
+            "mod": 4,
+            "save": 4,
+            "adv": "d20"
+        }
+    },
+    "skills": {
+        "acrobatics": {
+            "value": 7,
+            "adv": "d20"
+        },
+        "animal_handling": {
+            "value": 3,
+            "adv": "d20"
+        },
+        "arcana": {
+            "value": 1,
+            "adv": "d20"
+        },
+        "athletics": {
+            "value": 1,
+            "adv": "d20"
+        },
+        "deception": {
+            "value": 10,
+            "adv": "d20"
+        },
+        "history": {
+            "value": 1,
+            "adv": "d20"
+        },
+        "insight": {
+            "value": 3,
+            "adv": "d20"
+        },
+        "intimidation": {
+            "value": 5,
+            "adv": "d20"
+        },
+        "investigation": {
+            "value": 1,
+            "adv": "d20"
+        },
+        "medicine": {
+            "value": 1,
+            "adv": "d20"
+        },
+        "nature": {
+            "value": 1,
+            "adv": "d20"
+        },
+        "perception": {
+            "value": 3,
+            "adv": "d20"
+        },
+        "performance": {
+            "value": 7,
+            "adv": "d20"
+        },
+        "persuasion": {
+            "value": 7,
+            "adv": "d20"
+        },
+        "religion": {
+            "value": 1,
+            "adv": "2d20kl1"
+        },
+        "sleight_of_hand": {
+            "value": 7,
+            "adv": "d20"
+        },
+        "stealth": {
+            "value": 10,
+            "adv": "d20"
+        },
+        "survival": {
+            "value": 1,
+            "adv": "d20"
+        }
+    },
+    "other_profs": {
+        "theives tools": "Theives' Tools",
+        "pan flute": "Pan Flute",
+        "smiths tools": "Smith's Tools",
+        "playing cards": "Playing Cards"
+    },
+    "spellcasting": {
+        "Bard": {
+            "ability": "Charisma",
+            "save_dc": 15,
+            "attack_bonus": 7,
+            "spells": {
+                "0": {
+                    "spells": [
+                        "Mage Hand",
+                        "Minor Illusion"
+                    ]
+                },
+                "1": {
+                    "slots": 3,
+                    "spells": [
+                        "Dissonant Whispers",
+                        "Thunderwave",
+                        "Charm Person",
+                        "Bane",
+                        "Hideous Laughter"
+                    ]
+                },
+                "2": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "3": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "4": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "5": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "6": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "7": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "8": {
+                    "slots": 0,
+                    "spells": []
+                },
+                "9": {
+                    "slots": 0,
+                    "spells": []
+                }
+            }
+        }
+    },
+    "resist": {},
+    "vuln": {},
+    "immune": {},
+    "image": "",
+    "background": "Far Traveler",
+    "traits": {
+        "personality_traits": "I have a joke for \nevery occasion, including \nwhen it is inappropriate",
+        "ideals": "Revolution\nChange and evolution are\nthe pillars of progress",
+        "bonds": "I had a run in with slavers, \nand I don't know if \nthey're still alive",
+        "flaws": "One should never \nreveal one's\n true self"
+    },
+    "languages": [
+        "Common",
+        "Thieves' Cant",
+        "Dwarvish",
+        "Elvish",
+        "Orc"
+    ],
+    "physical": {
+        "age": 28,
+        "height": "5'10\"",
+        "weight": "126 lb.",
+        "size": "",
+        "gender": "",
+        "eyes": "",
+        "hair": "",
+        "skin": ""
+    },
+    "backstory": "He was a wanderer exploring distand lands for his god, the Traveler (the Giver of Gifts). A few years into his travels, during the Feast of the Traveller (a religious observance), he happens upon a group of slavers carousing in a tavern. He learns that they had decimated a town a little ways down the coast, and captured all the able bodied men to sell as slaves. In the spirit of the Feast, he decides to help free them. He ends up captured instead, and with a painful wound on his leg. Owing to the fact that he has killed a few of their companions, the slavers refuse to even mildly treat him, caring more about revenge than selling him. The wound gets infected, and he has to chop the leg off. The slavers refuse to sell him, instead keeping him on the ship for years. He is able to hide his magical nature form them for the first few years, but they discover his abilities during a failed escape attempt. He decides he has nothing more to lose, and burns the ship down after the most recent slaves have been sold. He fully expects to die himself, but survives, and washes up on the beach of some small coastal town. He spends a few months here, before deciding that he must once again wander the lands, playing cards, and taking up any opportunity he is presented with. ",
+    "features": [
+        "Change Appearance",
+        "Unsettling Visage",
+        "Divergent Persona",
+        "All Eyes On You",
+        "Deathly Nature",
+        "Sneak Attack",
+        "Cunning Action",
+        "Tokens of the Shadowfell",
+        "Bolts from the Grave",
+        "Bardic Inspiration",
+        "Song of Rest"
+    ],
+    "inventory": {
+        "carry_capacity": 150,
+        "variant_encumbrance": {
+            "encumbered": 50,
+            "heavily_encumbered": 100
+        },
+        "current_weight": 160.08,
+        "containers": [
+            {
+                "name": "inventory",
+                "apply_weight": true,
+                "removable": false,
+                "max_weight": 150,
+                "current_weight": 160.08,
+                "coin_container": true,
+                "items": [
+                    {
+                        "name": "Traveller's Clothes",
+                        "quantity": 1,
+                        "cost": 2.0,
+                        "weight": 4.0
+                    },
+                    {
+                        "name": "Pan Flute",
+                        "quantity": 1,
+                        "cost": 12.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Poorly Drawn Maps of the Area",
+                        "quantity": 1,
+                        "cost": 0.01,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Jewlery from my Homeland",
+                        "quantity": 1,
+                        "cost": 10.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Playing Cards",
+                        "quantity": 1,
+                        "cost": 0.5,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Extra-Dimensional Wooden Leg",
+                        "quantity": 1,
+                        "cost": 60.0,
+                        "weight": 10.0
+                    },
+                    {
+                        "name": "Magnetic Horseshoe",
+                        "quantity": 1,
+                        "cost": 5.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Empty Vials",
+                        "quantity": 5,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Much Fur",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Cloak of Many Fashions",
+                        "quantity": 1,
+                        "cost": 100.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Map of Urngor Vurth",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Party Items",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 15.0
+                    },
+                    {
+                        "name": "Scroll of Burning Hands",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Potion of Superior Healing",
+                        "quantity": 2,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Flame Tongue Transformer",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Plus 1 Rapier",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Woodcarver's Tools",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Books of Language",
+                        "quantity": 5,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "The Joye of Cooking Cookbook",
+                        "quantity": 1,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Rapier",
+                        "quantity": 1,
+                        "cost": 25.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Shortbow",
+                        "quantity": 1,
+                        "cost": 25.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Studded Leather Armor",
+                        "quantity": 1,
+                        "cost": 45.0,
+                        "weight": 13.0
+                    },
+                    {
+                        "name": "Daggers",
+                        "quantity": 2,
+                        "cost": 2.0,
+                        "weight": 1.0
+                    },
+                    {
+                        "name": "Thieves' Tools",
+                        "quantity": 1,
+                        "cost": 25.0,
+                        "weight": 1.0
+                    },
+                    {
+                        "name": "50ft of Hempen Rope",
+                        "quantity": 1,
+                        "cost": 1.0,
+                        "weight": 10.0
+                    },
+                    {
+                        "name": "Bag of Ball Bearings",
+                        "quantity": 0,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "10ft of String",
+                        "quantity": 1,
+                        "cost": 0.01,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Bell",
+                        "quantity": 1,
+                        "cost": 1.0,
+                        "weight": 1.0
+                    },
+                    {
+                        "name": "Candle",
+                        "quantity": 5,
+                        "cost": 0.01,
+                        "weight": 0.0
+                    },
+                    {
+                        "name": "Crowbar",
+                        "quantity": 1,
+                        "cost": 2.0,
+                        "weight": 5.0
+                    },
+                    {
+                        "name": "Light Hammer",
+                        "quantity": 1,
+                        "cost": 2.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Set of 10 Pitons",
+                        "quantity": 1,
+                        "cost": 0.5,
+                        "weight": 5.0
+                    },
+                    {
+                        "name": "Hooded Lantern",
+                        "quantity": 1,
+                        "cost": 5.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Flask of Oil",
+                        "quantity": 2,
+                        "cost": 0.1,
+                        "weight": 1.0
+                    },
+                    {
+                        "name": "Caltrops",
+                        "quantity": 13,
+                        "cost": 1.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Tinderbox",
+                        "quantity": 1,
+                        "cost": 0.5,
+                        "weight": 1.0
+                    },
+                    {
+                        "name": "Waterskin",
+                        "quantity": 1,
+                        "cost": 0.2,
+                        "weight": 5.0
+                    },
+                    {
+                        "name": "Vials of Acid",
+                        "quantity": 2,
+                        "cost": 50.0,
+                        "weight": 2.0
+                    },
+                    {
+                        "name": "Vials of Mushroom Poison",
+                        "quantity": 5,
+                        "cost": 0.0,
+                        "weight": 0.0
+                    }
+                ]
+            }
+        ],
+        "coin": [
+            {
+                "name": "cp",
+                "conversion": 0.01,
+                "amount": 0,
+                "weight": 0.02
+            },
+            {
+                "name": "sp",
+                "conversion": 0.1,
+                "amount": 0,
+                "weight": 0.02
+            },
+            {
+                "name": "ep",
+                "conversion": 0.5,
+                "amount": 0,
+                "weight": 0.02
+            },
+            {
+                "name": "gp",
+                "conversion": 1,
+                "amount": 2204,
+                "weight": 0.02
+            },
+            {
+                "name": "pp",
+                "conversion": 10,
+                "amount": 0,
+                "weight": 0.02
+            }
+        ],
+        "total_coin": 2204.0,
+        "total_wealth": 438.97
+    },
+    "options": {
+        "public": true,
+        "variant_encumbrance": false,
+        "coin_weight": true
+    },
+    "owner": "",
+    "id": "3eff8f958f9c296f585ece4631ca63ae6d5ee7c0d6e7cbb65547b3882b274891",
+    "campaign": ""
+}
