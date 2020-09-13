@@ -176,18 +176,19 @@
 }
 
 #header-img {
-    width: 13vh;
-    height: 13vh;
+    width: 15vh;
+    height: 15vh;
     position: absolute;
-    top: 1vh;
-    left: 1vh;
-    padding: 1vh;
+    top: 0;
+    left: 0;
+    padding: 2vh;
     background-color: var(--foreground3-2);
-    border-radius: 10px;
+    
 }
 #header-img img {
     height: 11vh;
     width: 11vh;
+    border-radius: 10px;
 }
 
 #header-info {
@@ -250,6 +251,32 @@
 }
 
 #character-settings-btn img {
+    width: 5vh;
+    height: 5vh;
+}
+
+#character-reset-btn {
+    background-color: var(--foreground3);
+    position: absolute;
+    right: 15vh;
+    top: 4vh;
+    width: 7vh;
+    height: 7vh;
+    border-radius: 5vh;
+    border: none;
+    display: inline-block;
+    transition: background-color 0.1s, right 0.2s;
+}
+
+#character-reset-btn.active {
+    right: calc(300px + 15vh);
+}
+
+#character-reset-btn:hover {
+    background-color: var(--foreground3-2);
+}
+
+#character-reset-btn img {
     width: 5vh;
     height: 5vh;
 }
@@ -346,8 +373,15 @@
 
 #abilities {
     position: absolute;
-    top: 17vh;
-    left: 2vh;
+    top: 15vh;
+    left: 0vh;
+    width: 15vh;
+    height: 80vh;
+    background-color: var(--foreground3);
+    display: inline-block;
+    padding-top: 2vh;
+    padding-left: 2.5vh;
+    z-index: 200;
 }
 #abilities * {
     display: block;
@@ -357,18 +391,18 @@
     width: 10vh;
     height: 10vh;
     border: 4px solid var(--foreground3);
-    border-radius: 5px;
+    border-radius: 15px;
     background-color: #ffffff;
     overflow: hidden;
     margin-bottom: 10px;
     position: relative;
-    transition: width 0.2s;
-    -webkit-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
-    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    transition: width 0.2s, box-shadow 0.2s;
 }
 .ability-box.editing {
     width: 20vh;
+    -webkit-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
 }
 .ability-box .ab-main {
     position: absolute;
@@ -468,4 +502,81 @@
 }
 .ability-box.editing .ab-exp {
     top: 0px;
+}
+
+#saves {
+    position: absolute;
+    top: 17vh;
+    left: 17vh;
+    width: 28vh;
+    z-index: 199;
+    border-radius: 10px;
+    border: 2px solid var(--foreground3);
+    background-color: #ffffff;
+    padding: 10px;
+    padding-top: 15px;
+    -webkit-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+}
+#saves .save-item > * {
+    margin-left: 5px;
+}
+.save-item label {
+    width: 2vh;
+    display: inline-block;
+}
+.save-item .save-val {
+    width: 3vh;
+    display: inline-block;
+    text-align: right;
+    border-bottom: 1px solid var(--background3);
+}
+.save-item .save-name {
+    text-align: center;
+    width: 11vh;
+    display: inline-block;
+}
+#save-adv-title {
+    position: absolute;
+    top: 0px;
+    right: 6vh;
+    font-size: 10px;
+    color: #7f7f7f;
+}
+#save-dis-title {
+    position: absolute;
+    top: 0px;
+    right: 2.5vh;
+    font-size: 10px;
+    color: #7f7f7f;
+}
+
+.profmarker input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.profmarker > span {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    border-radius: 7px;
+    display: inline-block;
+    padding: 0px;
+    position: relative;
+}
+
+.profmarker > input:checked + span > span {
+    width: 8px;
+    height: 8px;
+    background-color: #000000;
+    border-radius: 5px;
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    border: none;
 }

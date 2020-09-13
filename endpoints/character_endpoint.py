@@ -390,6 +390,48 @@ async def modify_character(fingerprint: str, charid: str, model: ModCharModel, r
         'public':server.characters[charid].options['public'],
         'data':server.characters[charid].to_dict()
     }
+
+@router.post('/{charid}/reset/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to view characters, or the Character was not directly loaded from Google Sheets.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Modifies character, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def reset_character(fingerprint: str, charid: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    if not hasattr(server.characters[charid],'sheet_id'):
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Cannot reset character, as it was not loaded directly from Google Sheets.'}
+    server.characters[charid].init_load = False
+    server.characters[charid].preload = {}
+    server.characters[charid].load_character(API_ENGINE.spreadsheets())
+    
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }
     
 
     

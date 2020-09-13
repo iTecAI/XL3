@@ -22,6 +22,10 @@ function modformat(num) {
     }
 }
 
+function cond(c,t,f) {
+    if (c) {return t;} else {return f;}
+}
+
 function sheet_gen(char) {
     $('#character-sheet-display').attr('data-id',char.cid);
     var dat = char.data;
@@ -45,19 +49,69 @@ function sheet_gen(char) {
     $('#ab-proficiency .ab-modifier').text(modformat(dat.proficiency_bonus));
 
     var abs = Object.keys(dat.abilities);
+    $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span>');
     for (var a=0;a<abs.length;a++) {
         $('#ab-'+abs[a]+' .ab-modifier').text(modformat(dat.abilities[abs[a]].mod));
         $('#ab-'+abs[a]+' .ab-score').text(dat.abilities[abs[a]].score);
         $('#ab-'+abs[a]+' .ab-base').val(dat.abilities[abs[a]].base_score).attr('placeholder','Base Score').attr('title','Base Score');
         $('#ab-'+abs[a]+' .ab-mod').val(dat.abilities[abs[a]].mod_score).attr('placeholder','Manual Mod').attr('title','Manual Modifier');
         $('#ab-'+abs[a]+' .ab-racial').val(dat.abilities[abs[a]].racial_mod).attr('placeholder','Racial Mod').attr('title','Racial Modifier');
+
+        $('<div class="save-item"></div>')
+        .attr('id','save_'+abs[a])
+        .append(
+            $('<label class="profmarker sheet-in"></label>')
+            .append(
+                $('<input type="checkbox">')
+                .prop('checked',dat.abilities[abs[a]].proficient)
+                .attr('data-path','abilities.'+abs[a]+'.proficient')
+            )
+            .append('<span><span></span></span>')
+            .attr('id','prof-save-'+abs[a])
+        )
+        .append(
+            $('<span class="save-val"></span>').text(modformat(dat.abilities[abs[a]].save))
+        )
+        .append(
+            $('<span class="save-name"></span>').text(abs[a][0].toUpperCase()+abs[a].slice(1))
+        )
+        .append(
+            $('<label class="switch small"></label>')
+            .append(
+                $('<input type="checkbox" class="save-adv">')
+                .attr('data-ability',abs[a])
+                .on('change',function(event){
+                    $($(event.target).parent().children('.save-dis')).prop('checked',false);
+                    modify('abilities.'+$(event.target).attr('data-ability')+'.adv',cond($(event.target).prop('checked'),'2d20kh1','d20'));
+                })
+                .prop('checked',dat.abilities[abs[a]].adv=='2d20kh1')
+            )
+            .append(
+                $('<span class="slider round"></span>')
+            )
+        )
+        .append(
+            $('<label class="switch small"></label>')
+            .append(
+                $('<input type="checkbox" class="save-dis">')
+                .attr('data-ability',abs[a])
+                .on('change',function(event){
+                    $($(event.target).parent().children('.save-adv')).prop('checked',false);
+                    modify('abilities.'+$(event.target).attr('data-ability')+'.adv',cond($(event.target).prop('checked'),'2d20kl1','d20'));
+                })
+                .prop('checked',dat.abilities[abs[a]].adv=='2d20kl1')
+            )
+            .append(
+                $('<span class="slider round"></span>')
+            )
+        )
+        .appendTo($('#saves'));
     }
     $('.ab-edit').off('click');
     $('.ab-edit').on('click',function(event){
         console.log('click');
         $($(event.target).parents('.ability-box')).toggleClass('editing');
     });
-
 
     // End
     $('input.fit').on('input',function(event){
@@ -132,7 +186,23 @@ function sheet_gen(char) {
         }
         activateitem('#character-settings');
         activateitem('#character-settings-btn');
+        activateitem('#character-reset-btn');
         
+    });
+    $('#character-reset-btn').off('click');
+    $('#character-reset-btn').on('click',function(event){
+        bootbox.confirm('Resetting this character will cause all changes you have made to be erased, except thos made to your inventory. Proceed?',function(result){
+            console.log(result);
+            if (result) {
+                cpost(
+                    '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/reset/',
+                    {},function(data){sheet_gen(data);},
+                    {
+                        alert: true
+                    }
+                );
+            }
+        });
     });
     $('#char-class').off('change');
     $('#char-class').on('change',function(event){

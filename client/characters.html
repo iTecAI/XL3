@@ -126,7 +126,10 @@
                          - <input id='char-xp' class='head sheet-in fit' data-path='xp' data-type='number' min='0' style="margin: 0px;" maxlength='12'></span> XP
                     </div>
                 </div>
-                <button id='character-settings-btn' class='transient'>
+                <button id='character-reset-btn' data-tooltip='Reset Character' data-tooltip-location='bottom' class='transient'>
+                    <img src='assets/icons/reset.png'>
+                </button>
+                <button id='character-settings-btn' data-tooltip='Configure Character' data-tooltip-location='bottom' class='transient'>
                     <img src='assets/icons/settings_white.png'>
                 </button>
             </div>
@@ -157,6 +160,12 @@
                 </div>
             </div>
             <div id='abilities' class='noscroll noselect'>
+                <div class='ability-box' id='ab-proficiency'>
+                    <div class='ab-main'>
+                        <span class='ab-title'>PROFICIENCY BONUS</span>
+                        <span class='ab-modifier'></span>
+                    </div>
+                </div>
                 <div class='ability-box' id='ab-strength'>
                     <button class='ab-edit'><img src='assets/icons/edit.png'></button>
                     <div class='ab-main'>
@@ -235,12 +244,9 @@
                         <span>Racial Mod</span><input class='sheet-in ab-racial' data-type='number' data-path='abilities.charisma.racial_mod'>
                     </div>
                 </div>
-                <div class='ability-box' id='ab-proficiency'>
-                    <div class='ab-main'>
-                        <span class='ab-title'>PROFICIENCY</span>
-                        <span class='ab-modifier'></span>
-                    </div>
-                </div>
+            </div>
+            <div id='saves' class='noselect'>
+
             </div>
         </div>
         
