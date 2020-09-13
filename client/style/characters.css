@@ -227,3 +227,107 @@
 .sub1, .sub1 .sheet-in {
     color: #9f9f9f;
 }
+
+#character-settings-btn {
+    background-color: var(--foreground3);
+    position: absolute;
+    right: 4vh;
+    top: 4vh;
+    width: 7vh;
+    height: 7vh;
+    border-radius: 5vh;
+    border: none;
+    display: inline-block;
+    transition: background-color 0.1s, right 0.2s;
+}
+
+#character-settings-btn.active {
+    right: calc(300px + 4vh);
+}
+
+#character-settings-btn:hover {
+    background-color: var(--foreground3-2);
+}
+
+#character-settings-btn img {
+    width: 5vh;
+    height: 5vh;
+}
+
+#character-settings {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    width: 0px;
+    display: inline-block;
+    background-color: var(--background3);
+    transition: width 0.2s;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#character-settings.active {
+    width: 300px;
+}
+
+#char-settings-title {
+    background-color: var(--foreground3-2);
+    height: 15vh;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+}
+
+#char-settings-title span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 30px;
+    font-family: raleway-heavy;
+    color: #ffffff;
+}
+
+#char-settings-area {
+    width: 100%;
+    height: 80vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    background-color: var(--foreground2);
+}
+#char-settings-area::-webkit-scrollbar {
+    display: none;
+}
+
+.char-settings-switch {
+    padding: 5px;
+    position: relative;
+    height: 4vh;
+    margin-bottom: 10px;
+}
+.char-settings-switch > span {
+    width: 90%;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translate(0px,-50%);
+    font-size: 16px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+}
+.char-settings-switch > * {
+    display: inline-block;
+}
+.char-settings-switch > label.switch {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translate(0px,-50%);
+}

@@ -122,7 +122,37 @@
                          - <input id='char-xp' class='head sheet-in fit' data-path='xp' data-type='number' min='0' style="margin: 0px;"></span> XP
                     </div>
                 </div>
+                <button id='character-settings-btn' class='transient active'>
+                    <img src='assets/icons/settings_white.png'>
+                </button>
+            </div>
+            <div id='character-settings' class='transient active'>
+                <div id='char-settings-title'><span>Settings</span></div>
+                <div id='char-settings-area'>
+                    <div class='char-settings-switch'>
+                        <span>PUBLIC</span>
+                        <label class="switch">
+                            <input type="checkbox" id='opt-public' class='sheet-in' data-path='options.public'>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class='char-settings-switch'>
+                        <span>VARIANT ENCUMBRANCE</span>
+                        <label class="switch">
+                            <input type="checkbox" id='opt-public' class='sheet-in' data-path='options.variant_encumbrance'>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class='char-settings-switch'>
+                        <span>COIN WEIGHT</span>
+                        <label class="switch">
+                            <input type="checkbox" id='opt-public' class='sheet-in' data-path='options.coin_weight'>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
+        
     </body>
 </html>

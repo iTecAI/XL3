@@ -1,5 +1,4 @@
 function sheet_gen(char) {
-    console.log(char);
     $('#character-sheet-display').attr('data-id',char.cid);
     var dat = char.data;
     $('#header-img img').attr('src',function(){
@@ -30,14 +29,19 @@ function sheet_gen(char) {
     });
 
     $('.sheet-in').on('change',function(event){
+        if ($(event.target).attr('type') == 'checkbox') {
+            var val = $(event.target).prop('checked');
+        } else {
+            var val = $(event.target).val();
+        }
         cpost(
             '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/',
             {
                 'path':$(event.target).attr('data-path'),
-                'data':$(event.target).val()
+                'data':val
             },
             function(data){
-                console.log(data);
+                sheet_gen(data);
             },
             {
                 alert: true
@@ -70,5 +74,14 @@ function sheet_gen(char) {
         }
         $(event.target).val(newval);
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
+    });
+    $('#character-settings-btn').on('click',function(event){
+        if (!activating && $('#character-settings-btn').hasClass('active')) {
+            $(document).trigger('click');
+            return;
+        }
+        activateitem('#character-settings');
+        activateitem('#character-settings-btn');
+        
     });
 }
