@@ -60,9 +60,9 @@ function sheet_gen(char) {
         $('<div class="save-item"></div>')
         .attr('id','save_'+abs[a])
         .append(
-            $('<label class="profmarker sheet-in"></label>')
+            $('<label class="profmarker"></label>')
             .append(
-                $('<input type="checkbox">')
+                $('<input type="checkbox" class="sheet-in">')
                 .prop('checked',dat.abilities[abs[a]].proficient)
                 .attr('data-path','abilities.'+abs[a]+'.proficient')
             )
@@ -113,6 +113,73 @@ function sheet_gen(char) {
         $($(event.target).parents('.ability-box')).toggleClass('editing');
     });
 
+    $('#skills').html('<span id="skill-adv-title">ADV</span><span id="skill-dis-title">DIS</span>');
+    var sks = Object.keys(dat.skills);
+    for (var s=0;s<sks.length;s++) {
+        $('<div class="skill-item"></div>')
+        .attr('id','skill_'+sks[s])
+        .append(
+            $('<label class="profmarker"></label>')
+            .append(
+                $('<input type="checkbox" class="sheet-in">')
+                .prop('checked',dat.skills[sks[s]].proficient)
+                .toggleClass('expert',dat.skills[sks[s]].expert)
+                .attr('data-path','skills.'+sks[s]+'.proficient')
+                
+            )
+            .attr('data-skill','skills.'+sks[s])
+            .append('<span><span></span></span>')
+            .attr('id','prof-skill-'+sks[s])
+            .on('contextmenu',function(event){
+                event.preventDefault();
+                console.log(event);
+                console.log('rc');
+                if ($(event.delegateTarget).children('input').hasClass('expert')) {
+                    modify($(event.delegateTarget).attr('data-skill')+'.expert',false);
+                } else {
+                    modify($(event.delegateTarget).attr('data-skill')+'.expert',true);
+                }
+            })
+        )
+        .append(
+            $('<span class="skill-val"></span>').text(modformat(dat.skills[sks[s]].value))
+        )
+        .append(
+            $('<span class="skill-name"></span>').text((sks[s][0].toUpperCase()+sks[s].slice(1)).replace(/_/g,' '))
+        )
+        .append(
+            $('<label class="switch small"></label>')
+            .append(
+                $('<input type="checkbox" class="skill-adv">')
+                .attr('data-skill',sks[s])
+                .on('change',function(event){
+                    $($(event.target).parent().children('.skill-dis')).prop('checked',false);
+                    modify('skills.'+$(event.target).attr('data-skill')+'.adv',cond($(event.target).prop('checked'),'2d20kh1','d20'));
+                })
+                .prop('checked',dat.skills[sks[s]].adv=='2d20kh1')
+            )
+            .append(
+                $('<span class="slider round"></span>')
+            )
+        )
+        .append(
+            $('<label class="switch small"></label>')
+            .append(
+                $('<input type="checkbox" class="skill-dis">')
+                .attr('data-skill',sks[s])
+                .on('change',function(event){
+                    $($(event.target).parent().children('.skill-adv')).prop('checked',false);
+                    modify('skills.'+$(event.target).attr('data-skill')+'.adv',cond($(event.target).prop('checked'),'2d20kl1','d20'));
+                })
+                .prop('checked',dat.skills[sks[s]].adv=='2d20kl1')
+            )
+            .append(
+                $('<span class="slider round"></span>')
+            )
+        )
+        .appendTo($('#skills'));
+    }
+
     // End
     $('input.fit').on('input',function(event){
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
@@ -145,6 +212,7 @@ function sheet_gen(char) {
                 modify('xp',LEVELXP[val-1]);
             }
         }
+        console.log(path,val);
 
         modify(path,val);
         $(event.target).trigger('blur');

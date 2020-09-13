@@ -169,10 +169,11 @@
 #character-header {
     background-color: var(--foreground3);
     height: 15vh;
-    position: absolute;
-    top: 0px;
+    position: fixed;
+    top: 5vh;
     left: 0px;
     width: 100vw;
+    z-index: 200;
 }
 
 #header-img {
@@ -372,8 +373,8 @@
 }
 
 #abilities {
-    position: absolute;
-    top: 15vh;
+    position: fixed;
+    top: 20vh;
     left: 0vh;
     width: 15vh;
     height: 80vh;
@@ -518,6 +519,8 @@
     -webkit-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    height: 23vh;
+    z-index: 100;
 }
 #saves .save-item > * {
     margin-left: 5px;
@@ -579,4 +582,66 @@
     top: 2px;
     left: 2px;
     border: none;
+}
+
+.profmarker > input.expert:checked + span > span {
+    width: 8px;
+    height: 8px;
+    background-color: #8317ff;
+    border-radius: 5px;
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    border: none;
+}
+
+#skills {
+    z-index: 100;
+    position: absolute;
+    top: 42vh;
+    left: 17vh;
+    width: 28vh;
+    z-index: 199;
+    border-radius: 10px;
+    border: 2px solid var(--foreground3);
+    background-color: #ffffff;
+    padding: 10px;
+    padding-top: 15px;
+    -webkit-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    margin-bottom: 2vh;
+}
+#skills .skill-item > * {
+    margin-left: 5px;
+}
+.skill-item label {
+    width: 2vh;
+    display: inline-block;
+}
+.skill-item .skill-val {
+    width: 3vh;
+    display: inline-block;
+    text-align: right;
+    border-bottom: 1px solid var(--background3);
+}
+.skill-item .skill-name {
+    text-align: center;
+    width: 11vh;
+    display: inline-block;
+}
+#skill-adv-title {
+    position: absolute;
+    top: 0px;
+    right: 6vh;
+    font-size: 10px;
+    color: #7f7f7f;
+}
+#skill-dis-title {
+    position: absolute;
+    top: 0px;
+    right: 2.5vh;
+    font-size: 10px;
+    color: #7f7f7f;
 }

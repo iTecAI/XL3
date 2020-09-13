@@ -38,6 +38,17 @@ def recalculate(cid):
         server.characters[cid].abilities[a]['mod'] = getmod(server.characters[cid].abilities[a]['score'])
         server.characters[cid].abilities[a]['save'] = server.characters[cid].abilities[a]['mod'] + case(server.characters[cid].abilities[a]['proficient'],server.characters[cid].proficiency_bonus,0)
 
+    for s in server.characters[cid].skills.keys():
+        server.characters[cid].skills[s]['value'] = sum([
+            server.characters[cid].abilities[SKILLS[s]]['mod'],
+            case(server.characters[cid].skills[s]['proficient'],server.characters[cid].proficiency_bonus,0),
+            case(server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient'],server.characters[cid].proficiency_bonus,0),
+            case(
+                'jack of all trades' in [x.lower() for x in server.characters[cid].features] and not (server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient']) and not server.characters[cid].skills[s]['proficient'],
+                int(server.characters[cid].proficiency_bonus * 0.5),
+                0
+            )
+        ])
 
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:
