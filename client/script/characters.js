@@ -1,6 +1,7 @@
 var MAX_CHARACTERS = 15;
 
 $(document).ready(function(){
+    $('#class-warning').hide();
     $('#info-max-characters').text(MAX_CHARACTERS);
     cget(
         '/client/'+fingerprint+'/characters/',
@@ -50,7 +51,7 @@ $(document).ready(function(){
     });
 
     cget(
-        '/characters/'+fingerprint+'/d394a22ce008df291f76c3cf41c2a9e0763ab80bb5f9cdd2b84efbac63d41751/',
+        '/characters/'+fingerprint+'/547cab5f2705ffdb14903f1cbad14d6f569b2fc150e7900028624c9dbfa46248/',
         {},true,
         sheet_gen
     );

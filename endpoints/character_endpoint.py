@@ -11,6 +11,34 @@ from urllib.parse import urlparse
 import re
 logger = logging.getLogger("uvicorn.error")
 
+def case(condition,t,f):
+    if condition: return t
+    else: return f
+
+def get_proficiency(level):
+    profs = {
+        4:2,
+        8:3,
+        12:4,
+        16:5,
+        20:6
+    }
+
+    for p in profs.keys():
+        if level <= p:
+            return profs[p]
+
+def recalculate(cid):
+    # Misc stats
+    server.characters[cid].proficiency_bonus = get_proficiency(server.characters[cid].level)
+
+    # reload abilities
+    for a in server.characters[cid].abilities.keys():
+        server.characters[cid].abilities[a]['score'] = server.characters[cid].abilities[a]['base_score']+server.characters[cid].abilities[a]['mod_score'] + server.characters[cid].abilities[a]['racial_mod']
+        server.characters[cid].abilities[a]['mod'] = getmod(server.characters[cid].abilities[a]['score'])
+        server.characters[cid].abilities[a]['save'] = server.characters[cid].abilities[a]['mod'] + case(server.characters[cid].abilities[a]['proficient'],server.characters[cid].proficiency_bonus,0)
+
+
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:
         reg = json.load(f)
@@ -324,18 +352,25 @@ async def modify_character(fingerprint: str, charid: str, model: ModCharModel, r
     parts = model.path.split('.')
     if len(parts) == 1:
         prop = parts[0]
-        path = []
+        _path = []
     else:
         prop = parts[0]
-        path = parts[1:]
+        _path = parts[1:]
     if prop == 'id':
         response.status_code = status.HTTP_403_FORBIDDEN
         return {'result':'Cannot edit character ID.'}
     
     MODVAL = model.data
+
+    path = ''
+    for p in _path:
+        try:
+            path += '['+str(int(p))+']'
+        except ValueError:
+            path += '["'+p+'"]'
     
     try:
-        cd = ('server.characters[charid].'+prop+'["'+'"]["'.join(path)+'"] = MODVAL').replace('[""]','')
+        cd = 'server.characters[charid].'+prop+path+' = MODVAL'
         exec(cd,globals(),locals())
     except KeyError:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -343,6 +378,7 @@ async def modify_character(fingerprint: str, charid: str, model: ModCharModel, r
     except AttributeError:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Could not find the referenced property.'}
+    recalculate(charid)
     server.characters[charid].update()
     server.characters[charid].cache()
     server.connections[fingerprint].user.update()

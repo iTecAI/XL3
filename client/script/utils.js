@@ -1,3 +1,34 @@
+var SKILLS = {
+    'acrobatics':'dexterity',
+    'animal_handling':'wisdom',
+    'arcana':'intelligence',
+    'athletics':'strength',
+    'deception':'charisma',
+    'history':'intelligence',
+    'insight':'wisdom',
+    'intimidation':'charisma',
+    'investigation':'intelligence',
+    'medicine':'wisdom',
+    'nature':'intelligence',
+    'perception':'wisdom',
+    'performance':'charisma',
+    'persuasion':'charisma',
+    'religion':'intelligence',
+    'sleight_of_hand':'dexterity',
+    'stealth':'dexterity',
+    'survival':'wisdom'
+};
+
+var LEVELXP = [0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
+
+var DAMAGETYPES = ['acid', 'bludgeoning', 'cold', 'fire', 'force', 'lightning', 'necrotic', 'piercing', 'poison', 'psychic', 'radiant', 'slashing', 'thunder'];
+
+var CONDITIONS = ['blinded','charmed','deafened','fatigued','frightened','grappled','incapacitated','invisible','paralyzed','petrified','poisoned','prone','restrained','stunned','unconscious','exhaustion'];
+
+var CASTERS = ['bard','cleric','druid','paladin','ranger','sorcerer','warlock','wizard'];
+
+var ABILITIES = ['strength','dexterity','constitution','intelligence','wisdom','charisma'];
+
 async function getKeyPair() { // Generates or loads key pair
     if (localStorage['keypair'] == undefined || localStorage['keypair'] == 'undefined') {
         var keyPair = await crypto.subtle.generateKey(

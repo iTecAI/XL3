@@ -136,7 +136,8 @@ class GSheet(Character):
             'aj11','ae12:ae14','ae16:ae18','ae20:ae22','ae24:ae26','h11','r45:r56','ac45:ac56','r25','c148','f148','i148',
             'l148','c150','f150','i150','l150','r165:r177','c59:c84','p59:p84','ac59:ac84','i54','Inventory!d3','Inventory!d6','Inventory!d9',
             'Inventory!d12','Inventory!d15','Inventory!j3:j76','Inventory!aa3:aa76','Inventory!aq3:aq76','Inventory!ar3:ar76',
-            'Inventory!as3:as76','Inventory!at3:at76','v15','c45'
+            'Inventory!as3:as76','Inventory!at3:at76','v15','c45','c16','c21','c26','c31','c36','c41','d16','d21','d26','d31','d36','d41',
+            'h17:h22','h25:h42'
             ]
         all_ranges.extend(['p'+str(i) for i in range(17,23)])
         all_ranges.extend(['p'+str(i) for i in range(25,43)])
@@ -239,24 +240,38 @@ class GSheet(Character):
         
         # Scores, saves, and skills
         scores = [int(i) for i in self.get(['c15','c20','c25','c30','c35','c40']).values()]
+        base_scores = [int(base10(i)) for i in self.get(['c16','c21','c26','c31','c36','c41']).values()]
+        mod_scores = [int(base10(i)) for i in self.get(['d16','d21','d26','d31','d36','d41']).values()]
         saves = [int(base10(i)) for i in self.get('i17:i22')]
         mods = [getmod(i) for i in scores]
         advs = [self.map_adv(str(self.get('p'+str(i))).strip('[]')) for i in range(17,23)]
+        profs = [i == '◉' for i in self.get('h17:h22')]
         self.abilities = {}
         for a in range(len(ABILITIES)):
             self.abilities[ABILITIES[a]] = {
                 'score':scores[a],
                 'mod':mods[a],
                 'save':saves[a],
-                'adv':advs[a]
+                'adv':advs[a],
+                'base_score':base_scores[a],
+                'mod_score':mod_scores[a],
+                'racial_mod':int(scores[a] - mod_scores[a] - base_scores[a]),
+                'proficient':profs[a]
             }
         self.skills = {}
         skillvals = [int(base10(i)) for i in self.get('i25:i42')]
         advs = [self.map_adv(str(self.get('p'+str(i))).strip('[]')) for i in range(25,43)]
+        profs = [i == '◉' for i in self.get('h25:h42')]
         for s in range(len(list(SKILLS.keys()))):
+            if skillvals[s] > self.abilities[SKILLS[list(SKILLS.keys())[s]]]['mod'] + self.proficiency_bonus:
+                expert = True
+            else:
+                expert = False
             self.skills[list(SKILLS.keys())[s]] = {
                 'value':skillvals[s],
-                'adv':advs[s]
+                'adv':advs[s],
+                'proficient':profs[s],
+                'expert':expert
             }
         self.other_profs = {}
         for p in ['i51','i52','i53']:
