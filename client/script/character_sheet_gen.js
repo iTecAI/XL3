@@ -109,7 +109,6 @@ function sheet_gen(char) {
     }
     $('.ab-edit').off('click');
     $('.ab-edit').on('click',function(event){
-        console.log('click');
         $($(event.target).parents('.ability-box')).toggleClass('editing');
     });
 
@@ -132,8 +131,6 @@ function sheet_gen(char) {
             .attr('id','prof-skill-'+sks[s])
             .on('contextmenu',function(event){
                 event.preventDefault();
-                console.log(event);
-                console.log('rc');
                 if ($(event.delegateTarget).children('input').hasClass('expert')) {
                     modify($(event.delegateTarget).attr('data-skill')+'.expert',false);
                 } else {
@@ -212,7 +209,6 @@ function sheet_gen(char) {
                 modify('xp',LEVELXP[val-1]);
             }
         }
-        console.log(path,val);
 
         modify(path,val);
         $(event.target).trigger('blur');
@@ -260,7 +256,6 @@ function sheet_gen(char) {
     $('#character-reset-btn').off('click');
     $('#character-reset-btn').on('click',function(event){
         bootbox.confirm('Resetting this character will cause all changes you have made to be erased, except thos made to your inventory. Proceed?',function(result){
-            console.log(result);
             if (result) {
                 cpost(
                     '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/reset/',
