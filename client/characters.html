@@ -10,6 +10,7 @@
         <link rel="stylesheet" type="text/css" href="style/dialogs.css">
         <link rel="stylesheet" type="text/css" href="style/switches.css">
         <link rel="stylesheet" type="text/css" href="style/characters.css">
+        <link rel="stylesheet" type="text/css" href="style/characters_main_panel.css">
         
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -262,7 +263,7 @@
                     </div>
                 </div>
             </div>
-            <div id='col-skills' class='column'>
+            <div id='col-skills' class='column noselect noscroll'>
                 <div id='skills' class='noselect'>
                 
                 </div>
@@ -273,7 +274,7 @@
                     <span>PASSIVE INVESTIGATION</span> <span id='inve-passive-val'></span>
                 </div>
             </div>
-            <div id='col-health' class='column noselect'>
+            <div id='col-health' class='column noselect noscroll'>
                 <div id='important-stats'>
                     <img id='important-stats-settings' src='assets/icons/settings.png'>
                     <table>
@@ -292,14 +293,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div id='stat-settings' class='noselect transient'>
-                        <span class='set-name'>BASE INIT</span><span class='set-val' id='init-base'></span><br><br>
-                        <span class='set-name'>MOD INIT</span><input class='set-val sheet-in' id='init-mod' data-type='number' data-path='init_mod'><br><br>
-                        <span class='set-name'>BASE AC</span><span class='set-val' id='ac-base'></span><br><br>
-                        <span class='set-name'>MOD AC</span><input class='set-val sheet-in' id='ac-mod' data-type='number' data-path='ac.mod'><br><br>
-                        <span class='set-name'>BASE SPEED</span><span class='set-val' id='spd-base'></span><br><br>
-                        <span class='set-name'>MOD SPEED</span><input class='set-val sheet-in' id='spd-mod' data-type='number' data-path='speed.walk.mod'>
-                    </div>
                 </div>
                 <div id='hp-display'>
                     <span id='hp-head'>HP</span>
@@ -345,6 +338,22 @@
 
                 </div>
                 <button id='sr-commence'>SHORT REST</button>
+            </div>
+            <div id='main-panel'>
+                <div id='main-tabs'>
+                    <button id='equipment-tab'>Equipment</button>
+                    <button id='inventory-tab'>Inventory</button>
+                    <button id='spells-tab'>Spells</button>
+                    <button id='about-tab'>About</button>
+                </div>
+            </div>
+            <div id='stat-settings' class='noselect transient'>
+                <span class='set-name'>BASE INIT</span><span class='set-val' id='init-base'></span><br><br>
+                <span class='set-name'>MOD INIT</span><input class='set-val sheet-in' id='init-mod' data-type='number' data-path='init_mod'><br><br>
+                <span class='set-name'>BASE AC</span><span class='set-val' id='ac-base'></span><br><br>
+                <span class='set-name'>MOD AC</span><input class='set-val sheet-in' id='ac-mod' data-type='number' data-path='ac.mod'><br><br>
+                <span class='set-name'>BASE SPEED</span><span class='set-val' id='spd-base'></span><br><br>
+                <span class='set-name'>MOD SPEED</span><input class='set-val sheet-in' id='spd-mod' data-type='number' data-path='speed.walk.mod'>
             </div>
             
         </div>
