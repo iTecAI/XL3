@@ -138,7 +138,7 @@ class GSheet(Character):
             'l148','c150','f150','i150','l150','r165:r177','c59:c84','p59:p84','ac59:ac84','i54','Inventory!d3','Inventory!d6','Inventory!d9',
             'Inventory!d12','Inventory!d15','Inventory!j3:j76','Inventory!aa3:aa76','Inventory!aq3:aq76','Inventory!ar3:ar76',
             'Inventory!as3:as76','Inventory!at3:at76','v15','c45','c16','c21','c26','c31','c36','c41','d16','d21','d26','d31','d36','d41',
-            'h17:h22','h25:h42'
+            'h17:h22','h25:h42','i50','i49',
             ]
         all_ranges.extend(['p'+str(i) for i in range(17,23)])
         all_ranges.extend(['p'+str(i) for i in range(25,43)])
@@ -291,6 +291,8 @@ class GSheet(Character):
                         if i != '': self.other_profs[alpha(i).lower()] = i
             except:
                 pass
+        self.weapon_profs = [i.lower() for i in self.get('i50').split(', ')]
+        self.armor_profs = [i.lower() for i in self.get('i49').split(', ')]
         
         # Spellcasting
         self.spellcasting = {}

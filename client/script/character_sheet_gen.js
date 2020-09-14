@@ -59,6 +59,13 @@ function sheet_gen(char) {
     $('#char-xp').val(dat.xp);
     $('#ab-proficiency .ab-modifier').text(modformat(dat.proficiency_bonus));
     $('#perc-passive-val').text(dat.passive_perception);
+    $('#inve-passive-val').text(dat.skills.investigation.value+dat.skills.investigation.mod+cond(dat.features.map(function(item){
+        return item.toLowerCase() == 'feat: observant'
+    }).includes(true),5,0)+cond(
+        dat.skills.investigation.adv == '2d20kh1',5,0
+    )+cond(
+        dat.skills.investigation.adv == '2d20kl1',-5,0
+    )+10);
     $('#char-init span').text(modformat(dat.init+dat.init_mod));
     $('#char-ac span').text(dat.ac.base + dat.ac.mod);
     $('#char-speed span').text((dat.speed.walk.value+dat.speed.walk.mod) + ' ft.');
@@ -71,7 +78,7 @@ function sheet_gen(char) {
     $('#spd-mod').val(dat.speed.walk.mod);
 
     var abs = Object.keys(dat.abilities);
-    $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span>');
+    $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span><span id="save-head">SAVING THROWS</span>');
     for (var a=0;a<abs.length;a++) {
         $('#ab-'+abs[a]+' .ab-modifier').text(modformat(dat.abilities[abs[a]].mod));
         $('#ab-'+abs[a]+' .ab-score').text(dat.abilities[abs[a]].score);
@@ -205,6 +212,33 @@ function sheet_gen(char) {
     $('#char-maxhp input').attr('disabled',dat.options.roll_hp == false);
     $('#char-thp input').val(dat.thp);
 
+    $('#section-weapons-armor').html('');
+    $('#section-tools-vehicles').html('');
+    $('#section-languages').html('');
+    var wap = [];
+    for (var k=0;k<dat.weapon_profs.length;k++) {
+        wap.push(dat.weapon_profs[k][0].toUpperCase()+dat.weapon_profs[k].slice(1));
+    }
+    for (var k=0;k<dat.armor_profs.length;k++) {
+        if (dat.armor_profs[k].includes('shield')) {
+            wap.push(dat.armor_profs[k][0].toUpperCase()+dat.armor_profs[k].slice(1));
+        } else {
+            wap.push(dat.armor_profs[k][0].toUpperCase()+dat.armor_profs[k].slice(1) + ' armor');
+        }
+    }
+    $('#section-weapons-armor').text(wap.join(', '));
+    var tvp = [];
+    var opks = Object.keys(dat.other_profs);
+    for (var k=0;k<opks.length;k++) {
+        tvp.push(dat.other_profs[opks[k]][0].toUpperCase()+dat.other_profs[opks[k]].slice(1));
+    }
+    $('#section-tools-vehicles').text(tvp.join(', '));
+    var lp = [];
+    for (var k=0;k<dat.languages.length;k++) {
+        lp.push(dat.languages[k][0].toUpperCase()+dat.languages[k].slice(1));
+    }
+    $('#section-languages').text(lp.join(', '));
+
     // End
     $('input.fit').on('input',function(event){
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
@@ -284,7 +318,7 @@ function sheet_gen(char) {
     });
     $('#character-reset-btn').off('click');
     $('#character-reset-btn').on('click',function(event){
-        bootbox.confirm('Resetting this character will cause all changes you have made to be erased, except thos made to your inventory. Proceed?',function(result){
+        bootbox.confirm('Resetting this character will cause all changes you have made to be erased, except those made to your inventory. Proceed?',function(result){
             if (result) {
                 cpost(
                     '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/reset/',
