@@ -55,4 +55,5 @@ $(document).ready(function(){
         {},true,
         sheet_gen
     );
+    $('#short-rest-panel').slideUp(0);
 });

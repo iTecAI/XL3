@@ -353,11 +353,13 @@ class GSheet(Character):
                         slots = int(base10(self.get(spelloc[k]['slots'])))
                         self.spellcasting[spcls]['spells'][int(k)] = {
                             'slots':slots,
+                            'remaining':slots,
                             'spells':spells
                         }
                     except:
                         self.spellcasting[spcls]['spells'][int(k)] = {
                             'slots':0,
+                            'remaining':0,
                             'spells':[]
                         }
                 else:

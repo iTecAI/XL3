@@ -909,3 +909,72 @@
     color: #ffffff;
     font-family: raleway-heavy;
 }
+
+#short-rest-panel {
+    background-color: #ffffff;
+    border: 2px solid var(--foreground3);
+    border-top:  none;
+    border-radius: 0 0 10px 10px;
+    -webkit-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.75);
+    position: absolute;
+    display: inline-block;
+    right: 26vh;
+    top: 15vh;
+    width: 20vh;
+    height: fit-content;
+}
+#sr-commence {
+    width: 90%;
+    height: 3vh;
+    background-color: var(--foreground3);
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%,0px);
+    color: #ffffff;
+    border-radius: 1.5vh;
+    font-family: raleway-heavy;
+    border: none;
+    transition: background-color 0.1s;
+}
+#sr-commence:hover {
+    background-color: var(--foreground3-2);
+}
+#hit-dice-panel {
+    margin-bottom: calc(3vh + 20px);
+    padding: 5px;
+}
+.hd-item {
+    border: 1px solid var(--background3);
+    border-radius: 5px;
+    height: 5vh;
+    width: 100%;
+    padding: 5px;
+    position: relative;
+}
+.hd-item button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 5vh;
+    width: 40%;
+    background-color: var(--foreground3);
+    color: var(--em-font-color2);
+    border: none;
+    border-radius: 0 5px 5px 0;
+    transition: background-color 0.1s;
+}
+.hd-item button:hover {
+    background-color: var(--foreground3-2);
+}
+.hd-item .hd-content {
+    position: absolute;
+    left: 10px;
+    width: 60%;
+    top: 50%;
+    transform: translate(0px, -50%);
+    font-size: 2.2vh;
+    font-family: raleway-heavy;
+}
