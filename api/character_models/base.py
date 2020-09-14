@@ -19,7 +19,8 @@ class Character(BaseItem):
         self.options = defaults(options,{
             'public':True,
             'variant_encumbrance':False,
-            'coin_weight':True
+            'coin_weight':True,
+            'roll_hp':False
         })
         self.owner = ''
         self.campaign = ''

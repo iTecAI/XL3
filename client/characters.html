@@ -132,6 +132,16 @@
                 <button id='character-settings-btn' data-tooltip='Configure Character' data-tooltip-location='bottom' class='transient'>
                     <img src='assets/icons/settings_white.png'>
                 </button>
+                <div id='rest-buttons' class='transient'>
+                    <button id='short-rest'>
+                        <img src='assets/icons/flame.png'>
+                        SHORT REST
+                    </button>
+                    <button id='long-rest'>
+                        <img src='assets/icons/sleep.png'>
+                        LONG REST
+                    </button>
+                </div>
             </div>
             <div id='character-settings' class='transient noselect'>
                 <div id='char-settings-title'><span>Settings</span></div>
@@ -146,14 +156,21 @@
                     <div class='char-settings-switch'>
                         <span>VARIANT ENCUMBRANCE</span>
                         <label class="switch">
-                            <input type="checkbox" id='opt-public' class='sheet-in' data-path='options.variant_encumbrance'>
+                            <input type="checkbox" id='opt-encumbrance' class='sheet-in' data-path='options.variant_encumbrance'>
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class='char-settings-switch'>
                         <span>COIN WEIGHT</span>
                         <label class="switch">
-                            <input type="checkbox" id='opt-public' class='sheet-in' data-path='options.coin_weight'>
+                            <input type="checkbox" id='opt-coinweight' class='sheet-in' data-path='options.coin_weight'>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class='char-settings-switch'>
+                        <span>ROLL HP</span>
+                        <label class="switch">
+                            <input type="checkbox" id='opt-rollhp' class='sheet-in' data-path='options.roll_hp'>
                             <span class="slider round"></span>
                         </label>
                     </div>
@@ -269,6 +286,35 @@
                                 <td id='char-init'><span></span></td>
                                 <td id='char-ac'><span></span></td>
                                 <td id='char-speed'><span></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id='stat-settings' class='noselect transient'>
+                        <span class='set-name'>BASE INIT</span><span class='set-val' id='init-base'></span><br><br>
+                        <span class='set-name'>MOD INIT</span><input class='set-val sheet-in' id='init-mod' data-type='number' data-path='init_mod'><br><br>
+                        <span class='set-name'>BASE AC</span><span class='set-val' id='ac-base'></span><br><br>
+                        <span class='set-name'>MOD AC</span><input class='set-val sheet-in' id='ac-mod' data-type='number' data-path='ac.mod'><br><br>
+                        <span class='set-name'>BASE SPEED</span><span class='set-val' id='spd-base'></span><br><br>
+                        <span class='set-name'>MOD SPEED</span><input class='set-val sheet-in' id='spd-mod' data-type='number' data-path='speed.walk.mod'>
+                    </div>
+                </div>
+                <div id='hp-display'>
+                    <span id='hp-head'>HP</span>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CURRENT</th>
+                                <th class='hp-slash'></th>
+                                <th>MAX</th>
+                                <th>TEMP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id='char-hp'><input class='sheet-in' data-type='number' min='0' data-path='hp'></td>
+                                <td class='hp-slash'>/</td>
+                                <td id='char-maxhp'><input class='sheet-in' data-type='number' min='0' data-path='hp' disabled='true'></td>
+                                <td id='char-thp'><input class='sheet-in' data-type='number' min='0' data-path='thp'></td>
                             </tr>
                         </tbody>
                     </table>

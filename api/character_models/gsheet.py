@@ -1,5 +1,5 @@
 from api.api_utils import *
-from api.character_models.base import Character
+from api.character_models.base import Character, ITEMS
 import os
 from googleapiclient.errors import HttpError
 import re, json
@@ -12,10 +12,6 @@ class GSheet(Character):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.sheet_id = kwargs['sheet_id']
-        if 'init_load' in kwargs.keys():
-            self.init_load = kwargs['init_load']
-        else:
-            self.init_load = True
 
         service = API_ENGINE
         sheet_engine = service.spreadsheets()
@@ -29,6 +25,11 @@ class GSheet(Character):
                 raise ValueError('XL3 cannot access that sheet. Make sure it is readable by link sharing, or that it is shared with '+API_ACCT+' .')
         
         self.load_character(sheet_engine)
+    
+    def to_dict(self):
+        items = ITEMS[:]
+        items.extend('sheet_id')
+        return {i:getattr(self,i,None) for i in items}
     
     def get(self,r):
         if type(r) == list:
@@ -226,7 +227,10 @@ class GSheet(Character):
         self.passive_perception = int(base10(self.get('c45')))
 
         # Combat stats
-        self.ac = int(self.get('r12'))
+        self.ac = {
+            'base':int(self.get('r12')),
+            'mod':0
+        }
         self.max_hp = int(self.get('u16'))
         self.hp = self.max_hp+0
         self.thp = 0
@@ -386,9 +390,6 @@ class GSheet(Character):
         self.features.extend(self.get('c59:c84'))
         self.features.extend(self.get('p59:p84'))
         self.features.extend(self.get('ac59:ac84'))
-
-        if not self.init_load:
-            return
 
         # Inventory
         self.inventory = {

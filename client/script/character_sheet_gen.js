@@ -49,8 +49,15 @@ function sheet_gen(char) {
     $('#ab-proficiency .ab-modifier').text(modformat(dat.proficiency_bonus));
     $('#perc-passive-val').text(dat.passive_perception);
     $('#char-init span').text(modformat(dat.init+dat.init_mod));
-    $('#char-ac span').text(dat.ac);
+    $('#char-ac span').text(dat.ac.base + dat.ac.mod);
     $('#char-speed span').text((dat.speed.walk.value+dat.speed.walk.mod) + ' ft.');
+
+    $('#init-base').text(dat.init);
+    $('#init-mod').val(dat.init_mod);
+    $('#ac-base').text(dat.ac.base);
+    $('#ac-mod').val(dat.ac.mod);
+    $('#spd-base').text(dat.speed.walk.value);
+    $('#spd-mod').val(dat.speed.walk.mod);
 
     var abs = Object.keys(dat.abilities);
     $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span>');
@@ -181,6 +188,12 @@ function sheet_gen(char) {
         .appendTo($('#skills'));
     }
 
+    $('#char-hp input').val(dat.hp);
+    $('#char-hp input').attr('max',dat.max_hp);
+    $('#char-maxhp input').val(dat.max_hp);
+    $('#char-maxhp input').attr('disabled',dat.options.roll_hp == false);
+    $('#char-thp input').val(dat.thp);
+
     // End
     $('input.fit').on('input',function(event){
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
@@ -255,6 +268,7 @@ function sheet_gen(char) {
         activateitem('#character-settings');
         activateitem('#character-settings-btn');
         activateitem('#character-reset-btn');
+        activateitem('#rest-buttons');
         
     });
     $('#character-reset-btn').off('click');
@@ -333,4 +347,9 @@ function sheet_gen(char) {
     } else {
         $('#class-warning').hide();
     }
+
+    $('#important-stats-settings').off('click');
+    $('#important-stats-settings').on('click',function(event){
+        activateitem('#stat-settings');
+    });
 }

@@ -1,0 +1,732 @@
+[
+    {
+        "name": "Club",
+        "slug": "club",
+        "group": "simple",
+        "type": "melee",
+        "cost": 0.1,
+        "damage": {
+            "dice": "1d4",
+            "type": "bludgeoning"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "light"
+            }
+        ]
+    },
+    {
+        "name": "Dagger",
+        "slug": "dagger",
+        "group": "simple",
+        "type": "melee",
+        "cost": 2.0,
+        "damage": {
+            "dice": "1d4",
+            "type": "piercing"
+        },
+        "weight": 1,
+        "properties": [
+            {
+                "name": "finesse"
+            },
+            {
+                "name": "light"
+            },
+            {
+                "name": "thrown",
+                "range": "20/60"
+            }
+        ]
+    },
+    {
+        "name": "Greatclub",
+        "slug": "greatclub",
+        "group": "simple",
+        "type": "melee",
+        "cost": 0.2,
+        "damage": {
+            "dice": "1d8",
+            "type": "bludgeoning"
+        },
+        "weight": 10,
+        "properties": [
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Handaxe",
+        "slug": "handaxe",
+        "group": "simple",
+        "type": "melee",
+        "cost": 5.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "slashing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "light"
+            },
+            {
+                "name": "thrown",
+                "range": "20/60"
+            }
+        ]
+    },
+    {
+        "name": "Javelin",
+        "slug": "javelin",
+        "group": "simple",
+        "type": "melee",
+        "cost": 0.5,
+        "damage": {
+            "dice": "1d6",
+            "type": "piercing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "thrown",
+                "range": "30/120"
+            }
+        ]
+    },
+    {
+        "name": "Light-hammer",
+        "slug": "light-hammer",
+        "group": "simple",
+        "type": "melee",
+        "cost": 2.0,
+        "damage": {
+            "dice": "1d4",
+            "type": "bludgeoning"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "light"
+            },
+            {
+                "name": "thrown",
+                "range": "20/60"
+            }
+        ]
+    },
+    {
+        "name": "Mace",
+        "slug": "mace",
+        "group": "simple",
+        "type": "melee",
+        "cost": 5.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "bludgeoning"
+        },
+        "weight": 4,
+        "properties": []
+    },
+    {
+        "name": "Quarterstaff",
+        "slug": "quarterstaff",
+        "group": "simple",
+        "type": "melee",
+        "cost": 0.2,
+        "damage": {
+            "dice": "1d6",
+            "type": "bludgeoning"
+        },
+        "weight": 4,
+        "properties": [
+            {
+                "name": "versatile",
+                "value": "1d8"
+            }
+        ]
+    },
+    {
+        "name": "Sickle",
+        "slug": "sickle",
+        "group": "simple",
+        "type": "melee",
+        "cost": 1.0,
+        "damage": {
+            "dice": "1d4",
+            "type": "slashing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "light"
+            }
+        ]
+    },
+    {
+        "name": "Spear",
+        "slug": "spear",
+        "group": "simple",
+        "type": "melee",
+        "cost": 1.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "piercing"
+        },
+        "weight": 3,
+        "properties": [
+            {
+                "name": "thrown",
+                "range": "20/60"
+            },
+            {
+                "name": "versatile",
+                "value": "1d8"
+            }
+        ]
+    },
+    {
+        "name": "Crossbow-light",
+        "slug": "crossbow-light",
+        "group": "simple",
+        "type": "ranged",
+        "cost": 25.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "piercing"
+        },
+        "weight": 5,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "80/320"
+            },
+            {
+                "name": "loading"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Dart",
+        "slug": "dart",
+        "group": "simple",
+        "type": "ranged",
+        "cost": 0.05,
+        "damage": {
+            "dice": "1d4",
+            "type": "piercing"
+        },
+        "weight": 0.25,
+        "properties": [
+            {
+                "name": "finesse"
+            },
+            {
+                "name": "thrown",
+                "range": "20/60"
+            }
+        ]
+    },
+    {
+        "name": "Shortbow",
+        "slug": "shortbow",
+        "group": "simple",
+        "type": "ranged",
+        "cost": 25.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "piercing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "80/320"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Sling",
+        "slug": "sling",
+        "group": "simple",
+        "type": "ranged",
+        "cost": 0.1,
+        "damage": {
+            "dice": "1d4",
+            "type": "bludgeoning"
+        },
+        "weight": 0,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "30/120"
+            }
+        ]
+    },
+    {
+        "name": "Battleaxe",
+        "slug": "battleaxe",
+        "group": "martial",
+        "type": "melee",
+        "cost": 10.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "slashing"
+        },
+        "weight": 4,
+        "properties": [
+            {
+                "name": "versatile",
+                "value": "1d10"
+            }
+        ]
+    },
+    {
+        "name": "Flail",
+        "slug": "flail",
+        "group": "martial",
+        "type": "melee",
+        "cost": 10.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "bludgeoning"
+        },
+        "weight": 2,
+        "properties": []
+    },
+    {
+        "name": "Glaive",
+        "slug": "glaive",
+        "group": "martial",
+        "type": "melee",
+        "cost": 20.0,
+        "damage": {
+            "dice": "1d10",
+            "type": "slashing"
+        },
+        "weight": 6,
+        "properties": [
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "reach"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Greataxe",
+        "slug": "greataxe",
+        "group": "martial",
+        "type": "melee",
+        "cost": 30.0,
+        "damage": {
+            "dice": "1d12",
+            "type": "slashing"
+        },
+        "weight": 7,
+        "properties": [
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Greatsword",
+        "slug": "greatsword",
+        "group": "martial",
+        "type": "melee",
+        "cost": 50.0,
+        "damage": {
+            "dice": "2d6",
+            "type": "slashing"
+        },
+        "weight": 6,
+        "properties": [
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Halberd",
+        "slug": "halberd",
+        "group": "martial",
+        "type": "melee",
+        "cost": 20.0,
+        "damage": {
+            "dice": "1d10",
+            "type": "slashing"
+        },
+        "weight": 6,
+        "properties": [
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "reach"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Lance",
+        "slug": "lance",
+        "group": "martial",
+        "type": "melee",
+        "cost": 10.0,
+        "damage": {
+            "dice": "1d12",
+            "type": "piercing"
+        },
+        "weight": 6,
+        "properties": [
+            {
+                "name": "reach"
+            },
+            {
+                "name": "special"
+            }
+        ]
+    },
+    {
+        "name": "Longsword",
+        "slug": "longsword",
+        "group": "martial",
+        "type": "melee",
+        "cost": 15.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "slashing"
+        },
+        "weight": 3,
+        "properties": [
+            {
+                "name": "versatile",
+                "value": "1d10"
+            }
+        ]
+    },
+    {
+        "name": "Maul",
+        "slug": "maul",
+        "group": "martial",
+        "type": "melee",
+        "cost": 10.0,
+        "damage": {
+            "dice": "2d6",
+            "type": "bludgeoning"
+        },
+        "weight": 10,
+        "properties": [
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Morningstar",
+        "slug": "morningstar",
+        "group": "martial",
+        "type": "melee",
+        "cost": 15.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "piercing"
+        },
+        "weight": 4,
+        "properties": []
+    },
+    {
+        "name": "Pike",
+        "slug": "pike",
+        "group": "martial",
+        "type": "melee",
+        "cost": 5.0,
+        "damage": {
+            "dice": "1d10",
+            "type": "piercing"
+        },
+        "weight": 18,
+        "properties": [
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "reach"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Rapier",
+        "slug": "rapier",
+        "group": "martial",
+        "type": "melee",
+        "cost": 25.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "piercing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "finesse"
+            }
+        ]
+    },
+    {
+        "name": "Scimitar",
+        "slug": "scimitar",
+        "group": "martial",
+        "type": "melee",
+        "cost": 25.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "slashing"
+        },
+        "weight": 3,
+        "properties": [
+            {
+                "name": "finesse"
+            },
+            {
+                "name": "light"
+            }
+        ]
+    },
+    {
+        "name": "Shortsword",
+        "slug": "shortsword",
+        "group": "martial",
+        "type": "melee",
+        "cost": 10.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "piercing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "finesse"
+            },
+            {
+                "name": "light"
+            }
+        ]
+    },
+    {
+        "name": "Trident",
+        "slug": "trident",
+        "group": "martial",
+        "type": "melee",
+        "cost": 5.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "piercing"
+        },
+        "weight": 4,
+        "properties": [
+            {
+                "name": "thrown",
+                "range": "20/60"
+            },
+            {
+                "name": "versatile",
+                "value": "1d8"
+            }
+        ]
+    },
+    {
+        "name": "War-pick",
+        "slug": "war-pick",
+        "group": "martial",
+        "type": "melee",
+        "cost": 5.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "piercing"
+        },
+        "weight": 2,
+        "properties": []
+    },
+    {
+        "name": "Warhammer",
+        "slug": "warhammer",
+        "group": "martial",
+        "type": "melee",
+        "cost": 15.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "bludgeoning"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "versatile",
+                "value": "1d10"
+            }
+        ]
+    },
+    {
+        "name": "Whip",
+        "slug": "whip",
+        "group": "martial",
+        "type": "melee",
+        "cost": 2.0,
+        "damage": {
+            "dice": "1d4",
+            "type": "slashing"
+        },
+        "weight": 3,
+        "properties": [
+            {
+                "name": "finesse"
+            },
+            {
+                "name": "reach"
+            }
+        ]
+    },
+    {
+        "name": "Blowgun",
+        "slug": "blowgun",
+        "group": "martial",
+        "type": "ranged",
+        "cost": 10.0,
+        "damage": {
+            "dice": "1",
+            "type": "piercing"
+        },
+        "weight": 1,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "25/100"
+            },
+            {
+                "name": "loading"
+            }
+        ]
+    },
+    {
+        "name": "Crossbow-hand",
+        "slug": "crossbow-hand",
+        "group": "martial",
+        "type": "ranged",
+        "cost": 75.0,
+        "damage": {
+            "dice": "1d6",
+            "type": "piercing"
+        },
+        "weight": 3,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "30/120"
+            },
+            {
+                "name": "light"
+            },
+            {
+                "name": "loading"
+            }
+        ]
+    },
+    {
+        "name": "Crossbow-heavy",
+        "slug": "crossbow-heavy",
+        "group": "martial",
+        "type": "ranged",
+        "cost": 50.0,
+        "damage": {
+            "dice": "1d10",
+            "type": "piercing"
+        },
+        "weight": 18,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "100/400"
+            },
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "loading"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Longbow",
+        "slug": "longbow",
+        "group": "martial",
+        "type": "ranged",
+        "cost": 50.0,
+        "damage": {
+            "dice": "1d8",
+            "type": "piercing"
+        },
+        "weight": 2,
+        "properties": [
+            {
+                "name": "ammunition",
+                "range": "150/600"
+            },
+            {
+                "name": "heavy"
+            },
+            {
+                "name": "two-handed"
+            }
+        ]
+    },
+    {
+        "name": "Net",
+        "slug": "net",
+        "group": "martial",
+        "type": "ranged",
+        "cost": 1.0,
+        "damage": {
+            "dice": "0",
+            "type": ""
+        },
+        "weight": 3,
+        "properties": [
+            {
+                "name": "special"
+            },
+            {
+                "name": "thrown",
+                "range": "5/15"
+            }
+        ]
+    }
+]

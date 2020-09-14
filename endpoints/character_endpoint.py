@@ -59,7 +59,11 @@ def recalculate(cid):
     server.characters[cid].passive_perception = sum([
         10+server.characters[cid].skills['perception']['value'],
         case(server.characters[cid].skills['perception']['adv'] == '2d20kh1',5,0),
-        case(server.characters[cid].skills['perception']['adv'] == '2d20kl1',-5,0)
+        case(server.characters[cid].skills['perception']['adv'] == '2d20kl1',-5,0),
+        case(
+            'feat: observant' in [x.lower() for x in server.characters[cid].features],
+            5,0
+        )
     ])
     server.characters[cid].init = sum([
         server.characters[cid].abilities['dexterity']['mod'],
@@ -69,10 +73,20 @@ def recalculate(cid):
             0
         ),
         case(
-            'feat: alert' in [x.lower() for x in server.characters[cid].features] and not (server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient']) and not server.characters[cid].skills[s]['proficient'],
+            'feat: alert' in [x.lower() for x in server.characters[cid].features],
             5,0
         )
     ])
+    if not server.characters[cid].options['roll_hp']:
+        hp_sum = 0
+        first = True
+        for i in server.characters[cid].hit_dice:
+            for x in range(i['max']):
+                if first:
+                    first = False
+                    continue
+                hp_sum += round(i['die_size'] / 2) + 1 + server.characters[cid].abilities['constitution']['mod']
+        server.characters[cid].max_hp = hp_sum+i['die_size']+server.characters[cid].abilities['constitution']['mod']
 
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:
@@ -452,9 +466,14 @@ async def reset_character(fingerprint: str, charid: str, response: Response):
     if not hasattr(server.characters[charid],'sheet_id'):
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'Cannot reset character, as it was not loaded directly from Google Sheets.'}
-    server.characters[charid].init_load = False
-    server.characters[charid].preload = {}
-    server.characters[charid].load_character(API_ENGINE.spreadsheets())
+    sid = server.characters[charid].sheet_id
+    pre_cid = server.characters[charid].id
+    pre_opts = server.characters[charid].options
+    pre_inv = server.characters[charid].inventory
+    server.characters[charid] =  GSheet(sheet_id=sid)
+    server.characters[charid].id = pre_cid
+    server.characters[charid].options = pre_opts
+    server.characters[charid].inventory = pre_inv
     
     server.characters[charid].update()
     server.characters[charid].cache()
@@ -467,10 +486,3 @@ async def reset_character(fingerprint: str, charid: str, response: Response):
         'public':server.characters[charid].options['public'],
         'data':server.characters[charid].to_dict()
     }
-    
-
-    
-
-    
-
-

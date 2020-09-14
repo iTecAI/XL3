@@ -9,6 +9,11 @@ EXTRAS = [
     'target-blank-links',
     'tables'
 ]
+STATIC = [
+    'armor',
+    'equipment',
+    'weapons'
+]
 
 if __name__ == "__main__":
     from api_utils import *
@@ -36,17 +41,21 @@ def get5e_direct(endpoint,passed={},limit=0,**kwargs):
 
 def get5e(endpoint,limit=0,search=''):
     full = []
-    if os.path.exists(os.path.join('database','cached','open5e',endpoint+'.json')):
+    if endpoint in STATIC:
+        with open(os.path.join('api','static_data',endpoint+'.json'),'r') as f:
+            data = json.load(f)
+    elif os.path.exists(os.path.join('database','cached','open5e',endpoint+'.json')):
         with open(os.path.join('database','cached','open5e',endpoint+'.json'),'r') as f:
             data = json.load(f)
-            for item in data:
-                if search in item['slug']:
-                    full.append(item)
-                if len(full) >= limit and limit > 0:
-                    return full
-        return full
     else:
         raise ValueError('Endpoint is incorrect or does not exist in database.')
+    for item in data:
+        if search in item['slug']:
+            full.append(item)
+        if len(full) >= limit and limit > 0:
+            return full
+    return full
+        
 
 def get_section(section,to_html=True):
     out = None
