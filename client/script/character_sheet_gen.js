@@ -47,6 +47,10 @@ function sheet_gen(char) {
     $('#char-level').val(dat.level);
     $('#char-xp').val(dat.xp);
     $('#ab-proficiency .ab-modifier').text(modformat(dat.proficiency_bonus));
+    $('#perc-passive-val').text(dat.passive_perception);
+    $('#char-init span').text(modformat(dat.init+dat.init_mod));
+    $('#char-ac span').text(dat.ac);
+    $('#char-speed span').text((dat.speed.walk.value+dat.speed.walk.mod) + ' ft.');
 
     var abs = Object.keys(dat.abilities);
     $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span>');
@@ -139,7 +143,7 @@ function sheet_gen(char) {
             })
         )
         .append(
-            $('<span class="skill-val"></span>').text(modformat(dat.skills[sks[s]].value))
+            $('<span class="skill-val"></span>').text(modformat(dat.skills[sks[s]].value+dat.skills[sks[s]].mod))
         )
         .append(
             $('<span class="skill-name"></span>').text((sks[s][0].toUpperCase()+sks[s].slice(1)).replace(/_/g,' '))

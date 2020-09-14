@@ -194,13 +194,16 @@ class GSheet(Character):
         self.proficiency_bonus = int(self.get('h14'))
 
         self.speed = {
-            'walk':int(base10(self.get('z12')))
+            'walk':{
+                'value':int(base10(self.get('z12'))),
+                'mod':0
+            }
         }
         others = self.get('i54')
         if others != '-':
             for i in others.split(', '):
                 parts = i.split(' ft. ')
-                self.speed[parts[1].lower()] = int(base10(parts[0]))
+                self.speed[parts[1].lower()] = {'value':int(base10(parts[0])),'mod':0}
 
         self.alignment = self.get('aj28')
         self.image = self.get('c176')
@@ -214,12 +217,12 @@ class GSheet(Character):
             'fail':0
         }
         hd_raw = self.get('r25')
-        self.hit_dice = {
-            'raw':hd_raw,
-            'die_size':int(base10(hd_raw.split('d')[1])),
-            'max':int(base10(hd_raw.split('d')[0])),
-            'current':int(base10(hd_raw.split('d')[0]))
-        }
+        self.hit_dice = [{
+            'raw':d,
+            'die_size':int(base10(d.split('d')[1])),
+            'max':int(base10(d.split('d')[0])),
+            'current':int(base10(d.split('d')[0]))
+        } for d in hd_raw.split(' ')]
         self.passive_perception = int(base10(self.get('c45')))
 
         # Combat stats
@@ -229,6 +232,7 @@ class GSheet(Character):
         self.thp = 0
         self.init = int(base10(self.get('v12')))
         self.init_adv = self.map_adv(self.get('v15'))
+        self.init_mod = 0
 
         ## Attacks
         atk_names = self.get('r32:r36')
@@ -271,7 +275,8 @@ class GSheet(Character):
                 'value':skillvals[s],
                 'adv':advs[s],
                 'proficient':profs[s],
-                'expert':expert
+                'expert':expert,
+                'mod':0
             }
         self.other_profs = {}
         for p in ['i51','i52','i53']:

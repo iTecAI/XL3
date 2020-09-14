@@ -51,7 +51,7 @@ $(document).ready(function(){
     });
 
     cget(
-        '/characters/'+fingerprint+'/547cab5f2705ffdb14903f1cbad14d6f569b2fc150e7900028624c9dbfa46248/',
+        '/characters/'+fingerprint+'/3c2bb133cd50f78da06fada8c7c20e42177fbc17739bd1a2eb404f39b07fc72b/',
         {},true,
         sheet_gen
     );

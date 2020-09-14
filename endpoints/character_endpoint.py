@@ -28,6 +28,13 @@ def get_proficiency(level):
         if level <= p:
             return profs[p]
 
+def has_class(cid,_cls,lvl,subc=None):
+    for c in server.characters[cid].classes:
+        if _cls == c['class'] and (subc == c['class'] or subc == None) and c['level'] >= lvl:
+            return True
+    return False
+            
+
 def recalculate(cid):
     # Misc stats
     server.characters[cid].proficiency_bonus = get_proficiency(server.characters[cid].level)
@@ -44,11 +51,28 @@ def recalculate(cid):
             case(server.characters[cid].skills[s]['proficient'],server.characters[cid].proficiency_bonus,0),
             case(server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient'],server.characters[cid].proficiency_bonus,0),
             case(
-                'jack of all trades' in [x.lower() for x in server.characters[cid].features] and not (server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient']) and not server.characters[cid].skills[s]['proficient'],
+                ('jack of all trades' in [x.lower() for x in server.characters[cid].features] or has_class(cid,'bard',2)) and not (server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient']) and not server.characters[cid].skills[s]['proficient'],
                 int(server.characters[cid].proficiency_bonus * 0.5),
                 0
             )
         ])
+    server.characters[cid].passive_perception = sum([
+        10+server.characters[cid].skills['perception']['value'],
+        case(server.characters[cid].skills['perception']['adv'] == '2d20kh1',5,0),
+        case(server.characters[cid].skills['perception']['adv'] == '2d20kl1',-5,0)
+    ])
+    server.characters[cid].init = sum([
+        server.characters[cid].abilities['dexterity']['mod'],
+        case(
+            'jack of all trades' in [x.lower() for x in server.characters[cid].features] or has_class(cid,'bard',2),
+            int(server.characters[cid].proficiency_bonus * 0.5),
+            0
+        ),
+        case(
+            'feat: alert' in [x.lower() for x in server.characters[cid].features] and not (server.characters[cid].skills[s]['expert'] and server.characters[cid].skills[s]['proficient']) and not server.characters[cid].skills[s]['proficient'],
+            5,0
+        )
+    ])
 
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:

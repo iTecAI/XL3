@@ -8,7 +8,7 @@ import gc, os
 
 ITEMS = [
     'name','race','class_display','classes','level','xp','proficiency_bonus','speed',
-    'alignment','passive_perception','ac','max_hp','hp','thp','init','init_adv','inspiration','equipped_items','death_saves','hit_dice','attacks','abilities','skills',
+    'alignment','passive_perception','ac','max_hp','hp','thp','init','init_adv','init_mod','inspiration','equipped_items','death_saves','hit_dice','attacks','abilities','skills',
     'other_profs','spellcasting','resist','vuln','immune','image','background','traits','languages','physical','backstory',
     'features','inventory','options','owner','id','campaign'
 ]

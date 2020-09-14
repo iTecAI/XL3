@@ -16,9 +16,12 @@
     ],
     "level":5,
     "xp":6500,
-    "prof":null,
+    "proficiency_bonus":3,
     "speed":{
-        "walk":30
+        "walk":{
+            "value":30,
+            "mod":0
+        }
     },
     "alignment":"Chaotic Neutral",
     "passive_perception":13,
@@ -28,6 +31,7 @@
     "thp":0,
     "init":5,
     "init_adv":"d20",
+    "init_mod":0,
     "inspiration":true,
     "equipped_items":[
         "Studded Leather",
@@ -37,12 +41,14 @@
         "success":0,
         "fail":0
     },
-    "hit_dice":{
-        "raw":"5d8",
-        "die_size":8,
-        "max":5,
-        "current":5
-    },
+    "hit_dice":[
+        {
+            "raw":"5d8",
+            "die_size":8,
+            "max":5,
+            "current":5
+        }
+    ],
     "attacks":{
         "Shortbow":{
             "name":"Shortbow",
@@ -226,109 +232,127 @@
             "value":7,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "animal_handling":{
             "value":3,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "arcana":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "athletics":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "deception":{
             "value":10,
             "adv":"d20",
             "proficient":true,
-            "expert":true
+            "expert":true,
+            "mod":0
         },
         "history":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "insight":{
             "value":3,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "intimidation":{
             "value":5,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "investigation":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "medicine":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "nature":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "perception":{
             "value":3,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "performance":{
             "value":7,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "persuasion":{
             "value":7,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "religion":{
             "value":1,
             "adv":"2d20kl1",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "sleight_of_hand":{
             "value":7,
             "adv":"d20",
             "proficient":true,
-            "expert":false
+            "expert":false,
+            "mod":0
         },
         "stealth":{
             "value":10,
             "adv":"d20",
             "proficient":true,
-            "expert":true
+            "expert":true,
+            "mod":0
         },
         "survival":{
             "value":1,
             "adv":"d20",
             "proficient":false,
-            "expert":false
+            "expert":false,
+            "mod":0
         }
     },
     "other_profs":{
@@ -434,7 +458,8 @@
         "Tokens of the Shadowfell",
         "Bolts from the Grave",
         "Bardic Inspiration",
-        "Song of Rest"
+        "Song of Rest",
+        "Jack of All Trades"
     ],
     "inventory":{
         "carry_capacity":150,
@@ -730,6 +755,6 @@
         "coin_weight":true
     },
     "owner":"",
-    "id":"6ea6cb42b1bb68313ed2f932c0dff8d7056c2dee8a9a3b8dabbbe74ecf18537e",
+    "id":"fc991f26df21b4c4065d9273ac841788807ef17c77d62495d5236db916c2e785",
     "campaign":""
 }
