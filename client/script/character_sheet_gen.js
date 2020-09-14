@@ -352,4 +352,8 @@ function sheet_gen(char) {
     $('#important-stats-settings').on('click',function(event){
         activateitem('#stat-settings');
     });
+
+    $('#long-rest').on('click',function(event){
+        modify('hp',$('#char-maxhp input').val());
+    });
 }
