@@ -77,9 +77,13 @@ class GSheet(Character):
         ret = {
             'name':name,
             'bonus':bonus,
+            'bonus_mod':0,
             'desc':desc,
             'damage':[],
             'properties':[],
+            'type':'melee',
+            'category':'simple',
+            'maxiomize_damage':False,
             'automated':False
         }
 
@@ -116,6 +120,16 @@ class GSheet(Character):
             ret['automated'] = True
         except:
             pass
+
+        if 'melee' in desc.lower():
+            ret['type'] = 'melee'
+        else:
+            ret['type'] = 'ranged'
+        if 'simple' in desc.lower():
+            ret['category'] = 'simple'
+        else:
+            ret['category'] = 'martial'
+
         return ret
 
     def map_adv(self,astr):

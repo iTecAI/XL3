@@ -11,6 +11,7 @@
     position: absolute;
     top: 17vh;
     left: 38vw;
+    box-sizing: border-box;
 }
 
 #main-tabs {
@@ -21,9 +22,12 @@
     left: 0px;
     overflow-x: visible;
     display: table;
+    margin-bottom: 0px;
+    background-color: var(--foreground3);
+    border-collapse: collapse;
 }
 #main-tabs button {
-    width: calc(100% / 4);
+    width: calc(100% / 3);
     display: table-cell;
     height: 100%;
     background-color: var(--foreground3);
@@ -41,4 +45,130 @@
 }
 #main-tabs button:hover, #main-tabs button.active {
     background-color: var(--foreground3-2);
+}
+
+.panel-tab {
+    position: absolute;
+    display: none;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+.panel-tab.active {
+    display: inline-block;
+}
+
+#tabs {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 95.1%;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#actions {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: calc(100% / 3);
+    height: 100%;
+    border-bottom-left-radius: 5px;
+}
+#actions-title {
+    position: absolute;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    display: inline-block;
+    top: 0px;
+    left: 0px;
+    font-family: raleway-heavy;
+    color: #ffffff;
+    background-color: var(--foreground3);
+    height: 5%;
+}
+#actions-title span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}
+#actions-panel {
+    position: absolute;
+    display: inline-block;
+    top: 5%;
+    left: 0px;
+    height: 95%;
+    width: 100%;
+    background-color: var(--foreground2);
+    overflow-y: scroll;
+    border-bottom-left-radius: 6px;
+}
+.action-item {
+    position: relative;
+    height: auto;
+    width: calc(100% - 20px);
+    display: inline-block;
+    margin: 10px;
+    border: 2px solid var(--foreground3);
+    border-radius: 0px;
+    margin-bottom: 0px;
+    background-color: #ffffff;
+    transition: all 0.5s ease-in-out;
+    overflow-y: hidden;
+    padding-top: 0px;
+    max-height: 10%;
+}
+.action-item.active {
+    /*height: fit-content;*/
+    max-height: 100vh;
+}
+.action-item-title {
+    font-family: raleway-heavy;
+    width: 100%;
+    text-align: center;
+    background-color: var(--foreground3);
+    position: relative;
+    color: #ffffff;
+    height: 30px;
+    display: inline-block;
+    margin: 0px;
+    margin-top: -2px;
+    padding-top: -2px;
+    top: -2px;
+}
+.action-item-sub {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    color: #000000;
+    font-family: raleway-heavy;
+}
+.atk-info {
+    position: relative;;
+    display: inline-block;
+    width: 100%;
+    border: none;
+    transition: border 0.2s;
+    border-top: 2px solid #ffffff;
+    height: 0px;
+    overflow: scroll;
+    padding: 10px;
+    display: none;
+}
+.action-item.active .atk-info {
+    position: relative;
+    border-top: 2px solid var(--foreground3);
+    height: fit-content;
+    display: inline-block;
+}
+.item-part-title {
+    display: block;
+    width: 100%;
+    font-family: raleway-heavy;
+    text-align: center;
 }

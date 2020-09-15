@@ -77,6 +77,11 @@ function sheet_gen(char) {
     $('#spd-base').text(dat.speed.walk.value);
     $('#spd-mod').val(dat.speed.walk.mod);
 
+    $('#main-tabs button').removeClass('active');
+    $('.tab').removeClass('active');
+    $('#inventory-tab').addClass('active');
+    $('#tab-inventory').addClass('active');
+
     var abs = Object.keys(dat.abilities);
     $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span><span id="save-head">SAVING THROWS</span>');
     for (var a=0;a<abs.length;a++) {
@@ -238,6 +243,71 @@ function sheet_gen(char) {
         lp.push(dat.languages[k][0].toUpperCase()+dat.languages[k].slice(1));
     }
     $('#section-languages').text(lp.join(', '));
+
+    var actionKeys = Object.keys(dat.attacks);
+    $('#actions-panel').html('');
+    for (var a=0;a<actionKeys.length;a++) {
+        var features_desc = [];
+        for (var f=0;f<dat.attacks[actionKeys[a]].properties.length;f++) {
+            if (Object.keys(dat.attacks[actionKeys[a]].properties[f]).length == 1) {
+                features_desc.push('<strong>'+dat.attacks[actionKeys[a]].properties[f].name + '</strong>' + cond(f+1==dat.attacks[actionKeys[a]].properties.length,'',', '));
+            } else {
+                var jnr = '<strong>'+dat.attacks[actionKeys[a]].properties[f].name + ':</strong> ';
+                for (var x=0;x<Object.keys(dat.attacks[actionKeys[a]].properties[f]).length;x++) {
+                    var ival = dat.attacks[actionKeys[a]].properties[f][Object.keys(dat.attacks[actionKeys[a]].properties[f])[x]];
+                    if (Object.keys(dat.attacks[actionKeys[a]].properties[f])[x] == 'name') {
+                        continue;
+                    } else {
+                        jnr += Object.keys(dat.attacks[actionKeys[a]].properties[f])[x] + '('+ival+')';
+                    }
+                }
+                features_desc.push(cond(f>0,'<br>','')+jnr+cond(f+1==dat.attacks[actionKeys[a]].properties.length,'','<br>'));
+            }
+            
+        }
+        features_desc = features_desc.join('');
+
+        var damage_desc = [];
+        for (var d=0;d<dat.attacks[actionKeys[a]].damage.length;d++) {
+            damage_desc.push(dat.attacks[actionKeys[a]].damage[d].roll+' '+dat.attacks[actionKeys[a]].damage[d].mods.join(' ')+' '+dat.attacks[actionKeys[a]].damage[d].type+' damage');
+        }
+        damage_desc = damage_desc.join(' plus ');
+
+        $('<div class="action-item"></div>')
+        .append(
+            $('<div class="action-item-title"></div>').text(actionKeys[a])
+            .on('click',function(event){
+                $(event.delegateTarget).parents('.action-item').toggleClass('active');
+            })
+        )
+        .append(
+            $('<div class="action-item-sub"></div>').text((dat.attacks[actionKeys[a]].type + ' ' + dat.attacks[actionKeys[a]].category + ' weapon').toUpperCase())
+        )
+        .append(
+            $('<div class="atk-info noscroll noselect"></div>')
+            .append(
+                $('<div class="action-item-hit_info"></div>')
+                .append(
+                    $('<span class="item-part-content"></span>').html([
+                        '<em>To Hit:</em> ',
+                        'd20'+cond(dat.attacks[actionKeys[a]].bonus>0,'+','')+cond(dat.attacks[actionKeys[a]].bonus==0,'',dat.attacks[actionKeys[a]].bonus.toString())+'<br>',
+                        '<em>Hit:</em> ',
+                        damage_desc + cond(dat.attacks[actionKeys[a]].maximize_damage,' (maximized).','.')
+                    ].join(''))
+                )
+            )
+            .append(
+                $('<div class="action-item-feats"></div>')
+                .append(
+                    $('<span class="item-part-title"></span>').text('FEATURES')
+                )
+                .append(
+                    $('<span class="item-part-content"></span>').html(features_desc)
+                )
+            )
+        )
+        .appendTo('#actions-panel');
+    }
 
     // End
     $('input.fit').on('input',function(event){
@@ -456,5 +526,12 @@ function sheet_gen(char) {
         if ($(event.target).parents('div').find('#short-rest-panel').length == 0) {
             $('#short-rest-panel').slideUp(200);
         }
-    })
+    });
+    $('#main-tabs button').off('click');
+    $('#main-tabs button').on('click',function(event){
+        $('#main-tabs button').removeClass('active');
+        $('.tab').removeClass('active');
+        $(event.delegateTarget).addClass('active');
+        $('#tab-'+$(event.delegateTarget).attr('data-tab')).addClass('active');
+    });
 }
