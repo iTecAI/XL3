@@ -11,20 +11,22 @@
     position: absolute;
     top: 17vh;
     left: 38vw;
-    box-sizing: border-box;
+    box-sizing: content-box;
+    background-color: var(--background2);
 }
 
 #main-tabs {
     width: 100%;
-    height: 5%;
+    height: calc(5% + 1px);
     position: absolute;
-    top: 0px;
+    top: -1px;
     left: 0px;
     overflow-x: visible;
     display: table;
     margin-bottom: 0px;
     background-color: var(--foreground3);
-    border-collapse: collapse;
+    background-clip: content-box;
+    border-radius: 5px 5px 0 0;
 }
 #main-tabs button {
     width: calc(100% / 3);
@@ -99,14 +101,85 @@
 #actions-panel {
     position: absolute;
     display: inline-block;
-    top: 5%;
+    bottom: 0px;
     left: 0px;
     height: 95%;
     width: 100%;
     background-color: var(--foreground2);
     overflow-y: scroll;
+    transition: all 0.3s;
     border-bottom-left-radius: 6px;
 }
+#atk-edit-create-area.active + #actions-panel {
+    height: 60%;
+}
+
+#atk-edit-create-area {
+    height: 0px;
+    overflow: hidden;
+    width: 100%;
+    position: absolute;
+    top: 5%;
+    left: 0px;
+    transition: all 0.3s;
+    background-color: var(--foreground3);
+    color: #ffffff;
+}
+#atk-edit-create-area.active {
+    height: 35%;
+    overflow-y: scroll;
+}
+#atk-edit-create-area .atk-edit-item {
+    width: 100%;
+    padding: 10px;
+}
+#atk-edit-create-area .atk-edit-item .title {
+    display: inline-block;
+    width: 49%;
+    text-align: center;
+    font-family: raleway-heavy;
+}
+#atk-edit-create-area .atk-edit-item input {
+    width: 49%;
+    border: none;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 8px 1px rgba(0,0,0,0.75);
+    padding: 5px;
+    font-size: 14px;
+}
+.tag-display {
+    width: calc(100% - 20px);
+    background-color: var(--foreground3-2);
+    padding: 5px;
+    border-radius: 10px;
+    margin: 10px;
+    height: 40px;
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.tag-item {
+    height: 30px;
+    background-color: var(--foreground2);
+    color: #ffffff;
+    font-family: raleway-heavy;
+    border-radius: 10px;
+    font-size: 15px;
+    position: relative;
+    display: inline-block;
+    padding: 5px;
+    margin-left: 5px;
+    transition: left 0.2s;
+    overflow: hidden;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+.tag-item:hover {
+    background-color: #e91f1f;
+}
+
 .action-item {
     position: relative;
     height: auto;
@@ -117,10 +190,12 @@
     border-radius: 0px;
     margin-bottom: 0px;
     background-color: #ffffff;
-    transition: all 0.5s ease-in-out;
+    transition: all 0s ease-in-out;
     overflow-y: hidden;
     padding-top: 0px;
-    max-height: 10%;
+    max-height: 60px;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 .action-item.active {
     /*height: fit-content;*/
@@ -171,4 +246,39 @@
     width: 100%;
     font-family: raleway-heavy;
     text-align: center;
+}
+
+.action-edit {
+    position: absolute;
+    display: inline-block;
+    top: -1px;
+    right: 0px;
+    width: 30px;
+    height: 30px;
+    background-color: #00000000;
+    border: none;
+    transition: all 0.1s;
+    padding: 0px;
+}
+.action-delete {
+    position: absolute;
+    display: inline-block;
+    top: -1px;
+    right: 30px;
+    width: 30px;
+    height: 30px;
+    background-color: #00000000;
+    transition: all 0.1s;
+    border: none;
+}
+.action-delete img, .action-edit img {
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.action-delete:hover, .action-edit:hover {
+    background-color: #00000044;
 }

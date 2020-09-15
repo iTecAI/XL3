@@ -1,4 +1,4 @@
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, create_model, validator
 from typing import Any
 
 class ConnectionModel(BaseModel): # Connection model
@@ -80,3 +80,7 @@ class MultipleCharacterResponseModel(BaseModel):
 class ModCharModel(BaseModel):
     path: str
     data: Any
+
+class AtkModModel(BaseModel):
+    action: str
+    data: dict

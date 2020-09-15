@@ -260,7 +260,7 @@ async def new_character(fingerprint: str, model: NewCharacterModel, response: Re
 
 # Character actions
 @router.post('/{charid}/duplicate/',responses={
-    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    405: {'model':SimpleResult,'description':'You must be logged in to duplicate characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
     200: {'model':SingleCharacterResponseModel,'description':'Returns duplicated character data.','content':{'application/json':{'example':{
@@ -328,7 +328,7 @@ async def dupe_character(fingerprint: str, charid: str, response: Response):
         }
 
 @router.post('/{charid}/delete/',responses={
-    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    405: {'model':SimpleResult,'description':'You must be logged in to delete characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
     200: {'model':SimpleResult,'description':'Deletes character','content':{'application/json':{'example':{'result':'Success.'}}}}
@@ -363,7 +363,7 @@ async def delete_character(fingerprint: str, charid: str, response: Response):
     return {'result':'Success.'}
 
 @router.post('/{charid}/modify/',responses={
-    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    405: {'model':SimpleResult,'description':'You must be logged in to modify characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection or Character Property not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
     200: {'model':SingleCharacterResponseModel,'description':'Modifies character, then returns data.','content':{'application/json':{'example':{
@@ -478,6 +478,42 @@ async def reset_character(fingerprint: str, charid: str, response: Response):
     server.characters[charid].update()
     server.characters[charid].cache()
     server.connections[fingerprint].user.update()
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }
+
+@router.post('/{charid}/modify/attacks/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify characters or passed Action was invalid.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection or Character Property not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Modifies character, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def char_atk_modify(fingerprint: str, charid: str, model: AtkModModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    if not model.action in ['add','remove']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Invalid action.'}
+    
     return {
         'result':'Success.',
         'cid':charid,

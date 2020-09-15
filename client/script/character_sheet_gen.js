@@ -16,6 +16,10 @@ function modify(path,val) {
     );
 }
 
+function firstCase(str) {
+    return str[0].toUpperCase() + str.slice(1);
+}
+
 function charHasClass(_dat,_cls,lvl,sub) {
     for (var c=0;c<_dat.classes.length;c++) {
         if (dat.classes[c].class == _cls && (dat.classes[c].subclass == sub || sub == undefined) && (dat.classes[c].level == lvl || lvl == undefined)) {
@@ -78,7 +82,7 @@ function sheet_gen(char) {
     $('#spd-mod').val(dat.speed.walk.mod);
 
     $('#main-tabs button').removeClass('active');
-    $('.tab').removeClass('active');
+    $('.panel-tab').removeClass('active');
     $('#inventory-tab').addClass('active');
     $('#tab-inventory').addClass('active');
 
@@ -244,44 +248,44 @@ function sheet_gen(char) {
     }
     $('#section-languages').text(lp.join(', '));
 
-    var actionKeys = Object.keys(dat.attacks);
     $('#actions-panel').html('');
-    for (var a=0;a<actionKeys.length;a++) {
+    for (var a=0;a<dat.attacks.length;a++) {
         var features_desc = [];
-        for (var f=0;f<dat.attacks[actionKeys[a]].properties.length;f++) {
-            if (Object.keys(dat.attacks[actionKeys[a]].properties[f]).length == 1) {
-                features_desc.push('<strong>'+dat.attacks[actionKeys[a]].properties[f].name + '</strong>' + cond(f+1==dat.attacks[actionKeys[a]].properties.length,'',', '));
+        for (var f=0;f<dat.attacks[a].properties.length;f++) {
+            if (Object.keys(dat.attacks[a].properties[f]).length == 1) {
+                features_desc.push('<strong>'+dat.attacks[a].properties[f].name + '</strong>' + cond(f+1==dat.attacks[a].properties.length,'',', '));
             } else {
-                var jnr = '<strong>'+dat.attacks[actionKeys[a]].properties[f].name + ':</strong> ';
-                for (var x=0;x<Object.keys(dat.attacks[actionKeys[a]].properties[f]).length;x++) {
-                    var ival = dat.attacks[actionKeys[a]].properties[f][Object.keys(dat.attacks[actionKeys[a]].properties[f])[x]];
-                    if (Object.keys(dat.attacks[actionKeys[a]].properties[f])[x] == 'name') {
+                var jnr = '<strong>'+dat.attacks[a].properties[f].name + ':</strong> ';
+                for (var x=0;x<Object.keys(dat.attacks[a].properties[f]).length;x++) {
+                    var ival = dat.attacks[a].properties[f][Object.keys(dat.attacks[a].properties[f])[x]];
+                    if (Object.keys(dat.attacks[a].properties[f])[x] == 'name') {
                         continue;
                     } else {
-                        jnr += Object.keys(dat.attacks[actionKeys[a]].properties[f])[x] + '('+ival+')';
+                        jnr += Object.keys(dat.attacks[a].properties[f])[x] + '('+ival+')';
                     }
                 }
-                features_desc.push(cond(f>0,'<br>','')+jnr+cond(f+1==dat.attacks[actionKeys[a]].properties.length,'','<br>'));
+                features_desc.push(cond(f>0,'<br>','')+jnr+cond(f+1==dat.attacks[a].properties.length,'','<br>'));
             }
             
         }
         features_desc = features_desc.join('');
 
         var damage_desc = [];
-        for (var d=0;d<dat.attacks[actionKeys[a]].damage.length;d++) {
-            damage_desc.push(dat.attacks[actionKeys[a]].damage[d].roll+' '+dat.attacks[actionKeys[a]].damage[d].mods.join(' ')+' '+dat.attacks[actionKeys[a]].damage[d].type+' damage');
+        for (var d=0;d<dat.attacks[a].damage.length;d++) {
+            damage_desc.push(dat.attacks[a].damage[d].roll+' '+dat.attacks[a].damage[d].mods.join(' ')+' '+dat.attacks[a].damage[d].type+' damage');
         }
         damage_desc = damage_desc.join(' plus ');
 
         $('<div class="action-item"></div>')
+        .attr('data-index',a)
         .append(
-            $('<div class="action-item-title"></div>').text(actionKeys[a])
+            $('<div class="action-item-title"></div>').text(dat.attacks[a].name)
             .on('click',function(event){
                 $(event.delegateTarget).parents('.action-item').toggleClass('active');
             })
         )
         .append(
-            $('<div class="action-item-sub"></div>').text((dat.attacks[actionKeys[a]].type + ' ' + dat.attacks[actionKeys[a]].category + ' weapon').toUpperCase())
+            $('<div class="action-item-sub"></div>').text((dat.attacks[a].type + ' ' + dat.attacks[a].category + ' weapon').toUpperCase())
         )
         .append(
             $('<div class="atk-info noscroll noselect"></div>')
@@ -290,9 +294,9 @@ function sheet_gen(char) {
                 .append(
                     $('<span class="item-part-content"></span>').html([
                         '<em>To Hit:</em> ',
-                        'd20'+cond(dat.attacks[actionKeys[a]].bonus>0,'+','')+cond(dat.attacks[actionKeys[a]].bonus==0,'',dat.attacks[actionKeys[a]].bonus.toString())+'<br>',
+                        'd20'+cond(dat.attacks[a].bonus>0,'+','')+cond(dat.attacks[a].bonus==0,'',dat.attacks[a].bonus.toString())+'<br>',
                         '<em>Hit:</em> ',
-                        damage_desc + cond(dat.attacks[actionKeys[a]].maximize_damage,' (maximized).','.')
+                        damage_desc + cond(dat.attacks[a].maximize_damage,' (maximized).','.')
                     ].join(''))
                 )
             )
@@ -305,6 +309,12 @@ function sheet_gen(char) {
                     $('<span class="item-part-content"></span>').html(features_desc)
                 )
             )
+        )
+        .append(
+            $('<button class="action-edit"><img src="assets/icons/edit-white.png"></button>')
+        )
+        .append(
+            $('<button class="action-delete"><img src="assets/icons/delete.png"></button>')
         )
         .appendTo('#actions-panel');
     }
@@ -530,8 +540,87 @@ function sheet_gen(char) {
     $('#main-tabs button').off('click');
     $('#main-tabs button').on('click',function(event){
         $('#main-tabs button').removeClass('active');
-        $('.tab').removeClass('active');
+        $('.panel-tab').removeClass('active');
         $(event.delegateTarget).addClass('active');
         $('#tab-'+$(event.delegateTarget).attr('data-tab')).addClass('active');
+    });
+
+    $('.tag-input').on('change',function(event){
+        $('<span class="tag-item"></span>')
+        .text($(event.target).val())
+        .on('click',function(_event){
+            $(_event.target).animate({width:'0px','padding-left':'0px','padding-right':'0px'},500,undefined,function(){
+                $(this).remove();
+            });
+            
+        })
+        .appendTo($('#'+$(event.target).attr('data-display')));
+        $(event.target).val('');
+    });
+    $('.tag-display').off('mousewheel');
+    $('.tag-display').on('mousewheel',function(event){
+        event.preventDefault();
+        this.scrollLeft -= (event.originalEvent.deltaY * 0.2);
+    });
+
+    $('#atk-name-input').off('keydown');
+    $('#atk-name-input').on('keydown',function(event){
+        if ($('#atk-name-input').val().length == 0) {
+            return;
+        }
+        cget(
+            '/compendium/search/weapons/?search='+$(event.target).val().toLowerCase().replace(/ /g,'-').replace(/,/g,''),
+            {},
+            false,function(data) {
+                if (data.length > 0) {
+                    $('#atk-options').html('');
+                    for (var d=0;d<data.length;d++) {
+                        $('<option></option>')
+                        .attr('label',data[d].name.replace('-', ' '))
+                        .attr('value',d)
+                        .appendTo($('#atk-options'));
+                    }
+                    $('#atk-options').attr('data-list',JSON.stringify(data));
+                } else {
+                    $('#atk-options').html('');
+                }
+            }
+        );
+    });
+    $('#atk-name-input').on('change',function(event) {
+        if ($('#atk-name-input').val().length == 0) {
+            return;
+        }
+        console.log($(event.target).val());
+        if (!isNaN(Number($(event.target).val()))) {
+            $('#atk-name-input').trigger('blur');
+            var data = JSON.parse($('#atk-options').attr('data-list'));
+            console.log(data);
+            var item = data[Number($(event.target).val())];
+            $('#atk-name-input').val(item.name.replace(/\-/g,' '));
+            $('#dmg-tags').html('');
+            $('#atk-feat-tags').html('');
+            $('#atk-dmg-input').val(item.damage.dice + cond(
+                (item.properties.map(function(v,i){return v.name.toLowerCase()}).includes('finesse') && dat.abilities.dexterity.mod >= dat.abilities.strength.mod) || item.type == 'ranged',
+                cond(dat.abilities.dexterity.mod >=0,'+','')+dat.abilities.dexterity.mod,
+                cond(dat.abilities.strength.mod >=0,'+','')+dat.abilities.strength.mod
+            ) + ' ' + item.damage.type).trigger('change');
+            
+            for (var p=0;p<item.properties.length;p++) {
+                var prop = item.properties[p];
+                var propstr = firstCase(prop.name);
+                delete prop.name;
+
+                var ks = Object.keys(prop);
+                for (var k=0;k<ks.length;k++) {
+                    if (ks[k] == 'value') {
+                        propstr += ' ('+prop[ks[k]]+')';
+                    } else {
+                        propstr += ' ('+ks[k]+' '+prop[ks[k]]+')';
+                    }
+                }
+                $('#atk-feat-input').val(propstr).trigger('change');
+            }
+        }
     });
 }

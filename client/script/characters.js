@@ -1,6 +1,7 @@
 var MAX_CHARACTERS = 15;
 
 $(document).ready(function(){
+    $(document).tooltip({show: {effect:"fade", delay:500}});
     $('#class-warning').hide();
     $('#info-max-characters').text(MAX_CHARACTERS);
     cget(

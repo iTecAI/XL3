@@ -11,6 +11,7 @@
         <link rel="stylesheet" type="text/css" href="style/switches.css">
         <link rel="stylesheet" type="text/css" href="style/characters.css">
         <link rel="stylesheet" type="text/css" href="style/characters_main_panel.css">
+        <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -26,6 +27,12 @@
         <script src='lib/cookies.min.js'></script>
         <script src='lib/sha.js'></script>
         <script src='lib/crc.js'></script>
+        <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous">
+        </script>
+        <script src='lib/jquery.mousewheel.min.js'></script>
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
@@ -347,8 +354,24 @@
                 </div>
                 <div id='tabs'>
                     <div class='panel-tab' id='tab-inventory'>
-                        <div id='actions'>
+                        <div id='actions' class='noselect'>
                             <span id='actions-title'><span>ACTIONS</span></span>
+                            <div id='atk-edit-create-area' class='noscroll noselect active'>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>ATTACK NAME</span><input id='atk-name-input' maxlength='60' placeholder='eg. Shortsword' list='atk-options' autocomplete="false">
+                                    <datalist id="atk-options">
+                                        
+                                    </datalist>
+                                </div>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>DAMAGE</span><input id='atk-dmg-input' class='tag-input' data-display='dmg-tags' maxlength='100' placeholder='eg. 1d6+3 magical piercing' title='After you add a damage value, press enter to add it to the list.'><br>
+                                    <div id='dmg-tags' class='tag-display noscroll'></div>
+                                </div>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>PROPERTIES</span><input id='atk-feat-input' class='tag-input' data-display='atk-feat-tags' maxlength='100' placeholder='eg. Thrown (range 20/60)' title='After you add a property, press enter to add it to the list.'><br>
+                                    <div id='atk-feat-tags' class='tag-display noscroll'></div>
+                                </div>
+                            </div>
                             <div id='actions-panel' class="noscroll noselect">
 
                             </div>
@@ -362,6 +385,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Edit Dialogs -->
             <div id='stat-settings' class='noselect transient'>
                 <span class='set-name'>BASE INIT</span><span class='set-val' id='init-base'></span><br><br>
                 <span class='set-name'>MOD INIT</span><input class='set-val sheet-in' id='init-mod' data-type='number' data-path='init_mod'><br><br>

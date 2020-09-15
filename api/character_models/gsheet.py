@@ -256,9 +256,9 @@ class GSheet(Character):
         atk_names = self.get('r32:r36')
         atk_bonuses = self.get('y32:y36')
         atk_descs = self.get('ac32:ac36')
-        self.attacks = {}
+        self.attacks = []
         for a in range(len(atk_names)):
-            self.attacks[atk_names[a]] = self.parse_attack(atk_names[a],int(atk_bonuses[a].strip('+')),atk_descs[a])
+            self.attacks.append(self.parse_attack(atk_names[a],int(atk_bonuses[a].strip('+')),atk_descs[a]))
         
         # Scores, saves, and skills
         scores = [int(i) for i in self.get(['c15','c20','c25','c30','c35','c40']).values()]
