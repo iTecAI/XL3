@@ -12,8 +12,9 @@
     top: 17vh;
     left: 38vw;
     box-sizing: content-box;
-    background-color: var(--background2);
+    background-color: var(--foreground3);
     z-index: 500;
+    overflow-x: hidden;
 }
 
 #main-tabs {
@@ -26,7 +27,6 @@
     display: table;
     margin-bottom: 0px;
     background-color: var(--foreground3);
-    background-clip: content-box;
     border-radius: 5px 5px 0 0;
 }
 #main-tabs button {
@@ -69,15 +69,48 @@
     height: 95.1%;
     width: 100%;
     border-collapse: collapse;
+    background-color: var(--background2);
 }
 
 #actions {
     position: absolute;
     top: 0px;
-    left: 0px;
+    left: calc((100% / 3) * -1);
     width: calc(100% / 3);
     height: 100%;
     border-bottom-left-radius: 5px;
+    overflow-x: visible;
+    transition: left 0.2s;
+}
+#actions.expanded {
+    left: 0px;
+}
+#expand-atk {
+    position: absolute;
+    right: -19px;
+    bottom: 20px;
+    z-index: 800;
+    display: inline-block;
+    width: 20px;
+    height: 40px;
+    color: #ffffff;
+    padding: 0px;
+    border: none;
+    background-color: var(--foreground3-2);
+    border-radius: 0 5px 5px 0;
+}
+#expand-atk span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: raleway-heavy;
+    padding: 0px;
+    transition: transform 0.2s;
+    transform-origin: 25% 25%;
+}
+.expanded #expand-atk span {
+    transform: rotate(180deg);
 }
 #actions-title {
     position: absolute;
@@ -110,6 +143,7 @@
     overflow-y: scroll;
     transition: all 0.5s;
     border-bottom-left-radius: 6px;
+    border: none;
 }
 #atk-edit-create-area.active + #actions-panel {
     height: 40%;

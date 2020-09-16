@@ -41,7 +41,7 @@ function cond(c,t,f) {
     if (c) {return t;} else {return f;}
 }
 
-function sheet_gen(char) {
+function sheet_gen(char,panel_tab) {
     $('#character-sheet-display').attr('data-id',char.cid);
     dat = char.data;
     $('#header-img img').attr('src',function(){
@@ -83,8 +83,15 @@ function sheet_gen(char) {
 
     $('#main-tabs button').removeClass('active');
     $('.panel-tab').removeClass('active');
-    $('#inventory-tab').addClass('active');
-    $('#tab-inventory').addClass('active');
+    console.log(panel_tab);
+    if (['inventory','spells','about'].includes(panel_tab)) {
+        $('#'+panel_tab+'-tab').addClass('active');
+        $('#tab-'+panel_tab).addClass('active');
+    } else {
+        $('#inventory-tab').addClass('active');
+        $('#tab-inventory').addClass('active');
+    }
+    
 
     var abs = Object.keys(dat.abilities);
     $('#saves').html('<span id="save-adv-title">ADV</span><span id="save-dis-title">DIS</span><span id="save-head">SAVING THROWS</span>');
@@ -756,4 +763,7 @@ function sheet_gen(char) {
     });
     $('#atk-cancel-btn').off('click');
     $('#atk-cancel-btn').on('click',function(event){$('#atk-edit-create-area').toggleClass('active',false);});
+
+    $('#expand-atk').off('click');
+    $('#expand-atk').on('click',function(event){$('#actions').toggleClass('expanded');});
 }
