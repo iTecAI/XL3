@@ -628,6 +628,9 @@ function sheet_gen(char,panel_tab) {
     });
     $('#main-tabs button').off('click');
     $('#main-tabs button').on('click',function(event){
+        if ($('#main-modal').hasClass('active')) {
+            return;
+        }
         $('#main-tabs button').removeClass('active');
         $('.panel-tab').removeClass('active');
         $(event.delegateTarget).addClass('active');
@@ -765,5 +768,5 @@ function sheet_gen(char,panel_tab) {
     $('#atk-cancel-btn').on('click',function(event){$('#atk-edit-create-area').toggleClass('active',false);});
 
     $('#expand-atk').off('click');
-    $('#expand-atk').on('click',function(event){$('#actions').toggleClass('expanded');});
+    $('#expand-atk').on('click',function(event){$('#actions').toggleClass('expanded');$('#main-modal').toggleClass('active',$('#actions').hasClass('expanded'));});
 }

@@ -17,6 +17,21 @@
     overflow-x: hidden;
 }
 
+#main-modal {
+    display: inline-block;
+    width: 0%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1001;
+    background-color: #00000066;
+    transition: width 0.2s;
+}
+#main-modal.active {
+    width: 100%;
+}
+
 #main-tabs {
     width: calc(100% + 1px);
     height: calc(5% + 1px);
@@ -28,6 +43,7 @@
     margin-bottom: 0px;
     background-color: var(--foreground3);
     border-radius: 5px 5px 0 0;
+    z-index: 1002;
 }
 #main-tabs button {
     width: calc(100% / 3);
@@ -81,6 +97,7 @@
     border-bottom-left-radius: 5px;
     overflow-x: visible;
     transition: left 0.2s;
+    z-index: 1002;
 }
 #actions.expanded {
     left: 0px;
