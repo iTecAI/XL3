@@ -356,9 +356,10 @@
                     <div class='panel-tab' id='tab-inventory'>
                         <div id='actions' class='noselect'>
                             <span id='actions-title'><span>ACTIONS</span></span>
-                            <div id='atk-edit-create-area' class='noscroll noselect active'>
+                            <button id='new-atk-button'>+</button>
+                            <div id='atk-edit-create-area' class='noscroll noselect'>
                                 <div class='atk-edit-item'>
-                                    <span class='title'>ATTACK NAME</span><input id='atk-name-input' maxlength='60' placeholder='eg. Shortsword' list='atk-options' autocomplete="false">
+                                    <span class='title'>ATTACK</span><input id='atk-name-input' maxlength='60' placeholder='eg. Shortsword' list='atk-options' autocomplete="false">
                                     <datalist id="atk-options">
                                         
                                     </datalist>
@@ -370,6 +371,30 @@
                                 <div class='atk-edit-item'>
                                     <span class='title'>PROPERTIES</span><input id='atk-feat-input' class='tag-input' data-display='atk-feat-tags' maxlength='100' placeholder='eg. Thrown (range 20/60)' title='After you add a property, press enter to add it to the list.'><br>
                                     <div id='atk-feat-tags' class='tag-display noscroll'></div>
+                                </div>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>GROUP</span><select id='atk-group-input'>
+                                        <option value='martial'>Martial</option>
+                                        <option value='simple'>Simple</option>
+                                    </select>
+                                </div>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>TYPE</span><select id='atk-type-input'>
+                                        <option value='melee'>Melee</option>
+                                        <option value='ranged'>Ranged</option>
+                                    </select>
+                                </div>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>MAX DAMAGE</span><select id='atk-max-input'>
+                                        <option value='no'>No</option>
+                                        <option value='yes'>Yes</option>
+                                    </select>
+                                </div>
+                                <div class='atk-edit-item'>
+                                    <span class='title'>BONUS MOD</span><input id='atk-bonusmod-input'>
+                                </div>
+                                <div id='atk-edit-btns'>
+                                    <button id='atk-submit-btn'>CREATE</button><button id='atk-cancel-btn'>CANCEL</button>
                                 </div>
                             </div>
                             <div id='actions-panel' class="noscroll noselect">

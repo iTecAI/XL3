@@ -158,7 +158,7 @@
     height: 95vh;
     z-index: 400;
     background-color: var(--background2);
-    overflow-y: auto;
+    overflow-y: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -293,6 +293,7 @@
     transition: width 0.2s;
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 600;
 }
 
 #character-settings.active {
@@ -952,6 +953,7 @@
     top: 15vh;
     width: 20vh;
     height: fit-content;
+    z-index: 700;
 }
 #sr-commence {
     width: 90%;

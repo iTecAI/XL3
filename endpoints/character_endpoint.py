@@ -510,10 +510,164 @@ async def char_atk_modify(fingerprint: str, charid: str, model: AtkModModel, res
     if not check_access(fingerprint,charid):
         response.status_code = status.HTTP_403_FORBIDDEN
         return {'result':'You do not own this character.'}
-    if not model.action in ['add','remove']:
+    if not model.action in ['add','remove','modify']:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'Invalid action.'}
     
+    if model.action == 'add':
+        try:
+            new_atk = {
+                'name':model.data['name'],
+                'desc':'',
+                'bonus':0,
+                'bonus_mod':model.data['bonus_mod'],
+                'damage':[],
+                'properties':[],
+                'category':model.data['category'],
+                'type':model.data['type'],
+                'maximize_damage':model.data['maxdmg'],
+                'automated':True
+            }
+
+            for p in model.data['properties']:
+                if p == '':
+                    continue
+                try:
+                    p_dict = {}
+                    parts = split_on(p,[' (',')'])
+                    p_dict['name'] = parts[0]
+                    if len(parts) > 1:
+                        if len(parts[1].split(' ')) == 1:
+                            p_dict['value'] = parts[1]
+                        else:
+                            p_dict[parts[1].split(' ')[0]] = parts[1].split(' ')[1]
+                    new_atk['properties'].append(p_dict)
+                except:
+                    new_atk['automated'] = False
+            
+            new_atk['bonus'] = case(
+                model.data['type'] == 'ranged' or (any([x['name'].lower().strip(' .,') == 'finesse' for x in new_atk['properties']]) and server.characters[charid].abilities['dexterity']['mod'] >= server.characters[charid].abilities['strength']['mod']),
+                server.characters[charid].abilities['dexterity']['mod'],
+                server.characters[charid].abilities['strength']['mod']
+            ) + case(
+                model.data['category'].lower()+' weapons' in server.characters[charid].weapon_profs or any([x.lower() in model.data['name'].lower() for x in server.characters[charid].weapon_profs]),
+                server.characters[charid].proficiency_bonus,
+                0
+            )
+
+            for d in model.data['damage']:
+                if d == '':
+                    continue
+                try:
+                    d_dict = {
+                        'mods':[]
+                    }
+                    items = d.split(' ')
+                    d_dict['roll'] = items.pop(0)
+                    for it in items:
+                        if it in DAMAGETYPES:
+                            d_dict['type'] = it
+                        if it in ['magical','adamantine','silvered','nonmagical']:
+                            d_dict['mods'].append(it)
+                    new_atk['damage'].append(d_dict)
+                except:
+                    new_atk['automated'] = False
+            
+            
+            
+            new_atk['desc'] = model.data['type']+' '+model.data['category']+' weapon attack. *To Hit:* '+case(new_atk['bonus']+new_atk['bonus_mod'] >= 0,'+','')+str(new_atk['bonus']+new_atk['bonus_mod'])+' *Hit:* '+' plus '.join([n+' damage' for n in model.data['damage']])+'\n'+', '.join(model.data['properties'])
+            server.characters[charid].attacks.append(new_atk)
+
+        except KeyError:
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':'Bad data format.'}
+    
+    elif model.action == 'remove':
+        if 'index' in model.data.keys():
+            try:
+                del server.characters[charid].attacks[model.data['index']]
+            except IndexError:
+                response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+                return {'result':'Index out of range.'}
+        else:
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':'Bad data format.'}
+    elif model.action == 'modify':
+        try:
+            new_atk = {
+                'name':model.data['name'],
+                'desc':'',
+                'bonus':0,
+                'bonus_mod':model.data['bonus_mod'],
+                'damage':[],
+                'properties':[],
+                'category':model.data['category'],
+                'type':model.data['type'],
+                'maximize_damage':model.data['maxdmg'],
+                'automated':True
+            }
+
+            for p in model.data['properties']:
+                if p == '':
+                    continue
+                try:
+                    p_dict = {}
+                    parts = split_on(p,[' (',')'])
+                    p_dict['name'] = parts[0]
+                    if len(parts) > 1:
+                        if len(parts[1].split(' ')) == 1:
+                            p_dict['value'] = parts[1]
+                        else:
+                            p_dict[parts[1].split(' ')[0]] = parts[1].split(' ')[1]
+                    new_atk['properties'].append(p_dict)
+                except:
+                    new_atk['automated'] = False
+            
+            new_atk['bonus'] = case(
+                model.data['type'] == 'ranged' or (any([x['name'].lower().strip(' .,') == 'finesse' for x in new_atk['properties']]) and server.characters[charid].abilities['dexterity']['mod'] >= server.characters[charid].abilities['strength']['mod']),
+                server.characters[charid].abilities['dexterity']['mod'],
+                server.characters[charid].abilities['strength']['mod']
+            ) + case(
+                model.data['category'].lower()+' weapons' in server.characters[charid].weapon_profs or any([x.lower() in model.data['name'].lower() for x in server.characters[charid].weapon_profs]),
+                server.characters[charid].proficiency_bonus,
+                0
+            )
+
+            for d in model.data['damage']:
+                if d == '':
+                    continue
+                try:
+                    d_dict = {
+                        'mods':[]
+                    }
+                    items = d.split(' ')
+                    d_dict['roll'] = items.pop(0)
+                    for it in items:
+                        if it in DAMAGETYPES:
+                            d_dict['type'] = it
+                        if it in ['magical','adamantine','silvered','nonmagical']:
+                            d_dict['mods'].append(it)
+                    new_atk['damage'].append(d_dict)
+                except:
+                    new_atk['automated'] = False
+            
+            
+            
+            new_atk['desc'] = model.data['type']+' '+model.data['category']+' weapon attack. *To Hit:* '+case(new_atk['bonus']+new_atk['bonus_mod'] >= 0,'+','')+str(new_atk['bonus']+new_atk['bonus_mod'])+' *Hit:* '+' plus '.join([n+' damage' for n in model.data['damage']])+'\n'+', '.join(model.data['properties'])
+            server.characters[charid].attacks[model.data['index']] = new_atk
+
+        except KeyError:
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':'Bad data format.'}
+        except IndexError:
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':'Bad data format.'}
+
+    recalculate(charid)
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
+
     return {
         'result':'Success.',
         'cid':charid,

@@ -294,7 +294,7 @@ function sheet_gen(char) {
                 .append(
                     $('<span class="item-part-content"></span>').html([
                         '<em>To Hit:</em> ',
-                        'd20'+cond(dat.attacks[a].bonus>0,'+','')+cond(dat.attacks[a].bonus==0,'',dat.attacks[a].bonus.toString())+'<br>',
+                        'd20'+cond(dat.attacks[a].bonus+dat.attacks[a].bonus_mod>0,'+','')+cond(dat.attacks[a].bonus+dat.attacks[a].bonus_mod==0,'',(dat.attacks[a].bonus+dat.attacks[a].bonus_mod).toString())+'<br>',
                         '<em>Hit:</em> ',
                         damage_desc + cond(dat.attacks[a].maximize_damage,' (maximized).','.')
                     ].join(''))
@@ -312,9 +312,89 @@ function sheet_gen(char) {
         )
         .append(
             $('<button class="action-edit"><img src="assets/icons/edit-white.png"></button>')
+            .on('click',function(event){
+                var index = Number($(event.delegateTarget).parents('.action-item').attr('data-index'));
+                var item = dat.attacks[index];
+                $('#atk-submit-btn').text('EDIT');
+                $('#atk-edit-create-area').scrollTop(0);
+                $('#atk-name-input').val(item.name);
+
+                $('#atk-feat-input').val('');
+                $('#atk-feat-tags').html('');
+                for (var p=0;p<item.properties.length;p++) {
+                    var prop = item.properties[p];
+                    var propstr = firstCase(prop.name);
+                    delete prop.name;
+    
+                    var ks = Object.keys(prop);
+                    for (var k=0;k<ks.length;k++) {
+                        if (ks[k] == 'value') {
+                            propstr += ' ('+prop[ks[k]]+')';
+                        } else {
+                            propstr += ' ('+ks[k]+' '+prop[ks[k]]+')';
+                        }
+                    }
+                    $('#atk-feat-input').val(propstr).trigger('change');
+                }
+
+                $('#atk-dmg-input').val('');
+                $('#dmg-tags').html('');
+
+                for (var d=0;d<item.damage.length;d++) {
+                    $('#atk-dmg-input').val(item.damage[d].roll + ' ' + cond(item.damage[d].mods.length > 0,item.damage[d].mods.join(' ')+' ','') + item.damage[d].type)
+                    $('#atk-dmg-input').trigger('change');
+                }
+                $('#atk-dmg-input').val('');
+                
+                $('#atk-group-input').val(item.category);
+                $('#atk-type-input').val(item.type);
+                $('#atk-max-input').val(cond(item.maximize_damage==true,'yes','no'));
+                $('#atk-bonusmod-input').val(item.bonus_mod);
+                $('#atk-submit-btn').on('click',function(event){
+                    var dat = {
+                        name:$('#atk-name-input').val(),
+                        bonus_mod:cond(isNaN(Number($('#atk-bonusmod-input').val())),0,Number($('#atk-bonusmod-input').val())),
+                        category:$('#atk-group-input').val(),
+                        type:$('#atk-type-input').val(),
+                        maxdmg:cond($('#atk-max-input').val()=='yes',true,false),
+                        damage:$('#dmg-tags .tag-item').map(function(i,e){
+                            return $(e).text();
+                        }).toArray(),
+                        properties:$('#atk-feat-tags .tag-item').map(function(i,e){
+                            return $(e).text();
+                        }).toArray(),
+                        index:index
+                    };
+                    cpost(
+                        '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/attacks/',
+                        {
+                            action: 'modify',
+                            data: dat
+                        },sheet_gen,
+                        {
+                            alert:true
+                        }
+                    );
+                    $('#atk-edit-create-area').toggleClass('active',false);
+                });
+                $('#atk-edit-create-area').toggleClass('active',true);
+            })
         )
         .append(
             $('<button class="action-delete"><img src="assets/icons/delete.png"></button>')
+            .on('click',function(event){
+                cpost(
+                    '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/attacks/',
+                    {
+                        action:'remove',
+                        data:{
+                            index:Number($(event.delegateTarget).parents('.action-item').attr('data-index'))
+                        }
+                    },
+                    sheet_gen,
+                    {alert:true}
+                );
+            })
         )
         .appendTo('#actions-panel');
     }
@@ -546,6 +626,9 @@ function sheet_gen(char) {
     });
 
     $('.tag-input').on('change',function(event){
+        if ($(event.target).val().length == 0) {
+            return;
+        }
         $('<span class="tag-item"></span>')
         .text($(event.target).val())
         .on('click',function(_event){
@@ -578,6 +661,7 @@ function sheet_gen(char) {
                         $('<option></option>')
                         .attr('label',data[d].name.replace('-', ' '))
                         .attr('value',d)
+                        .text(data[d].name.replace('-', ' '))
                         .appendTo($('#atk-options'));
                     }
                     $('#atk-options').attr('data-list',JSON.stringify(data));
@@ -595,7 +679,6 @@ function sheet_gen(char) {
         if (!isNaN(Number($(event.target).val()))) {
             $('#atk-name-input').trigger('blur');
             var data = JSON.parse($('#atk-options').attr('data-list'));
-            console.log(data);
             var item = data[Number($(event.target).val())];
             $('#atk-name-input').val(item.name.replace(/\-/g,' '));
             $('#dmg-tags').html('');
@@ -621,6 +704,54 @@ function sheet_gen(char) {
                 }
                 $('#atk-feat-input').val(propstr).trigger('change');
             }
+
+            $('#atk-group-input').val(item.group);
+            $('#atk-type-input').val(item.type);
+            $('#atk-max-input').val('no');
         }
     });
+
+    $('#new-atk-button').off('click');
+    $('#new-atk-button').on('click',function(event){
+        $('#atk-submit-btn').text('CREATE');
+        $('#atk-edit-create-area').scrollTop(0);
+        $('#atk-name-input').val('');
+        $('#atk-dmg-input').val('');
+        $('#dmg-tags').html('');
+        $('#atk-feat-input').val('');
+        $('#atk-feat-tags').html('');
+        $('#atk-group-input').val('simple');
+        $('#atk-type-input').val('melee');
+        $('#atk-max-input').val('max');
+        $('#atk-bonusmod-input').val('');
+        $('#atk-submit-btn').on('click',function(event){
+            var dat = {
+                name:$('#atk-name-input').val(),
+                bonus_mod:cond(isNaN(Number($('#atk-bonusmod-input').val())),0,Number($('#atk-bonusmod-input').val())),
+                category:$('#atk-group-input').val(),
+                type:$('#atk-type-input').val(),
+                maxdmg:cond($('#atk-max-input').val()=='yes',true,false),
+                damage:$('#dmg-tags .tag-item').map(function(i,e){
+                    return $(e).text();
+                }).toArray(),
+                properties:$('#atk-feat-tags .tag-item').map(function(i,e){
+                    return $(e).text();
+                }).toArray()
+            };
+            cpost(
+                '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/attacks/',
+                {
+                    action: 'add',
+                    data: dat
+                },sheet_gen,
+                {
+                    alert:true
+                }
+            );
+            $('#atk-edit-create-area').toggleClass('active',false);
+        });
+        $('#atk-edit-create-area').toggleClass('active',true);
+    });
+    $('#atk-cancel-btn').off('click');
+    $('#atk-cancel-btn').on('click',function(event){$('#atk-edit-create-area').toggleClass('active',false);});
 }

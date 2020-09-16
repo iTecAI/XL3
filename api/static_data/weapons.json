@@ -188,8 +188,8 @@
         ]
     },
     {
-        "name": "Crossbow-light",
-        "slug": "crossbow-light",
+        "name": "Light-crossbow",
+        "slug": "light-crossbow",
         "group": "simple",
         "type": "ranged",
         "cost": 25.0,
@@ -634,8 +634,8 @@
         ]
     },
     {
-        "name": "Crossbow-hand",
-        "slug": "crossbow-hand",
+        "name": "Hand-crossbow",
+        "slug": "hand-crossbow",
         "group": "martial",
         "type": "ranged",
         "cost": 75.0,
@@ -658,8 +658,8 @@
         ]
     },
     {
-        "name": "Crossbow-heavy",
-        "slug": "crossbow-heavy",
+        "name": "Heavy-crossbow",
+        "slug": "heavy-crossbow",
         "group": "martial",
         "type": "ranged",
         "cost": 50.0,

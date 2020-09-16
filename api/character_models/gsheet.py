@@ -83,7 +83,7 @@ class GSheet(Character):
             'properties':[],
             'type':'melee',
             'category':'simple',
-            'maxiomize_damage':False,
+            'maximize_damage':False,
             'automated':False
         }
 

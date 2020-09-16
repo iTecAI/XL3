@@ -13,6 +13,7 @@
     left: 38vw;
     box-sizing: content-box;
     background-color: var(--background2);
+    z-index: 500;
 }
 
 #main-tabs {
@@ -88,7 +89,7 @@
     left: 0px;
     font-family: raleway-heavy;
     color: #ffffff;
-    background-color: var(--foreground3);
+    background-color: var(--foreground3-3);
     height: 5%;
 }
 #actions-title span {
@@ -107,11 +108,11 @@
     width: 100%;
     background-color: var(--foreground2);
     overflow-y: scroll;
-    transition: all 0.3s;
+    transition: all 0.5s;
     border-bottom-left-radius: 6px;
 }
 #atk-edit-create-area.active + #actions-panel {
-    height: 60%;
+    height: 40%;
 }
 
 #atk-edit-create-area {
@@ -121,12 +122,14 @@
     position: absolute;
     top: 5%;
     left: 0px;
-    transition: all 0.3s;
+    transition: all 0.5s;
     background-color: var(--foreground3);
     color: #ffffff;
+    border-bottom: 2px solid var(--foreground3-2);
+    border-right: 2px solid var(--foreground3);
 }
 #atk-edit-create-area.active {
-    height: 35%;
+    height: 55%;
     overflow-y: scroll;
 }
 #atk-edit-create-area .atk-edit-item {
@@ -139,7 +142,7 @@
     text-align: center;
     font-family: raleway-heavy;
 }
-#atk-edit-create-area .atk-edit-item input {
+#atk-edit-create-area .atk-edit-item input, #atk-edit-create-area .atk-edit-item select {
     width: 49%;
     border: none;
     border-radius: 5px;
@@ -149,6 +152,33 @@
     padding: 5px;
     font-size: 14px;
 }
+#atk-edit-btns {
+    width: 100%;
+    display: inline-block;
+}
+#atk-edit-btns button {
+    width: 50%;
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    border: none;
+    margin: none;
+    box-sizing: border-box;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+#atk-edit-btns button:hover {
+    opacity: 1;
+}
+#atk-submit-btn {
+    background-color: var(--foreground4);
+}
+#atk-cancel-btn {
+    background-color: #ec2525;
+}
+
 .tag-display {
     width: calc(100% - 20px);
     background-color: var(--foreground3-2);
@@ -189,7 +219,7 @@
     border: 2px solid var(--foreground3);
     border-radius: 0px;
     margin-bottom: 0px;
-    background-color: #ffffff;
+    background-color:var(--foreground3);
     transition: all 0s ease-in-out;
     overflow-y: hidden;
     padding-top: 0px;
@@ -210,10 +240,9 @@
     color: #ffffff;
     height: 30px;
     display: inline-block;
-    margin: 0px;
-    margin-top: -2px;
-    padding-top: -2px;
     top: -2px;
+    padding-top: 5px;
+    white-space: nowrap;
 }
 .action-item-sub {
     position: relative;
@@ -222,9 +251,10 @@
     text-align: center;
     color: #000000;
     font-family: raleway-heavy;
+    background-color: #ffffff;
 }
 .atk-info {
-    position: relative;;
+    position: relative;
     display: inline-block;
     width: 100%;
     border: none;
@@ -233,7 +263,9 @@
     height: 0px;
     overflow: scroll;
     padding: 10px;
+    margin-bottom: 0px;
     display: none;
+    background-color: #ffffff;
 }
 .action-item.active .atk-info {
     position: relative;
@@ -281,4 +313,22 @@
 }
 .action-delete:hover, .action-edit:hover {
     background-color: #00000044;
+}
+
+#new-atk-button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: var(--foreground3-3);
+    color: #ffffff;
+    font-family: sans-serif;
+    font-weight: bold;
+    display: inline-block;
+    width: 10%;
+    height: 5%;
+    border: none;
+    transition: background-color 0.2s;
+}
+#new-atk-button:hover {
+    background-color: var(--foreground3-2);
 }
