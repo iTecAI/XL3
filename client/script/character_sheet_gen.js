@@ -315,6 +315,7 @@ function sheet_gen(char) {
             .on('click',function(event){
                 var index = Number($(event.delegateTarget).parents('.action-item').attr('data-index'));
                 var item = dat.attacks[index];
+                console.log(item);
                 $('#atk-submit-btn').text('EDIT');
                 $('#atk-edit-create-area').scrollTop(0);
                 $('#atk-name-input').val(item.name);
@@ -324,12 +325,13 @@ function sheet_gen(char) {
                 for (var p=0;p<item.properties.length;p++) {
                     var prop = item.properties[p];
                     var propstr = firstCase(prop.name);
-                    delete prop.name;
     
                     var ks = Object.keys(prop);
                     for (var k=0;k<ks.length;k++) {
                         if (ks[k] == 'value') {
                             propstr += ' ('+prop[ks[k]]+')';
+                        } else if (ks[k] == 'name') {
+                            continue;
                         } else {
                             propstr += ' ('+ks[k]+' '+prop[ks[k]]+')';
                         }

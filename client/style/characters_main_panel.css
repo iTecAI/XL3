@@ -17,7 +17,7 @@
 }
 
 #main-tabs {
-    width: 100%;
+    width: calc(100% + 1px);
     height: calc(5% + 1px);
     position: absolute;
     top: -1px;
