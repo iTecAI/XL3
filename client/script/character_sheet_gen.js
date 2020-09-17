@@ -451,7 +451,11 @@ function sheet_gen(char,panel_tab) {
         .text(firstCase(items[c]))
         .appendTo($('#cur-cont-val'));
     }
-    $('#cur-cont-val').val(dat.inventory.current_container);
+    $('#cur-cont-val').val(dat.inventory.current_container)
+    .off('change')
+    .on('change',function(event){
+        modify(dat.inventory.current_container,$(this).val());
+    });
     $('#cur-cont-wt').val(dat.inventory.containers[getCurCont()].current_weight);
     $('#max-cont-wt').val(dat.inventory.containers[getCurCont()].max_weight)
     .off('change').on('change',function(event){
