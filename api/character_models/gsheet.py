@@ -417,6 +417,7 @@ class GSheet(Character):
                 'heavily_encumbered':self.abilities['strength']['score']*10
             },
             'current_weight':0,
+            'current_container':'inventory',
             'containers':[
                 {
                     'name':'inventory',

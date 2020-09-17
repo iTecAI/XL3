@@ -356,7 +356,7 @@
                 <div id='tabs'>
                     <div class='panel-tab' id='tab-inventory'>
                         <div id='actions' class='noselect'>
-                            <button id='expand-atk'><span>></span></button>
+                            <button id='expand-atk'><span id='atk-exp-txt'>ACTIONS</span><span id='atk-exp-arrow'>></span></button>
                             <span id='actions-title'><span>ACTIONS</span></span>
                             <button id='new-atk-button'>+</button>
                             <div id='atk-edit-create-area' class='noscroll noselect'>
@@ -402,6 +402,26 @@
                             <div id='actions-panel' class="noscroll noselect">
 
                             </div>
+                        </div>
+                        <div id='inv-header'>
+                            <div id='carrying-info'>Carrying: <span id='cur-carry-wt'></span> / <span id='max-carry-wt'></span></div>
+                            <div id='encumbered-line'>Encumbrance: <span id='encumbrance-val'></span></div>
+                            <div id='cur-wealth-line'>Total Wealth: <span id='cur-wealth'></span></div>
+                            <div id='cur-coin-line'>Total Coin: <span id='cur-coin'></span></div>
+                        </div>
+                        <div id='cont-header' class='noselect'>
+                            <div id='cont-opts'>
+                                <div id='cur-container' class='noselect'><select id='cur-cont-val'></select></div>
+                                <div id='cur-container-wt'>Weight: <input id='cur-cont-wt' class='fit' data-type='number' min='0' disabled> lb. / <input id='max-cont-wt' class='fit' data-type='number' min='0'> lb.</div>
+                                <div id='container-opts'>
+                                    <div>Apply Weight: <label class="switch small"><input type="checkbox" id='cont-apply-wt'><span class="slider round"></span></label></div>
+                                    <div>Holds Coins: <label class="switch small"><input type="checkbox" id='cont-coins'><span class="slider round"></span></label></div>
+                                </div>
+                            </div>
+                            <button id='delete-container' data-tooltip="Delete Container" data-tooltip-location="left"><img src='assets/icons/delete.png'></button>
+                        </div>
+                        <div id='coins'>
+
                         </div>
                     </div>
                     <div class='panel-tab' id='tab-spells'>

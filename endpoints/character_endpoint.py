@@ -88,6 +88,8 @@ def recalculate(cid):
                 hp_sum += round(i['die_size'] / 2) + 1 + server.characters[cid].abilities['constitution']['mod']
         server.characters[cid].max_hp = hp_sum+i['die_size']+server.characters[cid].abilities['constitution']['mod']
 
+    server.characters[cid].inventory_calculate()
+
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:
         reg = json.load(f)
@@ -473,7 +475,7 @@ async def reset_character(fingerprint: str, charid: str, response: Response):
     server.characters[charid] =  GSheet(sheet_id=sid)
     server.characters[charid].id = pre_cid
     server.characters[charid].options = pre_opts
-    server.characters[charid].inventory = pre_inv
+    #server.characters[charid].inventory = pre_inv
     
     server.characters[charid].update()
     server.characters[charid].cache()

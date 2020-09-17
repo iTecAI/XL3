@@ -41,6 +41,14 @@ function cond(c,t,f) {
     if (c) {return t;} else {return f;}
 }
 
+function getCurCont() {
+    for (var i=0;i<dat.inventory.containers.length;i++) {
+        if (dat.inventory.current_container == dat.inventory.containers[i].name) {
+            return i;
+        }
+    }
+}
+
 function sheet_gen(char,panel_tab) {
     $('#character-sheet-display').attr('data-id',char.cid);
     dat = char.data;
@@ -72,7 +80,11 @@ function sheet_gen(char,panel_tab) {
     )+10);
     $('#char-init span').text(modformat(dat.init+dat.init_mod));
     $('#char-ac span').text(dat.ac.base + dat.ac.mod);
-    $('#char-speed span').text((dat.speed.walk.value+dat.speed.walk.mod) + ' ft.');
+    $('#char-speed span').text((
+        dat.speed.walk.value+dat.speed.walk.mod
+        -cond(dat.options.variant_encumbrance && dat.inventory.current_weight > dat.inventory.variant_encumbrance.encumbered,10,0)
+        -cond(dat.options.variant_encumbrance && dat.inventory.current_weight > dat.inventory.variant_encumbrance.heavily_encumbered,10,0)
+    ) + ' ft.');
 
     $('#init-base').text(dat.init);
     $('#init-mod').val(dat.init_mod);
@@ -408,13 +420,63 @@ function sheet_gen(char,panel_tab) {
         .appendTo('#actions-panel');
     }
 
-    // End
+    $('#cur-carry-wt').text(dat.inventory.current_weight + ' lb.');
+    $('#max-carry-wt').text(dat.inventory.carry_capacity + ' lb.');
+    if (dat.inventory.current_weight < dat.inventory.variant_encumbrance.encumbered || (!dat.options.variant_encumbrance && dat.inventory.current_weight < dat.inventory.carry_capacity)) {
+        $('#encumbrance-val').text('Not Encumbered.');
+        $('#encumbrance-val').css('color','rgb(17, 240, 76)');
+        $('#encumbrance-val').css('background-color','rgba(0,0,0,0)');
+    } else if (dat.inventory.current_weight < dat.inventory.variant_encumbrance.heavily_encumbered && dat.options.variant_encumbrance) {
+        $('#encumbrance-val').text('Encumbered.');
+        $('#encumbrance-val').css('color','rgb(240, 236, 17)');
+        $('#encumbrance-val').css('background-color','rgba(0,0,0,0)');
+    } else if (dat.inventory.current_weight < dat.inventory.carry_capacity && dat.options.variant_encumbrance) {
+        $('#encumbrance-val').text('Heavily Encumbered.');
+        $('#encumbrance-val').css('color','rgb(240, 140, 17)');
+        $('#encumbrance-val').css('background-color','rgba(0,0,0,0)');
+    } else {
+        $('#encumbrance-val').text('Overencumbered.');
+        $('#encumbrance-val').css({'background-color':'rgb(255, 59, 59)','color':'#ffffff'});
+    }
+
+    $('#cur-wealth').text(dat.inventory.total_wealth+' gp.');
+    $('#cur-coin').text(dat.inventory.total_coin+' gp.');
+
+    //$('#cur-cont-val').text(firstCase(dat.inventory.current_container));
+    $('#cur-cont-val').html('');
+    var items = dat.inventory.containers.map(function(v,i){return v.name;});
+    for (var c=0;c<items.length;c++) {
+        $('<option></option>')
+        .attr('value',items[c])
+        .text(firstCase(items[c]))
+        .appendTo($('#cur-cont-val'));
+    }
+    $('#cur-cont-val').val(dat.inventory.current_container);
+    $('#cur-cont-wt').val(dat.inventory.containers[getCurCont()].current_weight);
+    $('#max-cont-wt').val(dat.inventory.containers[getCurCont()].max_weight)
+    .off('change').on('change',function(event){
+        modify('inventory.containers.'+getCurCont()+'.max',$(this).val());
+    });
+    $('#cont-apply-wt').prop('checked',dat.inventory.containers[getCurCont()].apply_weight)
+    .off('change').on('change',function(event){
+        modify('inventory.containers.'+getCurCont()+'.apply_weight',$(this).prop('checked'));
+    });
+    $('#cont-coins').prop('checked',dat.inventory.containers[getCurCont()].coin_container)
+    .off('change').on('change',function(event){
+        modify('inventory.containers.'+getCurCont()+'.coin_container',$(this).prop('checked'));
+    });
+
+    $('#delete-container').toggle(dat.inventory.containers[getCurCont()].removable);
+    
+
+    // End -- START STATIC HOOKS
     $('input.fit').on('input',function(event){
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
     })
     .each(function(index,elem){
         $(elem).css('width',($(elem).val().length+2)+'ch');
     });
+
 
     $('.sheet-in').on('change',function(event){
         if ($(event.target).attr('type') == 'checkbox') {

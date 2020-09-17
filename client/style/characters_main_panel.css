@@ -88,6 +88,8 @@
     background-color: var(--background2);
 }
 
+/* Actions Sidebar */
+
 #actions {
     position: absolute;
     top: 0px;
@@ -104,7 +106,7 @@
 }
 #expand-atk {
     position: absolute;
-    right: -19px;
+    left: 100%;
     bottom: 20px;
     z-index: 800;
     display: inline-block;
@@ -115,19 +117,43 @@
     border: none;
     background-color: var(--foreground3-2);
     border-radius: 0 5px 5px 0;
+    transition: width 0.2s;
 }
-#expand-atk span {
+#atk-exp-arrow {
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    right: 5px;
+    transform: translate(0,-50%);
     font-family: raleway-heavy;
     padding: 0px;
-    transition: transform 0.2s;
+    transition: transform 0.2s, right 0.2s;
     transform-origin: 25% 25%;
 }
-.expanded #expand-atk span {
+#atk-exp-arrow {
     transform: rotate(180deg);
+}
+#atk-exp-txt {
+    display: inline-block;
+    width: 0px;
+    overflow-x: hidden;
+    text-align: center;
+    font-family: raleway-heavy;
+    transition: width 0.2s;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translate(0,-50%);
+    padding: 0px;
+}
+#expand-atk:hover #atk-exp-txt {
+    width: 90px;
+}
+#expand-atk:hover {
+    width: 120px;
+}
+#expand-atk:hover #atk-exp-arrow {
+    position: absolute;
+    right: 10px;
 }
 #actions-title {
     position: absolute;
@@ -382,4 +408,145 @@
 }
 #new-atk-button:hover {
     background-color: var(--foreground3-2);
+}
+
+/* Inventory Main */
+
+#inv-header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 10%;
+    background-color: var(--foreground2);
+    -webkit-box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.75);
+}
+
+#carrying-info {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    height: 30%;
+    display: inline-block;
+}
+#encumbered-line {
+    position: absolute;
+    top: calc(30% + 10px);
+    left: 5px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    height: 30%;
+    display: inline-block;
+}
+#encumbered-line span {
+    padding: 2px;
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+#cur-wealth-line {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    height: 30%;
+    display: inline-block;
+}
+#cur-coin-line {
+    position: absolute;
+    top: calc(30% + 10px);
+    right: 5px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    height: 30%;
+    display: inline-block;
+}
+#encumbrance-val {
+    background-color: #00000000;
+}
+
+#cont-header {
+    position: absolute;
+    top: 10%;
+    left: 0px;
+    display: inline-block;
+    height: 10%;
+    width: 100%;
+    background-color: var(--foreground1);
+}
+#cont-opts div {
+    display: inline-block;
+    margin-left: 10px;
+}
+#cur-container-wt input {
+    width: 5%;
+    background-color: var(--foreground1);
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    border: none;
+    padding: 5px;
+    color: #ffffff;
+    text-align: center;
+}
+#cur-container-wt input:hover, #cur-container-wt input:focus {
+    background-color: var(--foreground2);
+}
+#cont-opts {
+    width: 99%;
+    position: absolute;
+    display: inline-block;
+    left: 0.5%;
+    top: 50%;
+    transform: translate(0px,-50%);
+    color: #ffffff;
+    font-family: raleway-heavy;
+    margin: 0px;
+}
+#cur-cont-val {
+    background-color: var(--foreground2);
+    border-radius: 5px;
+    width: 100%;
+    height: 5%;
+    display: inline-block;
+    position: relative;
+    padding: 5px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    text-align: center;
+    overflow: hidden;
+}
+#cur-cont-val:focus {
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 5%;
+}
+#cur-container {
+    position: relative;
+    display: inline-block;
+    width: 30%;
+}
+#delete-container {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: inline-block;
+    height: 100%;
+    width: 5%;
+    background-color: var(--foreground1);
+    border: none;
+    transition: background-color 0.2s;
+}
+#delete-container:hover {
+    background-color: var(--foreground2);
+}
+#delete-container img {
+    width: 70%;
+    height: auto;
 }
