@@ -550,3 +550,63 @@
     width: 70%;
     height: auto;
 }
+#coins {
+    position: absolute;
+    left: 0px;
+    top: 20%;
+    display: inline-block;
+    width: 10%;
+    height: 75%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+#coins .coin-item {
+    width: 40px;
+    position: relative;
+    height: 8%;
+    color: #ffffff;
+    font-family: raleway-regular;
+    overflow: hidden;
+    background-color: var(--foreground2);
+    border-radius: 0 5px 5px 0;
+    margin-top: 10px;
+    transition: width 0.2s;
+}
+#coins .coin-item:hover {
+    width: 100%;
+}
+.coin-title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 40px;
+    height: 100%;
+    display: inline-block;
+    background-color: var(--foreground3);
+    font-weight: bold;
+}
+.coin-title span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.coin-val {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 0%;
+    height: 100%;
+    display: inline-block;
+    background-color: var(--foreground2);
+    font-weight: bold;
+    overflow: hidden;
+    transition: width 0.2s;
+    border: none;
+    text-align: center;
+    padding: 0px;
+    color: #ffffff;
+}
+.coin-item:hover .coin-val {
+    width: calc(100% - 40px);
+}

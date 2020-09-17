@@ -471,6 +471,22 @@ function sheet_gen(char,panel_tab) {
     });
 
     $('#delete-container').toggle(dat.inventory.containers[getCurCont()].removable);
+
+    $('#coins').html('');
+    for (var c=0;c<dat.inventory.coin.length;c++) {
+        $('<div class="coin-item"></div>')
+        .append(
+            $('<span class="coin-title"></span>')
+            .append($('<span></span>').text(dat.inventory.coin[c].name.toUpperCase()))
+            
+        )
+        .append(
+            $('<input class="coin-val sheet-in" data-type="number" min="0">')
+            .val(dat.inventory.coin[c].amount)
+            .attr('data-path','inventory.coin.'+c+'.amount')
+        )
+        .appendTo('#coins');
+    }
     
 
     // End -- START STATIC HOOKS
