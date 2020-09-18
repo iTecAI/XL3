@@ -103,6 +103,12 @@ function sheet_gen(char,panel_tab) {
         $('#inventory-tab').addClass('active');
         $('#tab-inventory').addClass('active');
     }
+
+    // Option setup
+    $('#opt-public').prop('checked',dat.options.public);
+    $('#opt-encumbrance').prop('checked',dat.options.variant_encumbrance);
+    $('#opt-coinweight').prop('checked',dat.options.coin_weight);
+    $('#opt-rollhp').prop('checked',dat.options.roll_hp);
     
 
     var abs = Object.keys(dat.abilities);
@@ -474,6 +480,13 @@ function sheet_gen(char,panel_tab) {
 
     $('#coins').html('');
     for (var c=0;c<dat.inventory.coin.length;c++) {
+        var coin_colors = {
+            cp:'#d16b00',
+            sp:'#b0b0b0',
+            ep:'#dbd9bf',
+            gp:'#ffcc00',
+            pp:'#9aede9'
+        };
         $('<div class="coin-item"></div>')
         .append(
             $('<span class="coin-title"></span>')
@@ -484,12 +497,77 @@ function sheet_gen(char,panel_tab) {
             $('<input class="coin-val sheet-in" data-type="number" min="0">')
             .val(dat.inventory.coin[c].amount)
             .attr('data-path','inventory.coin.'+c+'.amount')
+            .css('color',coin_colors[dat.inventory.coin[c].name])
         )
         .appendTo('#coins');
     }
+
+    $('#items-table tbody').html('');
+    for (var j=0;j<dat.inventory.containers[getCurCont()].items.length;j++) {
+        var item = dat.inventory.containers[getCurCont()].items[j];
+
+        var cselect = $('<select></select>');
+        var conts = dat.inventory.containers.map(function(v,i){return v.name;});
+        for (var c=0;c<conts.length;c++) {
+            $('<option></option>')
+            .attr('value',conts[c])
+            .text(firstCase(conts[c]))
+            .appendTo(cselect);
+        }
+
+        $('<tr class="item"></tr>')
+        .attr('id',item.name)
+        .append(
+            $('<td></td>')
+            .append(
+                $('<input class="sheet-in" min="0" data-type="number">')
+                .val(item.quantity)
+                .css('text-align','center')
+                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.quantity')
+            )
+        )
+        .append(
+            $('<td></td>')
+            .append(
+                $('<input class="sheet-in">')
+                .val(item.name)
+                .css('text-align','left')
+                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.name')
+            )
+        )
+        .append(
+            $('<td></td>')
+            .append(
+                $('<input class="sheet-in" min="0" data-type="number">')
+                .val(item.cost)
+                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.cost')
+                .css('width','69%')
+                .css('text-align','right')
+            )
+            .append($('<span> gp</span>').css('width','29%'))
+        )
+        .append(
+            $('<td></td>')
+            .append(
+                $('<input class="sheet-in" min="0" data-type="number">')
+                .val(item.weight)
+                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.weight')
+                .css('width','69%')
+                .css('text-align','right')
+            )
+            .append($('<span> lb.</span>').css('width','29%'))
+        )
+        .append(
+            $('<td></td>')
+            .append(
+                $(cselect).val(dat.inventory.current_container)
+            )
+        )
+        .appendTo('#items-table tbody');
+    }
     
 
-    // End -- START STATIC HOOKS
+    // End -- START HOOKS
     $('input.fit').on('input',function(event){
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
     })

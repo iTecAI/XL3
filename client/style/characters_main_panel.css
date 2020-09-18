@@ -556,9 +556,11 @@
     top: 20%;
     display: inline-block;
     width: 10%;
+    min-width: 120px;
     height: 75%;
     overflow-x: hidden;
     overflow-y: scroll;
+    
 }
 #coins .coin-item {
     width: 40px;
@@ -571,6 +573,7 @@
     border-radius: 0 5px 5px 0;
     margin-top: 10px;
     transition: width 0.2s;
+    z-index: 200;
 }
 #coins .coin-item:hover {
     width: 100%;
@@ -610,3 +613,50 @@
 .coin-item:hover .coin-val {
     width: calc(100% - 40px);
 }
+
+#inventory-items {
+    width: calc(100% - 50px);
+    height: 80%;
+    display: inline-block;
+    position: absolute;
+    top: 20%;
+    right: 0px;
+    background-color: var(--background);
+    z-index: 199;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#inventory-items table {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#inventory-items thead {
+    background-color: var(--background2);
+}
+#inventory-items th, #inventory-items td {
+    display: table-cell;
+    overflow: hidden;
+    text-align: right;
+}
+#inventory-items th {
+    position: sticky;
+    top: 0px;
+    background-color: var(--background2);
+}
+#inventory-items td input, #inventory-items td select {
+    width: 100%;
+    background-color: var(--background);
+    border: none;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+}
+#inventory-items td input:hover, #inventory-items td select:hover {
+    background-color: var(--background2);
+}
+#inventory-items td select {
+    padding-left: 10px;
+}
+#inventory-items td input::-moz-selection { background: rgba(128, 128, 128, 0.5); }
+#inventory-items td input::selection { background: rgba(128, 128, 128, 0.5); }
