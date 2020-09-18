@@ -529,7 +529,7 @@ function sheet_gen(char,panel_tab) {
         .append(
             $('<td></td>')
             .append(
-                $('<input class="sheet-in">')
+                $('<input class="sheet-in" spellcheck="false">')
                 .val(item.name)
                 .css('text-align','left')
                 .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.name')

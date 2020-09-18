@@ -652,7 +652,7 @@
     transition: background-color 0.2s;
     border-radius: 4px;
 }
-#inventory-items td input:hover, #inventory-items td select:hover {
+#inventory-items td input:hover, #inventory-items td input:focus, #inventory-items td select:hover {
     background-color: var(--background2);
 }
 #inventory-items td select {
