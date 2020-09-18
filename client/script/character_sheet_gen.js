@@ -460,12 +460,13 @@ function sheet_gen(char,panel_tab) {
     $('#cur-cont-val').val(dat.inventory.current_container)
     .off('change')
     .on('change',function(event){
-        modify(dat.inventory.current_container,$(this).val());
+        modify('inventory.current_container',$(this).val());
     });
     $('#cur-cont-wt').val(dat.inventory.containers[getCurCont()].current_weight);
     $('#max-cont-wt').val(dat.inventory.containers[getCurCont()].max_weight)
     .off('change').on('change',function(event){
-        modify('inventory.containers.'+getCurCont()+'.max',$(this).val());
+        modify('inventory.containers.'+getCurCont()+'.max_weight',Number($(this).val()));
+        $(this).trigger('blur');
     });
     $('#cont-apply-wt').prop('checked',dat.inventory.containers[getCurCont()].apply_weight)
     .off('change').on('change',function(event){
@@ -477,6 +478,7 @@ function sheet_gen(char,panel_tab) {
     });
 
     $('#delete-container').toggle(dat.inventory.containers[getCurCont()].removable);
+    $('#create-container').css('height',cond(dat.inventory.containers[getCurCont()].removable,'50%','100%'));
 
     $('#coins').html('');
     for (var c=0;c<dat.inventory.coin.length;c++) {
@@ -929,4 +931,39 @@ function sheet_gen(char,panel_tab) {
 
     $('#expand-atk').off('click');
     $('#expand-atk').on('click',function(event){$('#actions').toggleClass('expanded');$('#main-modal').toggleClass('active',$('#actions').hasClass('expanded'));});
+
+    $('#create-container').off('click').on('click',function(event){
+        bootbox.prompt('Enter new container name.',function(result){
+            if (!result) {
+                return;
+            }
+            cpost(
+                '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/inventory/containers/new/',
+                {
+                    name:result
+                },
+                sheet_gen,
+                {
+                    alert: true
+                }
+            );
+        });
+    });
+    $('#delete-container').off('click').on('click',function(event){
+        bootbox.confirm('Delete container "'+dat.inventory.current_container+'"?',function(result){
+            if (!result) {
+                return;
+            }
+            cpost(
+                '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/inventory/containers/remove/',
+                {
+                    index:getCurCont()
+                },
+                sheet_gen,
+                {
+                    alert: true
+                }
+            );
+        });
+    });
 }

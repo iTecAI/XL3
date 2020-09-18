@@ -84,3 +84,9 @@ class ModCharModel(BaseModel):
 class AtkModModel(BaseModel):
     action: str
     data: dict
+
+class NewContainerModel(BaseModel):
+    name: str
+
+class RemContainerModel(BaseModel):
+    index: int

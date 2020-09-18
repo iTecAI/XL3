@@ -535,10 +535,10 @@
 #delete-container {
     position: absolute;
     right: 0px;
-    top: 0px;
+    top: 50%;
     display: inline-block;
-    height: 100%;
-    width: 5%;
+    height: 50%;
+    width: 2.5%;
     background-color: var(--foreground1);
     border: none;
     transition: background-color 0.2s;
@@ -547,8 +547,37 @@
     background-color: var(--foreground2);
 }
 #delete-container img {
-    width: 70%;
+    width: 80%;
     height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#create-container {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: inline-block;
+    height: 50%;
+    width: 2.5%;
+    background-color: var(--foreground1);
+    border: none;
+    transition: background-color 0.2s;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    font-size: 30px;
+}
+#create-container:hover {
+    background-color: var(--foreground2);
+}
+#create-container img {
+    width: 80%;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 #coins {
     position: absolute;
