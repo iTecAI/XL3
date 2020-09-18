@@ -59,14 +59,14 @@ class Character(BaseItem):
             del server.characters[self.id]
             gc.collect()
     def inventory_calculate(self):
-        self.inventory['total_coin'] = round(sum([i['amount']*i['conversion'] for i in self.inventory['coin']]),2)
-        self.inventory['total_wealth'] = round(sum([sum([k['quantity']*k['cost'] for k in i['items']]) for i in self.inventory['containers']]),2)
-        self.inventory['current_weight'] = round(sum([sum([k['quantity']*k['weight'] for k in i['items']]) for i in self.inventory['containers']]),2)
-        for i in self.inventory['containers']:
+        self.inventory['total_coin'] = round(sum([i['amount']*i['conversion'] for i in self.inventory['coin']]),2) # calculates coin total
+        self.inventory['total_wealth'] = round(sum([sum([k['quantity']*k['cost'] for k in i['items']]) for i in self.inventory['containers']]),2) # calculates item wealth
+        self.inventory['current_weight'] = round(sum([sum([k['quantity']*k['weight'] for k in i['items']]) for i in self.inventory['containers'] if i['apply_weight']]),2) # gets current weight, respecting apply_weight values
+        for i in self.inventory['containers']: # calculates inv weight
             i['current_weight'] = round(sum([k['quantity']*k['weight'] for k in i['items']]),2)
             if i['coin_container'] and self.options['coin_weight']:
                 i['current_weight'] += round(sum([k['amount']*k['weight'] for k in self.inventory['coin']]),2)
                 i['current_weight'] = round(i['current_weight'],2)
-        if self.options['coin_weight']:
+        if self.options['coin_weight'] and any([c['coin_container'] and c['apply_weight'] for c in self.inventory['containers']]): # calculates coin weight if necessary
             self.inventory['current_weight'] += round(sum([k['amount']*k['weight'] for k in self.inventory['coin']]),2)
             self.inventory['current_weight'] = round(self.inventory['current_weight'],2)
