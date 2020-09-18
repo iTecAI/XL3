@@ -663,16 +663,37 @@
 }
 #inventory-items thead {
     background-color: var(--background2);
+    height: 5%;
 }
 #inventory-items th, #inventory-items td {
     display: table-cell;
     overflow: hidden;
     text-align: right;
+    height: 5%;
 }
 #inventory-items th {
     position: sticky;
     top: 0px;
     background-color: var(--background2);
+}
+#new-item-edit th {
+    position: sticky;
+    top: 5.1%;
+}
+#new-item-edit th input {
+    width: 100%;
+    width: 100%;
+    background-color: var(--background3);
+    border: none;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+#new-item-edit th span {
+    margin-bottom: 5px;
+}
+#new-item-edit th input:hover, #new-item-edit th input:focus {
+    background-color: var(--background4);
 }
 #inventory-items td input, #inventory-items td select {
     width: 100%;
@@ -689,3 +710,24 @@
 }
 #inventory-items td input::-moz-selection { background: rgba(128, 128, 128, 0.5); }
 #inventory-items td input::selection { background: rgba(128, 128, 128, 0.5); }
+
+#new-item-submit {
+    position: relative;
+    height: 100%;
+    width: 28%;
+    border: none;
+    background-color: var(--foreground3);
+    display: inline-block;
+    border-top-left-radius: 10px;
+    color: var(--em-font-color2);
+    font-family: raleway-heavy;
+    transition: background-color 0.2s;
+    margin-right: -1px;
+}
+#new-item-submit:hover {
+    background-color: var(--foreground3-2);
+}
+#new-item-cont {
+    width: 70%;
+    float: left;
+}

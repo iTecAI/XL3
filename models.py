@@ -90,3 +90,15 @@ class NewContainerModel(BaseModel):
 
 class RemContainerModel(BaseModel):
     index: int
+
+class NewItemModel(BaseModel):
+    name: str
+    quantity: int
+    cost: float
+    weight: float
+    containerIndex: int
+
+class MoveItemModel(BaseModel):
+    oldContainerIndex: int
+    itemIndex: int
+    newContainerIndex: int

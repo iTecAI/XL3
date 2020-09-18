@@ -59,6 +59,15 @@ class Character(BaseItem):
             del server.characters[self.id]
             gc.collect()
     def inventory_calculate(self):
+        ct = 0
+        for c in self.inventory['containers']: # Delete item listings with a qt of 0
+            new_items = []
+            for i in range(len(c['items'])):
+                if c['items'][i]['quantity'] > 0:
+                    new_items.append(c['items'][i])
+            self.inventory['containers'][ct]['items'] = new_items
+            ct += 1
+
         self.inventory['total_coin'] = round(sum([i['amount']*i['conversion'] for i in self.inventory['coin']]),2) # calculates coin total
         self.inventory['total_wealth'] = round(sum([sum([k['quantity']*k['cost'] for k in i['items']]) for i in self.inventory['containers']]),2) # calculates item wealth
         self.inventory['current_weight'] = round(sum([sum([k['quantity']*k['weight'] for k in i['items']]) for i in self.inventory['containers'] if i['apply_weight']]),2) # gets current weight, respecting apply_weight values

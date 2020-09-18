@@ -49,6 +49,14 @@ function getCurCont() {
     }
 }
 
+function getCont(name) {
+    for (var i=0;i<dat.inventory.containers.length;i++) {
+        if (name == dat.inventory.containers[i].name) {
+            return i;
+        }
+    }
+}
+
 function sheet_gen(char,panel_tab) {
     $('#character-sheet-display').attr('data-id',char.cid);
     dat = char.data;
@@ -516,9 +524,26 @@ function sheet_gen(char,panel_tab) {
             .text(firstCase(conts[c]))
             .appendTo(cselect);
         }
+        cselect.on('change',function(event){
+            var reqData = {
+                oldContainerIndex: Number(getCurCont()),
+                itemIndex: Number($(event.target).parents('.item').attr('data-index')),
+                newContainerIndex:Number(getCont($(event.target).val().toLowerCase()))
+            };
+            console.log(reqData);
+            cpost(
+                '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/inventory/items/move/',
+                reqData,
+                sheet_gen,
+                {
+                    alert: true
+                }
+            );
+        });
 
         $('<tr class="item"></tr>')
         .attr('id',item.name)
+        .attr('data-index',j)
         .append(
             $('<td></td>')
             .append(
@@ -567,6 +592,8 @@ function sheet_gen(char,panel_tab) {
         )
         .appendTo('#items-table tbody');
     }
+
+    $('#new-item-cont').text(firstCase(dat.inventory.current_container));
     
 
     // End -- START HOOKS
@@ -826,7 +853,7 @@ function sheet_gen(char,panel_tab) {
             return;
         }
         cget(
-            '/compendium/search/weapons/?search='+$(event.target).val().toLowerCase().replace(/ /g,'-').replace(/,/g,''),
+            '/compendium/search/weapons/?search='+$(event.target).val().toLowerCase().replace(/ /g,'-').replace(/,/g,'').replace(/\(/g,'').replace(/\)/g,''),
             {},
             false,function(data) {
                 if (data.length > 0) {
@@ -965,5 +992,82 @@ function sheet_gen(char,panel_tab) {
                 }
             );
         });
+    });
+
+    $('#new-item-name').off('keydown').on('keydown',function(event){
+        if ($(this).val().length == 0) {
+            $('#item-name-opts').html('');
+            return;
+        }
+        cget(
+            '/compendium/search/equipment/?search='+$(event.target).val().toLowerCase().replace(/ /g,'-').replace(/,/g,'').replace(/\(/g,'').replace(/\)/g,''),
+            {},
+            false,function(data) {
+                if (data.length > 0) {
+                    $('#item-name-opts').html('');
+                    for (var d=0;d<data.length;d++) {
+                        $('<option></option>')
+                        .attr('value',data[d].name)
+                        .text(data[d].name.replace('-', ' '))
+                        .appendTo($('#item-name-opts'));
+                    }
+                    $('#new-item-name').attr('data-list',JSON.stringify(data));
+                } else {
+                    $('#item-name-opts').html('');
+                }
+            }
+        );
+    });
+    $('#new-item-name').off('change').on('change',function(event){
+        if ($(this).val().length == 0) {
+            $('#item-name-opts').html('');
+            $('#item-name-opts').html('');
+            $('#new-item-qt').val('');
+            $('#new-item-cost').val('');
+            $('#new-item-wt').val('');
+            return;
+        }
+        cget(
+            '/compendium/search/equipment/?search='+$(event.target).val().toLowerCase().replace(/ /g,'-').replace(/,/g,'').replace(/\(/g,'').replace(/\)/g,''),
+            {},
+            false,function(data) {
+                if (data.length == 1) {
+                    console.log(data);
+                    if (data[0].name == $('#new-item-name').val()) {
+                        $('#item-name-opts').html('');
+                        $('#new-item-qt').val(data[0].quantity);
+                        $('#new-item-cost').val(data[0].cost);
+                        $('#new-item-wt').val(data[0].weight);
+                    }
+                } else {
+                    $('#item-name-opts').html('');
+                    $('#new-item-qt').val('');
+                    $('#new-item-cost').val('');
+                    $('#new-item-wt').val('');
+                }
+            }
+        );
+    });
+
+    $('#new-item-submit').off('click').on('click',function(event){
+        cpost(
+            '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/inventory/items/new/',
+            {
+                name:$('#new-item-name').val(),
+                quantity:$('#new-item-qt').val(),
+                cost:$('#new-item-cost').val(),
+                weight:$('#new-item-wt').val(),
+                containerIndex:getCurCont()
+            },
+            sheet_gen,
+            {
+                alert: true
+            }
+        );
+        $('#new-item-name').val('');
+        $('#item-name-opts').html('');
+        $('#new-item-qt').val('');
+        $('#new-item-cost').val('');
+        $('#new-item-wt').val('');
     });
 }

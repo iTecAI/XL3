@@ -434,6 +434,18 @@
                                         <th style='width:7%'>WEIGHT</th>
                                         <th style='width:20%;text-align: center;'>CONTAINER</th>
                                     </tr>
+                                    <tr id='new-item-edit'>
+                                        <th><input id='new-item-qt' data-type='number' min='0' style='text-align: center;'></th>
+                                        <th>
+                                            <input id='new-item-name' list='item-name-opts' style="padding-left: 10px;">
+                                            <datalist id='item-name-opts'>
+
+                                            </datalist>
+                                        </th>
+                                        <th><input id='new-item-cost' data-type='number' min='0' style='width: 68%;text-align: right; padding-right: 10px;'><span style='width: 28%'> gp</span></th>
+                                        <th><input id='new-item-wt' data-type='number' min='0' style='width: 68%;text-align: right; padding-right: 10px;'><span style='width: 28%'> lb.</span></th>
+                                        <th><span id='new-item-cont' style="text-align: left; padding-left: 10px"></span><button id='new-item-submit'>SUBMIT</button></th>
+                                    </tr>
                                 </thead>
                                 <tbody class='noscroll'>
 

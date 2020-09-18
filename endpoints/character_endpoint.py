@@ -762,7 +762,101 @@ async def inv_rem_container(fingerprint: str, charid: str, model: RemContainerMo
     server.characters[charid].inventory['current_container'] = 'inventory'
     server.characters[charid].update()
     server.characters[charid].cache()
-    server.characters[charid]
+    server.connections[fingerprint].user.update()
+
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }
+
+@router.post('/{charid}/modify/inventory/items/new',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Modifies character inventory, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def inv_new_item(fingerprint: str, charid: str, model: NewItemModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    try:
+        server.characters[charid].inventory['containers'][model.containerIndex]['items'].append({
+            'name':model.name,
+            'quantity':model.quantity,
+            'cost':model.cost,
+            'weight':model.weight
+        })
+    except IndexError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Container index not found.'}
+    
+    recalculate(charid)
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
+
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }
+
+@router.post('/{charid}/modify/inventory/items/move',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Modifies character inventory, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def inv_mv_item(fingerprint: str, charid: str, model: MoveItemModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    
+    try:
+        server.characters[charid].inventory['containers'][model.newContainerIndex]['items'].append(
+            server.characters[charid].inventory['containers'][model.oldContainerIndex]['items'][model.itemIndex]
+        )
+        del server.characters[charid].inventory['containers'][model.oldContainerIndex]['items'][model.itemIndex]
+    except IndexError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Container or Item index not found.'}
+    
+    recalculate(charid)
+    server.characters[charid].update()
+    server.characters[charid].cache()
     server.connections[fingerprint].user.update()
 
     return {
