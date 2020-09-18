@@ -10,11 +10,17 @@ def split_on(string,seps):
 
 with open(os.path.join('api','static_data','equipment.json'),'r') as f:
     dat = json.load(f)
+with open(os.path.join('api','static_data','weapons.json'),'r') as f:
+    datw = json.load(f)
 
-for i in range(len(dat)):
-    if dat[i]['quantity'] > 1:
-        dat[i]['weight'] = dat[i]['weight'] / dat[i]['quantity']
-        dat[i]['cost'] = dat[i]['cost'] / dat[i]['quantity']
+for i in datw:
+    dat.append({
+        'slug':i['slug'],
+        'cost':i['cost'],
+        'weight':i['weight'],
+        'quantity':1,
+        'name':i['name']
+    })
     
 with open(os.path.join('api','static_data','equipment.json'),'w') as f:
     json.dump(dat,f,indent=4)

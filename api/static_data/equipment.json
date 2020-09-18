@@ -733,5 +733,355 @@
         "weight": 1.0,
         "quantity": 1,
         "name": "Whetstone"
+    },
+    {
+        "slug": "padded-armor",
+        "cost": 5,
+        "weight": 8,
+        "quantity": 1,
+        "name": "Padded Armor"
+    },
+    {
+        "slug": "leather-armor",
+        "cost": 10,
+        "weight": 10,
+        "quantity": 1,
+        "name": "Leather Armor"
+    },
+    {
+        "slug": "studded-leather-armor",
+        "cost": 45,
+        "weight": 13,
+        "quantity": 1,
+        "name": "Studded Leather Armor"
+    },
+    {
+        "slug": "hide-armor",
+        "cost": 10,
+        "weight": 12,
+        "quantity": 1,
+        "name": "Hide Armor"
+    },
+    {
+        "slug": "chain-shirt",
+        "cost": 50,
+        "weight": 20,
+        "quantity": 1,
+        "name": "Chain Shirt"
+    },
+    {
+        "slug": "scale-mail",
+        "cost": 50,
+        "weight": 45,
+        "quantity": 1,
+        "name": "Scale Mail"
+    },
+    {
+        "slug": "breastplate",
+        "cost": 400,
+        "weight": 20,
+        "quantity": 1,
+        "name": "Breastplate"
+    },
+    {
+        "slug": "half-plate",
+        "cost": 750,
+        "weight": 40,
+        "quantity": 1,
+        "name": "Half Plate"
+    },
+    {
+        "slug": "ring-mail",
+        "cost": 30,
+        "weight": 40,
+        "quantity": 1,
+        "name": "Ring Mail"
+    },
+    {
+        "slug": "chain-mail",
+        "cost": 75,
+        "weight": 55,
+        "quantity": 1,
+        "name": "Chain Mail"
+    },
+    {
+        "slug": "splint-armor",
+        "cost": 200,
+        "weight": 60,
+        "quantity": 1,
+        "name": "Splint Armor"
+    },
+    {
+        "slug": "plate-armor",
+        "cost": 1500,
+        "weight": 65,
+        "quantity": 1,
+        "name": "Plate Armor"
+    },
+    {
+        "slug": "shield",
+        "cost": 10,
+        "weight": 6,
+        "quantity": 1,
+        "name": "Shield"
+    },
+    {
+        "slug": "club",
+        "cost": 0.1,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Club"
+    },
+    {
+        "slug": "dagger",
+        "cost": 2.0,
+        "weight": 1,
+        "quantity": 1,
+        "name": "Dagger"
+    },
+    {
+        "slug": "greatclub",
+        "cost": 0.2,
+        "weight": 10,
+        "quantity": 1,
+        "name": "Greatclub"
+    },
+    {
+        "slug": "handaxe",
+        "cost": 5.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Handaxe"
+    },
+    {
+        "slug": "javelin",
+        "cost": 0.5,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Javelin"
+    },
+    {
+        "slug": "light-hammer",
+        "cost": 2.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Light-hammer"
+    },
+    {
+        "slug": "mace",
+        "cost": 5.0,
+        "weight": 4,
+        "quantity": 1,
+        "name": "Mace"
+    },
+    {
+        "slug": "quarterstaff",
+        "cost": 0.2,
+        "weight": 4,
+        "quantity": 1,
+        "name": "Quarterstaff"
+    },
+    {
+        "slug": "sickle",
+        "cost": 1.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Sickle"
+    },
+    {
+        "slug": "spear",
+        "cost": 1.0,
+        "weight": 3,
+        "quantity": 1,
+        "name": "Spear"
+    },
+    {
+        "slug": "light-crossbow",
+        "cost": 25.0,
+        "weight": 5,
+        "quantity": 1,
+        "name": "Light-crossbow"
+    },
+    {
+        "slug": "dart",
+        "cost": 0.05,
+        "weight": 0.25,
+        "quantity": 1,
+        "name": "Dart"
+    },
+    {
+        "slug": "shortbow",
+        "cost": 25.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Shortbow"
+    },
+    {
+        "slug": "sling",
+        "cost": 0.1,
+        "weight": 0,
+        "quantity": 1,
+        "name": "Sling"
+    },
+    {
+        "slug": "battleaxe",
+        "cost": 10.0,
+        "weight": 4,
+        "quantity": 1,
+        "name": "Battleaxe"
+    },
+    {
+        "slug": "flail",
+        "cost": 10.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Flail"
+    },
+    {
+        "slug": "glaive",
+        "cost": 20.0,
+        "weight": 6,
+        "quantity": 1,
+        "name": "Glaive"
+    },
+    {
+        "slug": "greataxe",
+        "cost": 30.0,
+        "weight": 7,
+        "quantity": 1,
+        "name": "Greataxe"
+    },
+    {
+        "slug": "greatsword",
+        "cost": 50.0,
+        "weight": 6,
+        "quantity": 1,
+        "name": "Greatsword"
+    },
+    {
+        "slug": "halberd",
+        "cost": 20.0,
+        "weight": 6,
+        "quantity": 1,
+        "name": "Halberd"
+    },
+    {
+        "slug": "lance",
+        "cost": 10.0,
+        "weight": 6,
+        "quantity": 1,
+        "name": "Lance"
+    },
+    {
+        "slug": "longsword",
+        "cost": 15.0,
+        "weight": 3,
+        "quantity": 1,
+        "name": "Longsword"
+    },
+    {
+        "slug": "maul",
+        "cost": 10.0,
+        "weight": 10,
+        "quantity": 1,
+        "name": "Maul"
+    },
+    {
+        "slug": "morningstar",
+        "cost": 15.0,
+        "weight": 4,
+        "quantity": 1,
+        "name": "Morningstar"
+    },
+    {
+        "slug": "pike",
+        "cost": 5.0,
+        "weight": 18,
+        "quantity": 1,
+        "name": "Pike"
+    },
+    {
+        "slug": "rapier",
+        "cost": 25.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Rapier"
+    },
+    {
+        "slug": "scimitar",
+        "cost": 25.0,
+        "weight": 3,
+        "quantity": 1,
+        "name": "Scimitar"
+    },
+    {
+        "slug": "shortsword",
+        "cost": 10.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Shortsword"
+    },
+    {
+        "slug": "trident",
+        "cost": 5.0,
+        "weight": 4,
+        "quantity": 1,
+        "name": "Trident"
+    },
+    {
+        "slug": "war-pick",
+        "cost": 5.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "War-pick"
+    },
+    {
+        "slug": "warhammer",
+        "cost": 15.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Warhammer"
+    },
+    {
+        "slug": "whip",
+        "cost": 2.0,
+        "weight": 3,
+        "quantity": 1,
+        "name": "Whip"
+    },
+    {
+        "slug": "blowgun",
+        "cost": 10.0,
+        "weight": 1,
+        "quantity": 1,
+        "name": "Blowgun"
+    },
+    {
+        "slug": "hand-crossbow",
+        "cost": 75.0,
+        "weight": 3,
+        "quantity": 1,
+        "name": "Hand-crossbow"
+    },
+    {
+        "slug": "heavy-crossbow",
+        "cost": 50.0,
+        "weight": 18,
+        "quantity": 1,
+        "name": "Heavy-crossbow"
+    },
+    {
+        "slug": "longbow",
+        "cost": 50.0,
+        "weight": 2,
+        "quantity": 1,
+        "name": "Longbow"
+    },
+    {
+        "slug": "net",
+        "cost": 1.0,
+        "weight": 3,
+        "quantity": 1,
+        "name": "Net"
     }
 ]
