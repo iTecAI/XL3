@@ -840,7 +840,7 @@
         "type":"gear"
     },
     {
-        "slug": "padded-armor",
+        "slug": "padded",
         "cost": 5,
         "weight": 8,
         "quantity": 1,
@@ -848,7 +848,7 @@
         "type":"armor"
     },
     {
-        "slug": "leather-armor",
+        "slug": "leather",
         "cost": 10,
         "weight": 10,
         "quantity": 1,
@@ -856,7 +856,7 @@
         "type":"armor"
     },
     {
-        "slug": "studded-leather-armor",
+        "slug": "studded-leather",
         "cost": 45,
         "weight": 13,
         "quantity": 1,
@@ -864,7 +864,7 @@
         "type":"armor"
     },
     {
-        "slug": "hide-armor",
+        "slug": "hide",
         "cost": 10,
         "weight": 12,
         "quantity": 1,
@@ -920,7 +920,7 @@
         "type":"armor"
     },
     {
-        "slug": "splint-armor",
+        "slug": "splint",
         "cost": 200,
         "weight": 60,
         "quantity": 1,
@@ -928,7 +928,7 @@
         "type":"armor"
     },
     {
-        "slug": "plate-armor",
+        "slug": "plate",
         "cost": 1500,
         "weight": 65,
         "quantity": 1,
