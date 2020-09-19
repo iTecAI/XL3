@@ -4,1084 +4,1239 @@
         "cost": 2.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Abacus"
+        "name": "Abacus",
+        "type":"gear"
     },
     {
         "slug": "acid-vial",
         "cost": 25.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Acid (vial)"
+        "name": "Acid (vial)",
+        "type":"gear"
     },
     {
         "slug": "alchemists-fire-flask",
         "cost": 50.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Alchemists fire (flask)"
+        "name": "Alchemists fire (flask)",
+        "type":"gear"
     },
     {
         "slug": "arrows",
         "cost": 0.05,
         "weight": 0.05,
         "quantity": 20,
-        "name": "arrows"
+        "name": "arrows",
+        "type":"gear"
     },
     {
         "slug": "blowgun-needles",
         "cost": 0.02,
         "weight": 0.02,
         "quantity": 50,
-        "name": "Blowgun needles"
+        "name": "Blowgun needles",
+        "type":"gear"
     },
     {
         "slug": "crossbow-bolts",
         "cost": 0.05,
         "weight": 0.075,
         "quantity": 20,
-        "name": "Crossbow bolts"
+        "name": "Crossbow bolts",
+        "type":"gear"
     },
     {
         "slug": "sling-bullets",
         "cost": 0.002,
         "weight": 0.075,
         "quantity": 20,
-        "name": "Sling bullets"
+        "name": "Sling bullets",
+        "type":"gear"
     },
     {
         "slug": "antitoxin-vial",
         "cost": 50.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Antitoxin (vial)"
+        "name": "Antitoxin (vial)",
+        "type":"gear"
     },
     {
         "slug": "crystal",
         "cost": 10.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Crystal"
+        "name": "Crystal",
+        "type":"gear"
     },
     {
         "slug": "orb",
         "cost": 20.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Orb"
+        "name": "Orb",
+        "type":"gear"
     },
     {
         "slug": "rod",
         "cost": 10.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Rod"
+        "name": "Rod",
+        "type":"gear"
     },
     {
         "slug": "staff",
         "cost": 5.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Staff"
+        "name": "Staff",
+        "type":"gear"
     },
     {
         "slug": "wand",
         "cost": 10.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Wand"
+        "name": "Wand",
+        "type":"gear"
     },
     {
         "slug": "backpack",
         "cost": 2.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Backpack"
+        "name": "Backpack",
+        "type":"gear"
     },
     {
         "slug": "ball-bearings",
         "cost": 0.001,
         "weight": 0.002,
         "quantity": 1000,
-        "name": "Ball bearings"
+        "name": "Ball bearings",
+        "type":"gear"
     },
     {
         "slug": "barrel",
         "cost": 2.0,
         "weight": 70.0,
         "quantity": 1,
-        "name": "Barrel"
+        "name": "Barrel",
+        "type":"gear"
     },
     {
         "slug": "basket",
         "cost": 0.4,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Basket"
+        "name": "Basket",
+        "type":"gear"
     },
     {
         "slug": "bedroll",
         "cost": 1.0,
         "weight": 7.0,
         "quantity": 1,
-        "name": "Bedroll"
+        "name": "Bedroll",
+        "type":"gear"
     },
     {
         "slug": "bell",
         "cost": 1.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Bell"
+        "name": "Bell",
+        "type":"gear"
     },
     {
         "slug": "blanket",
         "cost": 0.5,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Blanket"
+        "name": "Blanket",
+        "type":"gear"
     },
     {
         "slug": "block-and-tackle",
         "cost": 1.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Block and tackle"
+        "name": "Block and tackle",
+        "type":"gear"
     },
     {
         "slug": "book",
         "cost": 25.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Book"
+        "name": "Book",
+        "type":"gear"
     },
     {
         "slug": "bottle-glass",
         "cost": 2.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Bottle, glass"
+        "name": "Bottle, glass",
+        "type":"gear"
     },
     {
         "slug": "bucket",
         "cost": 0.05,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Bucket"
+        "name": "Bucket",
+        "type":"gear"
     },
     {
         "slug": "caltrops",
         "cost": 0.05,
         "weight": 0.1,
         "quantity": 20,
-        "name": "Caltrops"
+        "name": "Caltrops",
+        "type":"gear"
     },
     {
         "slug": "candle",
         "cost": 0.01,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Candle"
+        "name": "Candle",
+        "type":"gear"
     },
     {
         "slug": "case-crossbow-bolt",
         "cost": 1.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Case, crossbow bolt"
+        "name": "Case, crossbow bolt",
+        "type":"gear"
     },
     {
         "slug": "case-map-or-scroll",
         "cost": 1.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Case, map or scroll"
+        "name": "Case, map or scroll",
+        "type":"gear"
     },
     {
         "slug": "chain-10-feet",
         "cost": 5.0,
         "weight": 10.0,
         "quantity": 1,
-        "name": "Chain (10 feet)"
+        "name": "Chain (10 feet)",
+        "type":"gear"
     },
     {
         "slug": "chalk-1-piece",
         "cost": 0.01,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Chalk (1 piece)"
+        "name": "Chalk (1 piece)",
+        "type":"gear"
     },
     {
         "slug": "chest",
         "cost": 5.0,
         "weight": 25.0,
         "quantity": 1,
-        "name": "Chest"
+        "name": "Chest",
+        "type":"gear"
     },
     {
         "slug": "clothes-common",
         "cost": 0.05,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Clothes, common"
+        "name": "Clothes, common",
+        "type":"gear"
     },
     {
         "slug": "clothes-costume",
         "cost": 5.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Clothes, costume"
+        "name": "Clothes, costume",
+        "type":"gear"
     },
     {
         "slug": "clothes-fine",
         "cost": 15.0,
         "weight": 6.0,
         "quantity": 1,
-        "name": "Clothes, fine"
+        "name": "Clothes, fine",
+        "type":"gear"
     },
     {
         "slug": "clothes-travelers",
         "cost": 2.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Clothes, travelers"
+        "name": "Clothes, travelers",
+        "type":"gear"
     },
     {
         "slug": "component-pouch",
         "cost": 25.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Component pouch"
+        "name": "Component pouch",
+        "type":"gear"
     },
     {
         "slug": "crowbar",
         "cost": 2.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Crowbar"
+        "name": "Crowbar",
+        "type":"gear"
     },
     {
         "slug": "druidic-focus",
         "cost": 0.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Druidic focus"
+        "name": "Druidic focus",
+        "type":"gear"
     },
     {
         "slug": "sprig-of-mistletoe",
         "cost": 1.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Sprig of mistletoe"
+        "name": "Sprig of mistletoe",
+        "type":"gear"
     },
     {
         "slug": "totem",
         "cost": 1.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Totem"
+        "name": "Totem",
+        "type":"gear"
     },
     {
         "slug": "wooden-staff",
         "cost": 5.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Wooden staff"
+        "name": "Wooden staff",
+        "type":"gear"
     },
     {
         "slug": "yew-wand",
         "cost": 10.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Yew wand"
+        "name": "Yew wand",
+        "type":"gear"
     },
     {
         "slug": "fishing-tackle",
         "cost": 1.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Fishing tackle"
+        "name": "Fishing tackle",
+        "type":"gear"
     },
     {
         "slug": "flask-or-tankard",
         "cost": 0.02,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Flask or tankard"
+        "name": "Flask or tankard",
+        "type":"gear"
     },
     {
         "slug": "grappling-hook",
         "cost": 2.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Grappling hook"
+        "name": "Grappling hook",
+        "type":"gear"
     },
     {
         "slug": "hammer",
         "cost": 1.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Hammer"
+        "name": "Hammer",
+        "type":"gear"
     },
     {
         "slug": "hammer-sledge",
         "cost": 2.0,
         "weight": 10.0,
         "quantity": 1,
-        "name": "Hammer, sledge"
+        "name": "Hammer, sledge",
+        "type":"gear"
     },
     {
         "slug": "holy--symbol",
         "cost": 0.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Holy  symbol"
+        "name": "Holy  symbol",
+        "type":"gear"
     },
     {
         "slug": "amulet",
         "cost": 5.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Amulet"
+        "name": "Amulet",
+        "type":"gear"
     },
     {
         "slug": "emblem",
         "cost": 5.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Emblem"
+        "name": "Emblem",
+        "type":"gear"
     },
     {
         "slug": "reliquary",
         "cost": 5.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Reliquary"
+        "name": "Reliquary",
+        "type":"gear"
     },
     {
         "slug": "holy-water-flask",
         "cost": 25.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Holy water (flask)"
+        "name": "Holy water (flask)",
+        "type":"gear"
     },
     {
         "slug": "hourglass",
         "cost": 25.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Hourglass"
+        "name": "Hourglass",
+        "type":"gear"
     },
     {
         "slug": "hunting-trap",
         "cost": 5.0,
         "weight": 25.0,
         "quantity": 1,
-        "name": "Hunting trap"
+        "name": "Hunting trap",
+        "type":"gear"
     },
     {
         "slug": "ink-1-ounce-bottle",
         "cost": 10.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Ink (1 ounce bottle)"
+        "name": "Ink (1 ounce bottle)",
+        "type":"gear"
     },
     {
         "slug": "ink-pen",
         "cost": 0.02,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Ink pen"
+        "name": "Ink pen",
+        "type":"gear"
     },
     {
         "slug": "jug-or-pitcher",
         "cost": 0.02,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Jug or pitcher"
+        "name": "Jug or pitcher",
+        "type":"gear"
     },
     {
         "slug": "kit-climbers",
         "cost": 25.0,
         "weight": 12.0,
         "quantity": 1,
-        "name": "Kit, climbers"
+        "name": "Kit, climbers",
+        "type":"gear"
     },
     {
         "slug": "kit-disguise",
         "cost": 25.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Kit, disguise"
+        "name": "Kit, disguise",
+        "type":"gear"
     },
     {
         "slug": "kit-forgery",
         "cost": 15.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Kit, forgery"
+        "name": "Kit, forgery",
+        "type":"gear"
     },
     {
         "slug": "kit-herbalism",
         "cost": 5.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Kit, herbalism"
+        "name": "Kit, herbalism",
+        "type":"gear"
     },
     {
         "slug": "kit-healers",
         "cost": 5.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Kit, healers"
+        "name": "Kit, healers",
+        "type":"gear"
     },
     {
         "slug": "kit-mess",
         "cost": 0.2,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Kit, mess"
+        "name": "Kit, mess",
+        "type":"gear"
     },
     {
         "slug": "kit-poisoners",
         "cost": 50.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Kit, poisoners"
+        "name": "Kit, poisoners",
+        "type":"gear"
     },
     {
         "slug": "ladder-10-foot",
         "cost": 0.1,
         "weight": 25.0,
         "quantity": 1,
-        "name": "Ladder (10-foot)"
+        "name": "Ladder (10-foot)",
+        "type":"gear"
     },
     {
         "slug": "lamp",
         "cost": 0.5,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Lamp"
+        "name": "Lamp",
+        "type":"gear"
     },
     {
         "slug": "lantern-bullseye",
         "cost": 10.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Lantern, bullseye"
+        "name": "Lantern, bullseye",
+        "type":"gear"
     },
     {
         "slug": "lantern-hooded",
         "cost": 5.0,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Lantern, hooded"
+        "name": "Lantern, hooded",
+        "type":"gear"
     },
     {
         "slug": "lock",
         "cost": 10.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Lock"
+        "name": "Lock",
+        "type":"gear"
     },
     {
         "slug": "magnifying-glass",
         "cost": 100.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Magnifying glass"
+        "name": "Magnifying glass",
+        "type":"gear"
     },
     {
         "slug": "manacles",
         "cost": 2.0,
         "weight": 6.0,
         "quantity": 1,
-        "name": "Manacles"
+        "name": "Manacles",
+        "type":"gear"
     },
     {
         "slug": "mirror-steel",
         "cost": 5.0,
         "weight": 0.5,
         "quantity": 1,
-        "name": "Mirror, steel"
+        "name": "Mirror, steel",
+        "type":"gear"
     },
     {
         "slug": "oil-flask",
         "cost": 0.1,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Oil (flask)"
+        "name": "Oil (flask)",
+        "type":"gear"
     },
     {
         "slug": "paper-one-sheet",
         "cost": 0.2,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Paper (one sheet)"
+        "name": "Paper (one sheet)",
+        "type":"gear"
     },
     {
         "slug": "parchment-one-sheet",
         "cost": 0.1,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Parchment (one sheet)"
+        "name": "Parchment (one sheet)",
+        "type":"gear"
     },
     {
         "slug": "perfume-vial",
         "cost": 5.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Perfume (vial)"
+        "name": "Perfume (vial)",
+        "type":"gear"
     },
     {
         "slug": "pick-miners",
         "cost": 2.0,
         "weight": 10.0,
         "quantity": 1,
-        "name": "Pick, miners"
+        "name": "Pick, miners",
+        "type":"gear"
     },
     {
         "slug": "piton",
         "cost": 0.05,
         "weight": 0.25,
         "quantity": 1,
-        "name": "Piton"
+        "name": "Piton",
+        "type":"gear"
     },
     {
         "slug": "poison-basic-vial",
         "cost": 100.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Poison, basic (vial)"
+        "name": "Poison, basic (vial)",
+        "type":"gear"
     },
     {
         "slug": "pole-10-foot",
         "cost": 0.05,
         "weight": 7.0,
         "quantity": 1,
-        "name": "Pole (10-foot)"
+        "name": "Pole (10-foot)",
+        "type":"gear"
     },
     {
         "slug": "pot-iron",
         "cost": 2.0,
         "weight": 10.0,
         "quantity": 1,
-        "name": "Pot, iron"
+        "name": "Pot, iron",
+        "type":"gear"
     },
     {
         "slug": "potion-of-healing",
         "cost": 50.0,
         "weight": 0.5,
         "quantity": 1,
-        "name": "Potion of healing"
+        "name": "Potion of healing",
+        "type":"gear"
     },
     {
         "slug": "pouch",
         "cost": 0.05,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Pouch"
+        "name": "Pouch",
+        "type":"gear"
     },
     {
         "slug": "quiver",
         "cost": 1.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Quiver"
+        "name": "Quiver",
+        "type":"gear"
     },
     {
         "slug": "ram-portable",
         "cost": 4.0,
         "weight": 35.0,
         "quantity": 1,
-        "name": "Ram, portable"
+        "name": "Ram, portable",
+        "type":"gear"
     },
     {
         "slug": "rations-1-day",
         "cost": 0.5,
         "weight": 2.0,
         "quantity": 1,
-        "name": "Rations (1 day)"
+        "name": "Rations (1 day)",
+        "type":"gear"
     },
     {
         "slug": "robes",
         "cost": 1.0,
         "weight": 4.0,
         "quantity": 1,
-        "name": "Robes"
+        "name": "Robes",
+        "type":"gear"
     },
     {
         "slug": "rope-hempen-50-feet",
         "cost": 1.0,
         "weight": 10.0,
         "quantity": 1,
-        "name": "Rope, hempen (50 feet)"
+        "name": "Rope, hempen (50 feet)",
+        "type":"gear"
     },
     {
         "slug": "rope-silk-50-feet",
         "cost": 10.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Rope, silk (50 feet)"
+        "name": "Rope, silk (50 feet)",
+        "type":"gear"
     },
     {
         "slug": "sack",
         "cost": 0.01,
         "weight": 0.5,
         "quantity": 1,
-        "name": "Sack"
+        "name": "Sack",
+        "type":"gear"
     },
     {
         "slug": "scale-merchants",
         "cost": 5.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Scale, merchants"
+        "name": "Scale, merchants",
+        "type":"gear"
     },
     {
         "slug": "sealing-wax",
         "cost": 0.5,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Sealing wax"
+        "name": "Sealing wax",
+        "type":"gear"
     },
     {
         "slug": "shovel",
         "cost": 2.0,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Shovel"
+        "name": "Shovel",
+        "type":"gear"
     },
     {
         "slug": "signal-whistle",
         "cost": 0.05,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Signal whistle"
+        "name": "Signal whistle",
+        "type":"gear"
     },
     {
         "slug": "signet-ring",
         "cost": 5.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Signet ring"
+        "name": "Signet ring",
+        "type":"gear"
     },
     {
         "slug": "soap",
         "cost": 0.02,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Soap"
+        "name": "Soap",
+        "type":"gear"
     },
     {
         "slug": "spellbook",
         "cost": 50.0,
         "weight": 3.0,
         "quantity": 1,
-        "name": "Spellbook"
+        "name": "Spellbook",
+        "type":"gear"
     },
     {
         "slug": "spikes-iron",
         "cost": 0.1,
         "weight": 0.5,
         "quantity": 10,
-        "name": "Spikes, iron"
+        "name": "Spikes, iron",
+        "type":"gear"
     },
     {
         "slug": "spyglass",
         "cost": 1000.0,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Spyglass"
+        "name": "Spyglass",
+        "type":"gear"
     },
     {
         "slug": "tent-two-person",
         "cost": 2.0,
         "weight": 20.0,
         "quantity": 1,
-        "name": "Tent, two-person"
+        "name": "Tent, two-person",
+        "type":"gear"
     },
     {
         "slug": "tinderbox",
         "cost": 0.5,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Tinderbox"
+        "name": "Tinderbox",
+        "type":"gear"
     },
     {
         "slug": "torch",
         "cost": 0.01,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Torch"
+        "name": "Torch",
+        "type":"gear"
     },
     {
         "slug": "vial",
         "cost": 1.0,
         "weight": 0.0,
         "quantity": 1,
-        "name": "Vial"
+        "name": "Vial",
+        "type":"gear"
     },
     {
         "slug": "waterskin",
         "cost": 0.2,
         "weight": 5.0,
         "quantity": 1,
-        "name": "Waterskin"
+        "name": "Waterskin",
+        "type":"gear"
     },
     {
         "slug": "whetstone",
         "cost": 0.01,
         "weight": 1.0,
         "quantity": 1,
-        "name": "Whetstone"
+        "name": "Whetstone",
+        "type":"gear"
     },
     {
         "slug": "padded-armor",
         "cost": 5,
         "weight": 8,
         "quantity": 1,
-        "name": "Padded Armor"
+        "name": "Padded Armor",
+        "type":"armor"
     },
     {
         "slug": "leather-armor",
         "cost": 10,
         "weight": 10,
         "quantity": 1,
-        "name": "Leather Armor"
+        "name": "Leather Armor",
+        "type":"armor"
     },
     {
         "slug": "studded-leather-armor",
         "cost": 45,
         "weight": 13,
         "quantity": 1,
-        "name": "Studded Leather Armor"
+        "name": "Studded Leather Armor",
+        "type":"armor"
     },
     {
         "slug": "hide-armor",
         "cost": 10,
         "weight": 12,
         "quantity": 1,
-        "name": "Hide Armor"
+        "name": "Hide Armor",
+        "type":"armor"
     },
     {
         "slug": "chain-shirt",
         "cost": 50,
         "weight": 20,
         "quantity": 1,
-        "name": "Chain Shirt"
+        "name": "Chain Shirt",
+        "type":"armor"
     },
     {
         "slug": "scale-mail",
         "cost": 50,
         "weight": 45,
         "quantity": 1,
-        "name": "Scale Mail"
+        "name": "Scale Mail",
+        "type":"armor"
     },
     {
         "slug": "breastplate",
         "cost": 400,
         "weight": 20,
         "quantity": 1,
-        "name": "Breastplate"
+        "name": "Breastplate",
+        "type":"armor"
     },
     {
         "slug": "half-plate",
         "cost": 750,
         "weight": 40,
         "quantity": 1,
-        "name": "Half Plate"
+        "name": "Half Plate",
+        "type":"armor"
     },
     {
         "slug": "ring-mail",
         "cost": 30,
         "weight": 40,
         "quantity": 1,
-        "name": "Ring Mail"
+        "name": "Ring Mail",
+        "type":"armor"
     },
     {
         "slug": "chain-mail",
         "cost": 75,
         "weight": 55,
         "quantity": 1,
-        "name": "Chain Mail"
+        "name": "Chain Mail",
+        "type":"armor"
     },
     {
         "slug": "splint-armor",
         "cost": 200,
         "weight": 60,
         "quantity": 1,
-        "name": "Splint Armor"
+        "name": "Splint Armor",
+        "type":"armor"
     },
     {
         "slug": "plate-armor",
         "cost": 1500,
         "weight": 65,
         "quantity": 1,
-        "name": "Plate Armor"
+        "name": "Plate Armor",
+        "type":"armor"
     },
     {
         "slug": "shield",
         "cost": 10,
         "weight": 6,
         "quantity": 1,
-        "name": "Shield"
+        "name": "Shield",
+        "type":"armor"
     },
     {
         "slug": "club",
         "cost": 0.1,
         "weight": 2,
         "quantity": 1,
-        "name": "Club"
+        "name": "Club",
+        "type":"weapon"
     },
     {
         "slug": "dagger",
         "cost": 2.0,
         "weight": 1,
         "quantity": 1,
-        "name": "Dagger"
+        "name": "Dagger",
+        "type":"weapon"
     },
     {
         "slug": "greatclub",
         "cost": 0.2,
         "weight": 10,
         "quantity": 1,
-        "name": "Greatclub"
+        "name": "Greatclub",
+        "type":"weapon"
     },
     {
         "slug": "handaxe",
         "cost": 5.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Handaxe"
+        "name": "Handaxe",
+        "type":"weapon"
     },
     {
         "slug": "javelin",
         "cost": 0.5,
         "weight": 2,
         "quantity": 1,
-        "name": "Javelin"
+        "name": "Javelin",
+        "type":"weapon"
     },
     {
         "slug": "light-hammer",
         "cost": 2.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Light-hammer"
+        "name": "Light-hammer",
+        "type":"weapon"
     },
     {
         "slug": "mace",
         "cost": 5.0,
         "weight": 4,
         "quantity": 1,
-        "name": "Mace"
+        "name": "Mace",
+        "type":"weapon"
     },
     {
         "slug": "quarterstaff",
         "cost": 0.2,
         "weight": 4,
         "quantity": 1,
-        "name": "Quarterstaff"
+        "name": "Quarterstaff",
+        "type":"weapon"
     },
     {
         "slug": "sickle",
         "cost": 1.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Sickle"
+        "name": "Sickle",
+        "type":"weapon"
     },
     {
         "slug": "spear",
         "cost": 1.0,
         "weight": 3,
         "quantity": 1,
-        "name": "Spear"
+        "name": "Spear",
+        "type":"weapon"
     },
     {
         "slug": "light-crossbow",
         "cost": 25.0,
         "weight": 5,
         "quantity": 1,
-        "name": "Light-crossbow"
+        "name": "Light-crossbow",
+        "type":"weapon"
     },
     {
         "slug": "dart",
         "cost": 0.05,
         "weight": 0.25,
         "quantity": 1,
-        "name": "Dart"
+        "name": "Dart",
+        "type":"weapon"
     },
     {
         "slug": "shortbow",
         "cost": 25.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Shortbow"
+        "name": "Shortbow",
+        "type":"weapon"
     },
     {
         "slug": "sling",
         "cost": 0.1,
         "weight": 0,
         "quantity": 1,
-        "name": "Sling"
+        "name": "Sling",
+        "type":"weapon"
     },
     {
         "slug": "battleaxe",
         "cost": 10.0,
         "weight": 4,
         "quantity": 1,
-        "name": "Battleaxe"
+        "name": "Battleaxe",
+        "type":"weapon"
     },
     {
         "slug": "flail",
         "cost": 10.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Flail"
+        "name": "Flail",
+        "type":"weapon"
     },
     {
         "slug": "glaive",
         "cost": 20.0,
         "weight": 6,
         "quantity": 1,
-        "name": "Glaive"
+        "name": "Glaive",
+        "type":"weapon"
     },
     {
         "slug": "greataxe",
         "cost": 30.0,
         "weight": 7,
         "quantity": 1,
-        "name": "Greataxe"
+        "name": "Greataxe",
+        "type":"weapon"
     },
     {
         "slug": "greatsword",
         "cost": 50.0,
         "weight": 6,
         "quantity": 1,
-        "name": "Greatsword"
+        "name": "Greatsword",
+        "type":"weapon"
     },
     {
         "slug": "halberd",
         "cost": 20.0,
         "weight": 6,
         "quantity": 1,
-        "name": "Halberd"
+        "name": "Halberd",
+        "type":"weapon"
     },
     {
         "slug": "lance",
         "cost": 10.0,
         "weight": 6,
         "quantity": 1,
-        "name": "Lance"
+        "name": "Lance",
+        "type":"weapon"
     },
     {
         "slug": "longsword",
         "cost": 15.0,
         "weight": 3,
         "quantity": 1,
-        "name": "Longsword"
+        "name": "Longsword",
+        "type":"weapon"
     },
     {
         "slug": "maul",
         "cost": 10.0,
         "weight": 10,
         "quantity": 1,
-        "name": "Maul"
+        "name": "Maul",
+        "type":"weapon"
     },
     {
         "slug": "morningstar",
         "cost": 15.0,
         "weight": 4,
         "quantity": 1,
-        "name": "Morningstar"
+        "name": "Morningstar",
+        "type":"weapon"
     },
     {
         "slug": "pike",
         "cost": 5.0,
         "weight": 18,
         "quantity": 1,
-        "name": "Pike"
+        "name": "Pike",
+        "type":"weapon"
     },
     {
         "slug": "rapier",
         "cost": 25.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Rapier"
+        "name": "Rapier",
+        "type":"weapon"
     },
     {
         "slug": "scimitar",
         "cost": 25.0,
         "weight": 3,
         "quantity": 1,
-        "name": "Scimitar"
+        "name": "Scimitar",
+        "type":"weapon"
     },
     {
         "slug": "shortsword",
         "cost": 10.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Shortsword"
+        "name": "Shortsword",
+        "type":"weapon"
     },
     {
         "slug": "trident",
         "cost": 5.0,
         "weight": 4,
         "quantity": 1,
-        "name": "Trident"
+        "name": "Trident",
+        "type":"weapon"
     },
     {
         "slug": "war-pick",
         "cost": 5.0,
         "weight": 2,
         "quantity": 1,
-        "name": "War-pick"
+        "name": "War-pick",
+        "type":"weapon"
     },
     {
         "slug": "warhammer",
         "cost": 15.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Warhammer"
+        "name": "Warhammer",
+        "type":"weapon"
     },
     {
         "slug": "whip",
         "cost": 2.0,
         "weight": 3,
         "quantity": 1,
-        "name": "Whip"
+        "name": "Whip",
+        "type":"weapon"
     },
     {
         "slug": "blowgun",
         "cost": 10.0,
         "weight": 1,
         "quantity": 1,
-        "name": "Blowgun"
+        "name": "Blowgun",
+        "type":"weapon"
     },
     {
         "slug": "hand-crossbow",
         "cost": 75.0,
         "weight": 3,
         "quantity": 1,
-        "name": "Hand-crossbow"
+        "name": "Hand-crossbow",
+        "type":"weapon"
     },
     {
         "slug": "heavy-crossbow",
         "cost": 50.0,
         "weight": 18,
         "quantity": 1,
-        "name": "Heavy-crossbow"
+        "name": "Heavy-crossbow",
+        "type":"weapon"
     },
     {
         "slug": "longbow",
         "cost": 50.0,
         "weight": 2,
         "quantity": 1,
-        "name": "Longbow"
+        "name": "Longbow",
+        "type":"weapon"
     },
     {
         "slug": "net",
         "cost": 1.0,
         "weight": 3,
         "quantity": 1,
-        "name": "Net"
+        "name": "Net",
+        "type":"weapon"
     }
 ]

@@ -1,1 +1,132 @@
-[{"slug": "padded", "cost": 5, "weight": 8, "ac": 11, "min_str": 0, "stealth_dis": true, "type": "light", "name": "Padded"}, {"slug": "leather", "cost": 10, "weight": 10, "ac": 11, "min_str": 0, "stealth_dis": false, "type": "light", "name": "Leather"}, {"slug": "studded-leather", "cost": 45, "weight": 13, "ac": 12, "min_str": 0, "stealth_dis": false, "type": "light", "name": "Studded leather"}, {"slug": "hide", "cost": 10, "weight": 12, "ac": 12, "min_str": 0, "stealth_dis": false, "type": "medium", "name": "Hide"}, {"slug": "chain-shirt", "cost": 50, "weight": 20, "ac": 13, "min_str": 0, "stealth_dis": false, "type": "medium", "name": "Chain shirt"}, {"slug": "scale-mail", "cost": 50, "weight": 45, "ac": 14, "min_str": 0, "stealth_dis": true, "type": "medium", "name": "Scale mail"}, {"slug": "breastplate", "cost": 400, "weight": 20, "ac": 14, "min_str": 0, "stealth_dis": false, "type": "medium", "name": "Breastplate"}, {"slug": "half-plate", "cost": 750, "weight": 40, "ac": 16, "min_str": 0, "stealth_dis": true, "type": "medium", "name": "Half plate"}, {"slug": "ring-mail", "cost": 30, "weight": 40, "ac": 14, "min_str": 0, "stealth_dis": true, "type": "heavy", "name": "Ring mail"}, {"slug": "chain-mail", "cost": 75, "weight": 55, "ac": 16, "min_str": 13, "stealth_dis": true, "type": "heavy", "name": "Chain mail"}, {"slug": "splint", "cost": 200, "weight": 60, "ac": 17, "min_str": 15, "stealth_dis": true, "type": "heavy", "name": "Splint"}, {"slug": "plate", "cost": 1500, "weight": 65, "ac": 18, "min_str": 15, "stealth_dis": true, "type": "heavy", "name": "Plate"}, {"slug": "shield", "cost": 10, "weight": 6, "ac": 2, "min_str": 0, "stealth_dis": false, "type": "shield", "name": "Shield"}]
+[
+    {
+        "slug": "padded",
+        "cost": 5,
+        "weight": 8,
+        "ac": 11,
+        "min_str": 0,
+        "stealth_dis": true,
+        "type": "light",
+        "name": "Padded"
+    },
+    {
+        "slug": "leather",
+        "cost": 10,
+        "weight": 10,
+        "ac": 11,
+        "min_str": 0,
+        "stealth_dis": false,
+        "type": "light",
+        "name": "Leather"
+    },
+    {
+        "slug": "studded-leather",
+        "cost": 45,
+        "weight": 13,
+        "ac": 12,
+        "min_str": 0,
+        "stealth_dis": false,
+        "type": "light",
+        "name": "Studded leather"
+    },
+    {
+        "slug": "hide",
+        "cost": 10,
+        "weight": 12,
+        "ac": 12,
+        "min_str": 0,
+        "stealth_dis": false,
+        "type": "medium",
+        "name": "Hide"
+    },
+    {
+        "slug": "chain-shirt",
+        "cost": 50,
+        "weight": 20,
+        "ac": 13,
+        "min_str": 0,
+        "stealth_dis": false,
+        "type": "medium",
+        "name": "Chain shirt"
+    },
+    {
+        "slug": "scale-mail",
+        "cost": 50,
+        "weight": 45,
+        "ac": 14,
+        "min_str": 0,
+        "stealth_dis": true,
+        "type": "medium",
+        "name": "Scale mail"
+    },
+    {
+        "slug": "breastplate",
+        "cost": 400,
+        "weight": 20,
+        "ac": 14,
+        "min_str": 0,
+        "stealth_dis": false,
+        "type": "medium",
+        "name": "Breastplate"
+    },
+    {
+        "slug": "half-plate",
+        "cost": 750,
+        "weight": 40,
+        "ac": 16,
+        "min_str": 0,
+        "stealth_dis": true,
+        "type": "medium",
+        "name": "Half plate"
+    },
+    {
+        "slug": "ring-mail",
+        "cost": 30,
+        "weight": 40,
+        "ac": 14,
+        "min_str": 0,
+        "stealth_dis": true,
+        "type": "heavy",
+        "name": "Ring mail"
+    },
+    {
+        "slug": "chain-mail",
+        "cost": 75,
+        "weight": 55,
+        "ac": 16,
+        "min_str": 13,
+        "stealth_dis": true,
+        "type": "heavy",
+        "name": "Chain mail"
+    },
+    {
+        "slug": "splint",
+        "cost": 200,
+        "weight": 60,
+        "ac": 17,
+        "min_str": 15,
+        "stealth_dis": true,
+        "type": "heavy",
+        "name": "Splint"
+    },
+    {
+        "slug": "plate",
+        "cost": 1500,
+        "weight": 65,
+        "ac": 18,
+        "min_str": 15,
+        "stealth_dis": true,
+        "type": "heavy",
+        "name": "Plate"
+    },
+    {
+        "slug": "shield",
+        "cost": 10,
+        "weight": 6,
+        "ac": 2,
+        "min_str": 0,
+        "stealth_dis": false,
+        "type": "shield",
+        "name": "Shield"
+    }
+]
