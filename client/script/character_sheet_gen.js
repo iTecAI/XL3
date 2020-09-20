@@ -513,85 +513,106 @@ function sheet_gen(char,panel_tab) {
     }
 
     $('#items-table tbody').html('');
-    for (var j=0;j<dat.inventory.containers[getCurCont()].items.length;j++) {
-        var item = dat.inventory.containers[getCurCont()].items[j];
-
-        var cselect = $('<select></select>');
-        var conts = dat.inventory.containers.map(function(v,i){return v.name;});
-        for (var c=0;c<conts.length;c++) {
-            $('<option></option>')
-            .attr('value',conts[c])
-            .text(firstCase(conts[c]))
-            .appendTo(cselect);
-        }
-        cselect.on('change',function(event){
-            var reqData = {
-                oldContainerIndex: Number(getCurCont()),
-                itemIndex: Number($(event.target).parents('.item').attr('data-index')),
-                newContainerIndex:Number(getCont($(event.target).val().toLowerCase()))
-            };
-            console.log(reqData);
-            cpost(
-                '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/inventory/items/move/',
-                reqData,
-                sheet_gen,
-                {
-                    alert: true
+    cget(
+        '/compendium/search/equipment/',
+        {},
+        true,
+        function(cdata) {
+            var dcd = {};
+            for (var c=0;c<cdata.length;c++) {
+                dcd[cdata[c].slug] = cdata[c];
+            }
+            console.log(dcd);
+            for (var j=0;j<dat.inventory.containers[getCurCont()].items.length;j++) {
+                var item = dat.inventory.containers[getCurCont()].items[j];
+        
+                var cselect = $('<select></select>');
+                var conts = dat.inventory.containers.map(function(v,i){return v.name;});
+                for (var c=0;c<conts.length;c++) {
+                    $('<option></option>')
+                    .attr('value',conts[c])
+                    .text(firstCase(conts[c]))
+                    .appendTo(cselect);
                 }
-            );
-        });
+                cselect.on('change',function(event){
+                    var reqData = {
+                        oldContainerIndex: Number(getCurCont()),
+                        itemIndex: Number($(event.target).parents('.item').attr('data-index')),
+                        newContainerIndex:Number(getCont($(event.target).val().toLowerCase()))
+                    };
+                    console.log(reqData);
+                    cpost(
+                        '/characters/'+fingerprint+'/'+$('#character-sheet-display').attr('data-id')+'/modify/inventory/items/move/',
+                        reqData,
+                        sheet_gen,
+                        {
+                            alert: true
+                        }
+                    );
+                });
 
-        $('<tr class="item"></tr>')
-        .attr('id',item.name)
-        .attr('data-index',j)
-        .append(
-            $('<td></td>')
-            .append(
-                $('<input class="sheet-in" min="0" data-type="number">')
-                .val(item.quantity)
-                .css('text-align','center')
-                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.quantity')
-            )
-        )
-        .append(
-            $('<td></td>')
-            .append(
-                $('<input class="sheet-in" spellcheck="false">')
-                .val(item.name)
-                .css('text-align','left')
-                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.name')
-            )
-        )
-        .append(
-            $('<td></td>')
-            .append(
-                $('<input class="sheet-in" min="0" data-type="number">')
-                .val(item.cost)
-                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.cost')
-                .css('width','69%')
-                .css('text-align','right')
-            )
-            .append($('<span> gp</span>').css('width','29%'))
-        )
-        .append(
-            $('<td></td>')
-            .append(
-                $('<input class="sheet-in" min="0" data-type="number">')
-                .val(item.weight)
-                .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.weight')
-                .css('width','69%')
-                .css('text-align','right')
-            )
-            .append($('<span> lb.</span>').css('width','29%'))
-        )
-        .append(
-            $('<td></td>')
-            .append(
-                $(cselect).val(dat.inventory.current_container)
-            )
-        )
-        .appendTo('#items-table tbody');
-    }
+                var calculated_slug = item.name.toLowerCase().replace(/ /g,'-').replace(/,/g,'').replace(/\(/g,'').replace(/\)/g,'').replace(/'/g,'');
+
+                if (Object.keys(dcd).includes(calculated_slug)) {
+                    var itype = dcd[calculated_slug].type;
+                } else {
+                    var itype = 'gear';
+                }
+
+                $('<tr class="item"></tr>')
+                .attr('id',item.name)
+                .attr('data-index',j)
+                .attr('data-type',itype)
+                .append(
+                    $('<td></td>')
+                    .append(
+                        $('<input class="sheet-in" min="0" data-type="number">')
+                        .val(item.quantity)
+                        .css('text-align','center')
+                        .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.quantity')
+                    )
+                )
+                .append(
+                    $('<td></td>')
+                    .append(
+                        $('<input class="sheet-in" spellcheck="false">')
+                        .val(item.name)
+                        .css('text-align','left')
+                        .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.name')
+                    )
+                )
+                .append(
+                    $('<td></td>')
+                    .append(
+                        $('<input class="sheet-in" min="0" data-type="number">')
+                        .val(item.cost)
+                        .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.cost')
+                        .css('width','69%')
+                        .css('text-align','right')
+                    )
+                    .append($('<span> gp</span>').css('width','29%'))
+                )
+                .append(
+                    $('<td></td>')
+                    .append(
+                        $('<input class="sheet-in" min="0" data-type="number">')
+                        .val(item.weight)
+                        .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.weight')
+                        .css('width','69%')
+                        .css('text-align','right')
+                    )
+                    .append($('<span> lb.</span>').css('width','29%'))
+                )
+                .append(
+                    $('<td></td>')
+                    .append(
+                        $(cselect).val(dat.inventory.current_container)
+                    )
+                )
+                .appendTo('#items-table tbody');
+            }
+        }
+    );
 
     $('#new-item-cont').text(firstCase(dat.inventory.current_container));
     
