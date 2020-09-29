@@ -475,7 +475,7 @@ async def reset_character(fingerprint: str, charid: str, response: Response):
     server.characters[charid] =  GSheet(sheet_id=sid)
     server.characters[charid].id = pre_cid
     server.characters[charid].options = pre_opts
-    server.characters[charid].inventory = pre_inv
+    #server.characters[charid].inventory = pre_inv
     
     server.characters[charid].update()
     server.characters[charid].cache()
@@ -796,12 +796,27 @@ async def inv_new_item(fingerprint: str, charid: str, model: NewItemModel, respo
     if not check_access(fingerprint,charid):
         response.status_code = status.HTTP_403_FORBIDDEN
         return {'result':'You do not own this character.'}
+
+    _weapons = {i['slug']:i for i in get5e('weapons')}
+    _armor = {i['slug']:i for i in get5e('armor')}
+
+    slug = model.name.lower().replace(' ','-').replace('\'','').replace('"','').replace('.','')
+    item_type = 'gear'
+    for i in list(_weapons.keys()):
+        if _weapons[i]['slug'] == slug:
+            item_type='weapon'
+    for i in list(_armor.keys()):
+        if _armor[i]['slug'] == slug:
+            item_type='armor'
+
     try:
         server.characters[charid].inventory['containers'][model.containerIndex]['items'].append({
             'name':model.name,
             'quantity':model.quantity,
             'cost':model.cost,
-            'weight':model.weight
+            'weight':model.weight,
+            'slug':slug,
+            'type':item_type
         })
     except IndexError:
         response.status_code = status.HTTP_404_NOT_FOUND

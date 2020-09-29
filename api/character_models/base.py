@@ -1,5 +1,6 @@
 import json
 from api.api_utils import defaults
+from api.open5e import get5e
 import random, hashlib, time
 from classes import BaseItem
 import pickle
@@ -60,7 +61,10 @@ class Character(BaseItem):
             gc.collect()
     def inventory_calculate(self):
         ct = 0
+        eq_index = -1
         for c in self.inventory['containers']: # Delete item listings with a qt of 0
+            if c['name'] == 'equipped':
+                eq_index = ct
             new_items = []
             for i in range(len(c['items'])):
                 if c['items'][i]['quantity'] > 0:
@@ -79,3 +83,22 @@ class Character(BaseItem):
         if self.options['coin_weight'] and any([c['coin_container'] and c['apply_weight'] for c in self.inventory['containers']]): # calculates coin weight if necessary
             self.inventory['current_weight'] += round(sum([k['amount']*k['weight'] for k in self.inventory['coin']]),2)
             self.inventory['current_weight'] = round(self.inventory['current_weight'],2)
+        
+        if eq_index >= 0:
+            _weapons = {i['slug']:i for i in get5e('weapons')}
+            _armor = {i['slug']:i for i in get5e('armor')}
+            shield_mod = 0
+            self.ac['base'] = 10
+            for item in self.inventory['containers'][eq_index]['items']:
+                if item['type'] == 'armor' and item['slug'] in _armor.keys():
+                    if _armor[item['slug']]['type'] == 'light':
+                        self.ac['base'] = _armor[item['slug']]['ac'] + self.abilities['dexterity']['mod']
+                    elif _armor[item['slug']]['type'] == 'medium':
+                        self.ac['base'] = _armor[item['slug']]['ac'] + min([self.abilities['dexterity']['mod'],2])
+                    elif _armor[item['slug']]['type'] == 'heavy':
+                        self.ac['base'] = _armor[item['slug']]['ac']
+                    elif _armor[item['slug']]['type'] == 'shield':
+                        shield_mod += _armor[item['slug']]['ac']
+            self.ac['base'] += shield_mod
+        
+    

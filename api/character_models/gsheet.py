@@ -427,6 +427,15 @@ class GSheet(Character):
                     'current_weight':0,
                     'coin_container':True,
                     'items':[]
+                },
+                {
+                    'name':'equipped',
+                    'apply_weight':False,
+                    'removable':False,
+                    'max_weight':self.abilities['strength']['score']*15,
+                    'current_weight':0,
+                    'coin_container':False,
+                    'items':[]
                 }
             ],
             'coin':[
@@ -474,14 +483,18 @@ class GSheet(Character):
                     'name':items[i],
                     'quantity':0,
                     'cost':cost[i],
-                    'weight':wt[i]
+                    'weight':wt[i],
+                    'type':'gear',
+                    'slug':items[i].lower().replace(' ','-').replace('\'','').replace('"','').replace('.','')
                 })
             else:
                 self.inventory['containers'][0]['items'].append({
                     'name':items[i],
                     'quantity':qt[i],
                     'cost':cost[i]/qt[i],
-                    'weight':wt[i]/qt[i]
+                    'weight':wt[i]/qt[i],
+                    'type':'gear',
+                    'slug':items[i].lower().replace(' ','-').replace('\'','').replace('"','').replace('.','')
                 })
         # Second column
         items = self.get('Inventory!aa3:aa76')
@@ -494,14 +507,18 @@ class GSheet(Character):
                     'name':items[i],
                     'quantity':0,
                     'cost':cost[i],
-                    'weight':wt[i]
+                    'weight':wt[i],
+                    'type':'gear',
+                    'slug':items[i].lower().replace(' ','-').replace('\'','').replace('"','').replace('.','')
                 })
             else:
                 self.inventory['containers'][0]['items'].append({
                     'name':items[i],
                     'quantity':qt[i],
                     'cost':cost[i]/qt[i],
-                    'weight':wt[i]/qt[i]
+                    'weight':wt[i]/qt[i],
+                    'type':'gear',
+                    'slug':items[i].lower().replace(' ','-').replace('\'','').replace('"','').replace('.','')
                 })
         
         self.inventory_calculate()

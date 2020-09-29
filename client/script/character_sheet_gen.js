@@ -60,6 +60,7 @@ function getCont(name) {
 function sheet_gen(char,panel_tab) {
     $('#character-sheet-display').attr('data-id',char.cid);
     dat = char.data;
+    console.log(dat);
     $('#header-img img').attr('src',function(){
         if (dat.image == '') {
             return 'assets/logo.png';
@@ -570,6 +571,12 @@ function sheet_gen(char,panel_tab) {
                         .val(item.quantity)
                         .css('text-align','center')
                         .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.quantity')
+                        .on('change',function(event){
+                            var path = $(this).attr('data-path');
+                            var val = Number($(this).val());
+                            modify(path,val);
+                            $(this).trigger('blur');
+                        })
                     )
                 )
                 .append(
@@ -579,6 +586,12 @@ function sheet_gen(char,panel_tab) {
                         .val(item.name)
                         .css('text-align','left')
                         .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.name')
+                        .on('change',function(event){
+                            var path = $(this).attr('data-path');
+                            var val = $(this).val();
+                            modify(path,val);
+                            $(this).trigger('blur');
+                        })
                     )
                 )
                 .append(
@@ -589,6 +602,12 @@ function sheet_gen(char,panel_tab) {
                         .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.cost')
                         .css('width','69%')
                         .css('text-align','right')
+                        .on('change',function(event){
+                            var path = $(this).attr('data-path');
+                            var val = Number($(this).val());
+                            modify(path,val);
+                            $(this).trigger('blur');
+                        })
                     )
                     .append($('<span> gp</span>').css('width','29%'))
                 )
@@ -600,6 +619,12 @@ function sheet_gen(char,panel_tab) {
                         .attr('data-path','inventory.containers.'+getCurCont()+'.items.'+j+'.weight')
                         .css('width','69%')
                         .css('text-align','right')
+                        .on('change',function(event){
+                            var path = $(this).attr('data-path');
+                            var val = Number($(this).val());
+                            modify(path,val);
+                            $(this).trigger('blur');
+                        })
                     )
                     .append($('<span> lb.</span>').css('width','29%'))
                 )
@@ -607,6 +632,12 @@ function sheet_gen(char,panel_tab) {
                     $('<td></td>')
                     .append(
                         $(cselect).val(dat.inventory.current_container)
+                        .on('change',function(event){
+                            var path = $(this).attr('data-path');
+                            var val = $(this).val();
+                            modify(path,val);
+                            $(this).trigger('blur');
+                        })
                     )
                 )
                 .appendTo('#items-table tbody');

@@ -1,43 +1,43 @@
 [
     {
-        "slug": "padded",
+        "slug": "padded-armor",
         "cost": 5,
         "weight": 8,
         "ac": 11,
         "min_str": 0,
         "stealth_dis": true,
         "type": "light",
-        "name": "Padded"
+        "name": "Padded armor"
     },
     {
-        "slug": "leather",
+        "slug": "leather-armor",
         "cost": 10,
         "weight": 10,
         "ac": 11,
         "min_str": 0,
         "stealth_dis": false,
         "type": "light",
-        "name": "Leather"
+        "name": "Leather armor"
     },
     {
-        "slug": "studded-leather",
+        "slug": "studded-leather-armor",
         "cost": 45,
         "weight": 13,
         "ac": 12,
         "min_str": 0,
         "stealth_dis": false,
         "type": "light",
-        "name": "Studded leather"
+        "name": "Studded leather armor"
     },
     {
-        "slug": "hide",
+        "slug": "hide-armor",
         "cost": 10,
         "weight": 12,
         "ac": 12,
         "min_str": 0,
         "stealth_dis": false,
         "type": "medium",
-        "name": "Hide"
+        "name": "Hide Armor"
     },
     {
         "slug": "chain-shirt",
@@ -73,7 +73,7 @@
         "slug": "half-plate",
         "cost": 750,
         "weight": 40,
-        "ac": 16,
+        "ac": 15,
         "min_str": 0,
         "stealth_dis": true,
         "type": "medium",
@@ -100,24 +100,24 @@
         "name": "Chain mail"
     },
     {
-        "slug": "splint",
+        "slug": "splint-armor",
         "cost": 200,
         "weight": 60,
         "ac": 17,
         "min_str": 15,
         "stealth_dis": true,
         "type": "heavy",
-        "name": "Splint"
+        "name": "Splint armor"
     },
     {
-        "slug": "plate",
+        "slug": "plate-armor",
         "cost": 1500,
         "weight": 65,
         "ac": 18,
         "min_str": 15,
         "stealth_dis": true,
         "type": "heavy",
-        "name": "Plate"
+        "name": "Plate armor"
     },
     {
         "slug": "shield",
