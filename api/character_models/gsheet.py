@@ -382,6 +382,10 @@ class GSheet(Character):
                     self.spellcasting[spcls]['spells'][int(k)] = {
                             'spells':spells
                         }
+        if len(self.spellcasting.keys()) > 0:
+            self.currently_displayed = list(self.spellcasting.keys())[0]
+        else:
+            self.currently_displayed = None
             
         rlist = {'resist':'Additional!t69:t79','immune':'Additional!ab69:ab79','vuln':'Additional!ai69:ai79'}
         self.resist = {}

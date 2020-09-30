@@ -731,3 +731,30 @@
     width: 70%;
     float: left;
 }
+
+#spells-top-bar {
+    display: inline-block;
+    height: 10%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: var(--foreground2);
+}
+#sp-class-select {
+    height: 100%;
+    width: 30%;
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    border: none;
+    background-color: var(--foreground2-2);
+    font-family: raleway-heavy;
+    color: #ffffff;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#sp-class-select:focus {
+    outline: none;
+}

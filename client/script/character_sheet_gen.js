@@ -8,7 +8,7 @@ function modify(path,val) {
             'data':val
         },
         function(data){
-            sheet_gen(data);
+            sheet_gen(data,$('#main-tabs .active').attr('data-tab'));
         },
         {
             alert: true
@@ -646,6 +646,20 @@ function sheet_gen(char,panel_tab) {
     );
 
     $('#new-item-cont').text(firstCase(dat.inventory.current_container));
+    
+    $('#sp-class-select').html('');
+    for (var s=0;s<Object.keys(dat.spellcasting).length;s++) {
+        $('<option></option>')
+        .attr('value',Object.keys(dat.spellcasting)[s].toLowerCase())
+        .text(Object.keys(dat.spellcasting)[s])
+        .appendTo($('#sp-class-select'));
+    }
+    if (dat.currently_displayed) {
+        $('#sp-class-select').val(dat.currently_displayed.toLowerCase())
+    } else {
+        $('#spells-tab').removeClass('active');
+        $('#inventory-tab').addClass('active');
+    }
     
 
     // End -- START HOOKS
