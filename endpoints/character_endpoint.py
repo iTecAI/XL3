@@ -90,6 +90,31 @@ def recalculate(cid):
 
     server.characters[cid].inventory_calculate()
 
+    # Recalculate spell slots
+    mcs_level = 0
+    sp_types = set()
+    for i in server.characters[cid].classes:
+        if i['class'].lower() in ['bard','cleric','druid','sorcerer','wizard']:
+            mcs_level+=i['level']
+            sp_types.add('full caster')
+        if i['class'].lower() in ['paladin','ranger']:
+            mcs_level+=int(i['level']/2)
+            sp_types.add('half caster')
+        if i['class'].lower() in ['rogue','fighter'] and i['subclass'] in ['arcane trickster','eldritch knight']:
+            mcs_level+=int(i['level']/3)
+            sp_types.add('third caster')
+        if i['class'].lower() == 'artificer':
+            mcs_level+=int(i['level']/2)
+            sp_types.add('artificer casting')
+    with open(os.path.join('api','static_data','spellcasting.json'),'r') as f:
+        sps_data = json.load(f)
+
+    sp_types = list(sp_types)
+    if len(sp_types) == 1:
+        server.characters[cid].spell_slots = [{'total':i,'current':i} for i in sps_data[sp_types[0]][mcs_level-1]['spells']]
+    if len(sp_types) > 1:
+        server.characters[cid].spell_slots = [{'total':i,'current':i} for i in sps_data['multiclass'][mcs_level-1]['spells']]
+
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:
         reg = json.load(f)

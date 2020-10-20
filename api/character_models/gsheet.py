@@ -1,4 +1,5 @@
 from api.api_utils import *
+from api.open5e import *
 from api.character_models.base import Character, ITEMS
 import os
 from googleapiclient.errors import HttpError
@@ -208,6 +209,22 @@ class GSheet(Character):
         self.xp = int(base10(self.get('ae7')))
         self.proficiency_bonus = int(self.get('h14'))
 
+        mcs_level = 0
+        sp_types = set()
+        for i in self.classes:
+            if i['class'] in ['bard','cleric','druid','sorcerer','wizard']:
+                mcs_level+=i['level']
+                sp_types.add('full caster')
+            if i['class'] in ['paladin','ranger']:
+                mcs_level+=int(i['level']/2)
+                sp_types.add('half caster')
+            if i['class'] in ['rogue','fighter'] and i['subclass'] in ['arcane trickster','eldritch knight']:
+                mcs_level+=int(i['level']/3)
+                sp_types.add('third caster')
+            if i['class'] == 'artificer':
+                mcs_level+=int(i['level']/2)
+                sp_types.add('artificer casting')
+
         self.speed = {
             'walk':{
                 'value':int(base10(self.get('z12'))),
@@ -310,6 +327,16 @@ class GSheet(Character):
         
         # Spellcasting
         self.spellcasting = {}
+
+        with open(os.path.join('api','static_data','spellcasting.json'),'r') as f:
+            sps_data = json.load(f)
+
+        sp_types = list(sp_types)
+        if len(sp_types) == 1:
+            self.spell_slots = [{'total':i,'current':i} for i in sps_data[sp_types[0]][mcs_level-1]['spells']]
+        if len(sp_types) > 1:
+            self.spell_slots = [{'total':i,'current':i} for i in sps_data['multiclass'][mcs_level-1]['spells']]
+
         spcls = self.get('c91')
         if spcls != '':
             self.spellcasting[spcls] = {}
@@ -322,39 +349,30 @@ class GSheet(Character):
                     'ranges':['n96:n98','x96:x98','ah96:ah98']
                 },
                 1:{
-                    'slots':'ak101',
                     'ranges':['d100:d104','n100:n104','x100:x104']
                 },
                 2:{
-                    'slots':'e107',
                     'ranges':['n106:n110','x106:x110','ah106:ah110']
                 },
                 3:{
-                    'slots':'ak113',
                     'ranges':['d112:d117','n112:n117','x112:x117']
                 },
                 4:{
-                    'slots':'e119',
                     'ranges':['n118:n121','x118:x121','ah118:ah121']
                 },
                 5:{
-                    'slots':'ak124',
                     'ranges':['d123:d126','n123:n126','x123:x126']
                 },
                 6:{
-                    'slots':'e129',
                     'ranges':['n128:n131','x128:x131','ah128:ah131']
                 },
                 7:{
-                    'slots':'ak134',
                     'ranges':['d133:d135','n133:n135','x133:x135']
                 },
                 8:{
-                    'slots':'e138',
                     'ranges':['n137:n139','x137:x139','ah137:ah139']
                 },
                 9:{
-                    'slots':'ak142',
                     'ranges':['d141:d143','n141:n143','x141:x143']
                 },
             }
@@ -364,24 +382,8 @@ class GSheet(Character):
                 spells = []
                 for r in spelloc[k]['ranges']:
                     spells.extend(self.get(r))
-                if k > 0:
-                    try:
-                        slots = int(base10(self.get(spelloc[k]['slots'])))
-                        self.spellcasting[spcls]['spells'][int(k)] = {
-                            'slots':slots,
-                            'remaining':slots,
-                            'spells':spells
-                        }
-                    except:
-                        self.spellcasting[spcls]['spells'][int(k)] = {
-                            'slots':0,
-                            'remaining':0,
-                            'spells':[]
-                        }
-                else:
-                    self.spellcasting[spcls]['spells'][int(k)] = {
-                            'spells':spells
-                        }
+                self.spellcasting[spcls]['spells'][int(k)] = spells[:]
+                    
         if len(self.spellcasting.keys()) > 0:
             self.currently_displayed = list(self.spellcasting.keys())[0]
         else:
@@ -480,7 +482,7 @@ class GSheet(Character):
         items = self.get('Inventory!j3:j76')
         qt = [int(base10(self.get('Inventory!i'+str(i)))) for i in range(3,77)]
         cost = [float(i) for i in self.get('Inventory!aq3:aq76')]
-        wt = [float(i.split(' ')[0]) for i in self.get('Inventory!ar3:ar76')]
+        wt = [float(eval(i.split(' ')[0])) for i in self.get('Inventory!ar3:ar76')]
         for i in range(len(items)):
             if qt[i] < 1:
                 self.inventory['containers'][0]['items'].append({
