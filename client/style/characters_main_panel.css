@@ -758,3 +758,61 @@
 #sp-class-select:focus {
     outline: none;
 }
+
+#sp-ability {
+    position: absolute;
+    display: inline-block;
+    height: 60%;
+    width: 20%;
+    left: 30.5%;
+    top: 10%;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    background-color: var(--foreground2-2);
+}
+#sp-attack {
+    position: absolute;
+    display: inline-block;
+    height: 60%;
+    width: 15%;
+    left: 52%;
+    top: 10%;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    background-color: var(--foreground2-2);
+}
+#sp-save {
+    position: absolute;
+    display: inline-block;
+    height: 60%;
+    width: 15%;
+    left: 68.5%;
+    top: 10%;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    background-color: var(--foreground2-2);
+}
+.sp-stat .centerspan {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: raleway-heavy;
+    font-size: 2.3vh;
+    color: #ffffff;
+}
+.sp-stat .titlespan {
+    position: absolute;
+    top: 105%;
+    width: 100%;
+    text-align: center;
+    font-family: raleway-heavy;
+    font-size: 1.3vh;
+    color: #ffffff;
+}

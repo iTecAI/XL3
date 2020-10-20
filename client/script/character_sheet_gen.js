@@ -58,6 +58,7 @@ function getCont(name) {
 }
 
 function sheet_gen(char,panel_tab) {
+    panel_tab = 'spells';
     $('#character-sheet-display').attr('data-id',char.cid);
     dat = char.data;
     console.log(dat);
@@ -650,19 +651,29 @@ function sheet_gen(char,panel_tab) {
     $('#sp-class-select').html('');
     for (var s=0;s<Object.keys(dat.spellcasting).length;s++) {
         $('<option></option>')
-        .attr('value',Object.keys(dat.spellcasting)[s].toLowerCase())
+        .attr('value',Object.keys(dat.spellcasting)[s])
         .text(Object.keys(dat.spellcasting)[s])
         .appendTo($('#sp-class-select'));
     }
     if (dat.currently_displayed) {
-        $('#sp-class-select').val(dat.currently_displayed.toLowerCase())
+        $('#sp-class-select').val(dat.currently_displayed);
     } else {
         $('#spells-tab').removeClass('active');
         $('#inventory-tab').addClass('active');
     }
-    
 
-    // End -- START HOOKS
+    $('#sp-ability .centerspan').text(dat.spellcasting[$('#sp-class-select').val()].ability);
+    var spAttack = dat.spellcasting[$('#sp-class-select').val()].attack_bonus
+    $('#sp-attack .centerspan').text(cond(spAttack>0,'+','')+spAttack);
+    $('#sp-save .centerspan').text(dat.spellcasting[$('#sp-class-select').val()].save_dc);
+    
+    // ===========================================================================================================================================================
+    // ===========================================================================================================================================================
+    // ===========================================================================================================================================================
+    // ===========================================================================================================================================================
+
+
+    // End generation -- START HOOKS
     $('input.fit').on('input',function(event){
         $(event.target).css('width',($(event.target).val().length+2)+'ch');
     })
