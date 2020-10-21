@@ -918,3 +918,100 @@ async def inv_mv_item(fingerprint: str, charid: str, model: MoveItemModel, respo
         'public':server.characters[charid].options['public'],
         'data':server.characters[charid].to_dict()
     }
+
+@router.post('/{charid}/modify/spells/edit/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, class, level, or spell index not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Edits a spell in one of the character\'s spell lists, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def edit_spell(fingerprint:str, charid:str, model: EditSpellModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    
+    try:
+        server.characters[charid].spellcasting[model.spellClass]['spells'][model.spellLevel][model.spellIndex] = model.spellName
+    except KeyError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Casting class not found.'}
+    except IndexError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Spell level or index not found.'}
+    
+    if server.characters[charid].spellcasting[model.spellClass]['spells'][model.spellLevel][model.spellIndex] == '':
+        del server.characters[charid].spellcasting[model.spellClass]['spells'][model.spellLevel][model.spellIndex]
+    
+    recalculate(charid)
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
+
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }
+
+@router.post('/{charid}/modify/spells/new/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, class, level, or spell index not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'You do not own this character.','content':{'application/json':{'example':{'result':'You do not own this character.'}}}},
+    200: {'model':SingleCharacterResponseModel,'description':'Adds a spell to one of the character\'s spell lists, then returns data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'cid':'character id',
+        'owner':'fingerprint',
+        'campaign':'campaign id, if any',
+        'public':True,
+        'data':{i:'some data' for i in ITEMS}
+    }}}}
+})
+async def new_spell(fingerprint:str, charid:str, model: NewSpellModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    if not check_access(fingerprint,charid):
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this character.'}
+    
+    try:
+        server.characters[charid].spellcasting[model.spellClass]['spells'][model.spellLevel].append(model.spellName)
+    except KeyError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Casting class not found.'}
+    except IndexError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Spell level not found.'}
+    
+    recalculate(charid)
+    server.characters[charid].update()
+    server.characters[charid].cache()
+    server.connections[fingerprint].user.update()
+
+    return {
+        'result':'Success.',
+        'cid':charid,
+        'owner':server.characters[charid].owner,
+        'campaign':server.characters[charid].campaign,
+        'public':server.characters[charid].options['public'],
+        'data':server.characters[charid].to_dict()
+    }

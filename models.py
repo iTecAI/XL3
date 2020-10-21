@@ -102,3 +102,14 @@ class MoveItemModel(BaseModel):
     oldContainerIndex: int
     itemIndex: int
     newContainerIndex: int
+
+class EditSpellModel(BaseModel):
+    spellClass: str
+    spellLevel: int
+    spellIndex: int
+    spellName: str
+
+class NewSpellModel(BaseModel):
+    spellClass: str
+    spellLevel: int
+    spellName: str
