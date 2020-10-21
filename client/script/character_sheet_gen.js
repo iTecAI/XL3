@@ -897,7 +897,10 @@ function sheet_gen(char, panel_tab) {
     $('#character-settings-btn').off('click');
     $('#character-settings-btn').on('click', function (event) {
         if (!activating && $('#character-settings-btn').hasClass('active')) {
-            $(document).trigger('click');
+            $('#character-settings-btn').removeClass('active');
+            $('#character-settings').removeClass('active');
+            $('#character-reset-btn').removeClass('active');
+            $('#rest-buttons').removeClass('active');
             return;
         }
         activateitem('#character-settings');

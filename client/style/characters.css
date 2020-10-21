@@ -161,9 +161,13 @@
     overflow-y: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    display: none;
 }
 #character-sheet-display::-webkit-scrollbar {
     display: none;
+}
+#character-sheet-display.active {
+    display: inline-block;
 }
 
 #character-header {

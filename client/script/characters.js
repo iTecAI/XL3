@@ -51,10 +51,10 @@ $(document).ready(function(){
         });
     });
 
-    cget(
+    /*cget(
         '/characters/'+fingerprint+'/f2144cbff64709811bc2cbf30265d6e4cf55fc14ee41888987ed0799cf02d9dd/',
         {},true,
         sheet_gen
-    );
+    );*/
     $('#short-rest-panel').slideUp(0);
 });

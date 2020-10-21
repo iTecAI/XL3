@@ -251,7 +251,10 @@ function buildCharacter(item) {
                         cget(
                             '/characters/' + fingerprint + '/' + $(event.target).parents('.character-panel').attr('data-id') + '/',
                             {}, true,
-                            sheet_gen
+                            function(data){
+                                sheet_gen(data);
+                                activateitem('#character-sheet-display');
+                            }
                         );
                         $(document).trigger('click');
                     })
