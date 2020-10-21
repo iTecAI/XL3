@@ -816,3 +816,68 @@
     font-size: 1.3vh;
     color: #ffffff;
 }
+
+#sp-slots {
+    position: absolute;
+    top: 10%;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 12%;
+    background-color: var(--foreground2-3);
+}
+#slots-flex {
+    position: absolute;
+    display: inline-block;
+    width: fit-content;
+    height: 90%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.sp-slot-box {
+    background-color: #ffffff;
+    border-radius: 5px;
+    border: 2px solid var(--foreground3);
+    padding: 0px;
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 100%;
+    font-size: 0px;
+}
+.sp-slot-box > div > span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 1.9vh;
+    font-family: raleway-heavy;
+}
+.sp-slot-box > div > input {
+    border: none;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    color: #000000;
+    font-size: 1.9vh;
+    font-family: raleway-heavy;
+}
+.sp-slot-current {
+    border-bottom: 2px solid var(--foreground3);
+    padding: 2px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 50%;
+    margin: 0px;
+}
+.sp-slot-max {
+    padding: 2px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 50%;
+    margin: 0px;
+}

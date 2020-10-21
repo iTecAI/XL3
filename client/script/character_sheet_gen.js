@@ -666,6 +666,11 @@ function sheet_gen(char,panel_tab) {
     var spAttack = dat.spellcasting[$('#sp-class-select').val()].attack_bonus
     $('#sp-attack .centerspan').text(cond(spAttack>0,'+','')+spAttack);
     $('#sp-save .centerspan').text(dat.spellcasting[$('#sp-class-select').val()].save_dc);
+
+    for (var s=0;s<dat.spell_slots.length;s++) {
+        $('#sp-slot-'+(s+1).toString()+' .sp-slot-current input').val(dat.spell_slots[s].current);
+        $('#sp-slot-'+(s+1).toString()+' .sp-slot-max span').text(dat.spell_slots[s].total);
+    }
     
     // ===========================================================================================================================================================
     // ===========================================================================================================================================================

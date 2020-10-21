@@ -111,9 +111,20 @@ def recalculate(cid):
 
     sp_types = list(sp_types)
     if len(sp_types) == 1:
-        server.characters[cid].spell_slots = [{'total':i,'current':i} for i in sps_data[sp_types[0]][mcs_level-1]['spells']]
+        c = 0
+        for i in sps_data[sp_types[0]][mcs_level-1]['spells']:
+            server.characters[cid].spell_slots[c]['total'] = i
+            if server.characters[cid].spell_slots[c]['current'] > i:
+                server.characters[cid].spell_slots[c]['current'] = i
+            c+=1
     if len(sp_types) > 1:
         server.characters[cid].spell_slots = [{'total':i,'current':i} for i in sps_data['multiclass'][mcs_level-1]['spells']]
+        c = 0
+        for i in sps_data['multiclass'][mcs_level-1]['spells']:
+            server.characters[cid].spell_slots[c]['total'] = i
+            if server.characters[cid].spell_slots[c]['current'] > i:
+                server.characters[cid].spell_slots[c]['current'] = i
+            c+=1
 
 def decache(cid):
     with open(os.path.join('database','characters','registry.json'),'r') as f:
