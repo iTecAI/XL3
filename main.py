@@ -19,7 +19,7 @@ import json
 import random
 import time
 import pickle
-from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint
+from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint, campaign_endpoint
 from _api import *
 from threading import Thread
 
@@ -112,6 +112,11 @@ app.include_router(
     character_endpoint.router,
     prefix='/characters/{fingerprint}',
     tags=['characters']
+)
+app.include_router(
+    campaign_endpoint.router,
+    prefix='/campaigns/{fingerprint}',
+    tags=['campaigns']
 )
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root

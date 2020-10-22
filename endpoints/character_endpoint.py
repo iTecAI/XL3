@@ -885,7 +885,7 @@ async def inv_new_item(fingerprint: str, charid: str, model: NewItemModel, respo
         'data':{i:'some data' for i in ITEMS}
     }}}}
 })
-async def inv_mv_item(fingerprint: str, charid: str, model: MoveItemModel, response: Response):
+async def inv_move_item(fingerprint: str, charid: str, model: MoveItemModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}

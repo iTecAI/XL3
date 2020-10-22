@@ -113,3 +113,6 @@ class NewSpellModel(BaseModel):
     spellClass: str
     spellLevel: int
     spellName: str
+
+class NewCampaignModel(BaseModel):
+    name: str
