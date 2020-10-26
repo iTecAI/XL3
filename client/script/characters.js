@@ -1,6 +1,7 @@
-var MAX_CHARACTERS = 15;
+var MAX_CHARACTERS = null;
 
-$(document).ready(function(){
+$(document).ready(async function(){
+    MAX_CHARACTERS = Number(await getConfig('CHARACTERS','max_characters'));
     $(document).tooltip({show: {effect:"fade", delay:500}});
     $('#class-warning').hide();
     $('#info-max-characters').text(MAX_CHARACTERS);

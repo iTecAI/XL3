@@ -65,6 +65,15 @@ class Campaign(BaseItem):
             json.dump(registry,f)
         with open(os.path.join('database','campaigns',self.id+'.pkl'),'w') as f:
             pickle.dump(self,f)
+    def to_json(self):
+        return {
+            'id':self.id,
+            'owner':self.owner,
+            'name':self.name,
+            'characters':self.characters,
+            'settings':self.settings,
+            'maps':self.maps
+        }
     
     @classmethod
     def load(cls,cid):
@@ -90,6 +99,7 @@ class User(BaseItem):
         self.connection: Connection = connection
         self.owned_characters: list = []
         self.owned_campaigns: list = []
+        self.participating_campaigns: list = []
     def update(self):
         super().update()
         store_user(self.uid)

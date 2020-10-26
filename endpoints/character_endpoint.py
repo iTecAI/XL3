@@ -288,6 +288,7 @@ async def new_character(fingerprint: str, model: NewCharacterModel, response: Re
         except ValueError:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {'result':'The submitted URL was incorrect. Make sure it is readable by link sharing, or that it is shared with '+CONFIG['CHARACTERS']['xl3_email']+' .'}
+        logger.info(f'User {fingerprint} is creating a new character.')
         server.characters[sheet.id] = sheet
         sheet.owner = server.connections[fingerprint].user.uid
         sheet.cache()

@@ -158,3 +158,26 @@ async def logout(model: ConnectionModel, response: Response):
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'User is not logged in.'}
+
+@router.get('/config/{section}/{variable}/',responses={
+    404: {'model':SimpleResult,'description':'Section or Variable','content':{'application/json':{'example.':{'result':'Connection not found for user.'}}}},
+    200: {'model':SimpleResult,'description':'Successful. Returns value of server config.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'section':'string',
+        'variable':'string',
+        'value':'string'
+    }}}}
+})
+async def server_config(section: str, variable: str, response: Response):
+    try:
+        return {
+            'result': 'Success',
+            'section': section,
+            'variable': variable,
+            'value':CONFIG[section][variable]
+        }
+    except:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Section or Variable not found.'}
+
+        

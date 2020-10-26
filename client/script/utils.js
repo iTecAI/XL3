@@ -379,3 +379,15 @@ function editDistance(s1, s2) {
     }
     return costs[s2.length];
 }
+
+async function getConfig(sect,vari) {
+    let result;
+    try {
+        result = await $.get({
+            url: 'http://' + window.location.host + '/server/config/'+sect+'/'+vari+'/'
+        });
+        return result.value;
+    } catch (error) {
+        console.error(error);
+    }
+}
