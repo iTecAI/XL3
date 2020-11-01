@@ -120,8 +120,20 @@ app.include_router(
 )
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root
-async def root():
+async def groot():
     with open(os.path.join('client','index.html'),'r') as f:
+        return f.read()
+@app.get('/characters', response_class=HTMLResponse, include_in_schema=False)
+async def gchars():
+    with open(os.path.join('client','characters.html'),'r') as f:
+        return f.read()
+@app.get('/campaigns', response_class=HTMLResponse, include_in_schema=False)
+async def gcamps():
+    with open(os.path.join('client','campaigns.html'),'r') as f:
+        return f.read()
+@app.get('/help', response_class=HTMLResponse, include_in_schema=False)
+async def ghelp():
+    with open(os.path.join('client','help.html'),'r') as f:
         return f.read()
 
 # Load web server

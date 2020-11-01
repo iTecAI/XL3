@@ -141,7 +141,6 @@ function buildFirstSpell(data,name) {
 }
 
 function sheet_gen(char, panel_tab) {
-    panel_tab = 'spells';
     $('#character-sheet-display').attr('data-id', char.cid);
     dat = char.data;
     console.log(dat);

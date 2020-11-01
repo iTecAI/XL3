@@ -14,14 +14,31 @@ logger = logging.getLogger("uvicorn.error")
 router = APIRouter()
 
 def check_access(fp,cid):
-    pass
+    return (cid in server.connections[fp].user.owned_campaigns or cid in server.connections[fp].user.participating_campaigns) and cid in server.campaigns.keys()
 
 @router.post('/new/',responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     200: {'model':MultipleCharacterResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
         'result':'Success.',
-        'campaigns':[]
+        'owned_campaigns':[
+            {
+                'id':'id',
+                'owner':'owner ID',
+                'name':'name',
+                'characters':'character ids',
+                'settings':'settings dict',
+                'maps':'dict of maps'
+            }
+        ],
+        'new_campaign':{
+                'id':'id',
+                'owner':'owner ID',
+                'name':'name',
+                'characters':'character ids',
+                'settings':'settings dict',
+                'maps':'dict of maps'
+            }
     }}}}
 })
 async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Response):
@@ -40,7 +57,8 @@ async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Resp
         server.campaigns[ncp.id] = ncp
         return {
             'result':'Success.',
-            'campaigns':server.connections[fingerprint].user.owned_campaigns
+            'owned_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.owned_campaigns],
+            'new_campaign':ncp.to_json()
         }
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
@@ -64,8 +82,8 @@ async def get_campaigns(fingerprint: str, response: Response):
     
     return {
         'result':'Success.',
-        'owned_campaigns':server.connections[fingerprint].user.owned_campaigns,
-        'participating_campaigns':server.connections[fingerprint].user.participating_campaigns
+        'owned_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.owned_campaigns],
+        'participating_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.participating_campaigns]
     }
 
 @router.get('/{campaign}/', responses={
@@ -84,7 +102,7 @@ async def get_campaign(fingerprint: str, campaign: str, response: Response):
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to create campaigns.'}
     
-    if (campaign in server.connections[fingerprint].user.owned_campaigns or campaign in server.connections[fingerprint].user.participating_campaigns) and campaign in server.campaigns.keys():
+    if check_access(fingerprint,campaign):
         return {
             'result':'Success.',
             'campaign':server.campaigns[campaign].to_json()

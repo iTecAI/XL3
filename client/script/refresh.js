@@ -1,7 +1,7 @@
 // Globals
 var loggedIn = null;
 
-function refresh(data) {
+async function refresh(data) {
     var endpoints = data.endpoints;
     $('#noconn').hide();
     loggedIn = data.loggedIn;
@@ -26,7 +26,7 @@ function refresh(data) {
             }
         );
     }
-    if (endpoints.characters) {
+    if (endpoints.characters && window.location.pathname.contains('characters')) {
         $('#info-max-characters').text(MAX_CHARACTERS);
         cget(
             '/client/'+fingerprint+'/characters/',
@@ -50,5 +50,16 @@ function refresh(data) {
                 }
             }
         );
+    }
+    if (endpoints.campaigns && window.location.pathname.contains('campaigns')) {
+        var current_campaigns = await $.get({
+            url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/'
+        });
+        var oc = current_campaigns.owned_campaigns;
+        var pc = current_campaigns.participating_campaigns;
+        $('#ocb-box').html('');
+        for (var c=0;c<oc.length;c++) {
+
+        }
     }
 }

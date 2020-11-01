@@ -5,5 +5,9 @@ $(document).ready(async function(){
     var current_campaigns = await $.get({
         url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/'
     });
+    console.log(current_campaigns);
     var owned_campaigns = current_campaigns.owned_campaigns.length;
+
+    $('#cur-owned').text(owned_campaigns);
+    $('#max-ownable').text(MAX_CAMPAIGNS);
 });

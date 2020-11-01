@@ -1,0 +1,80 @@
+#campaign-info-bar {
+    position: absolute;
+    top: 5vh;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 5vh;
+    background-color: var(--foreground2);
+}
+#n-campaigns {
+    color: var(--fg-font-color);
+    font-family: raleway-heavy;
+    position: absolute;
+    top: 50%;
+    left: 1%;
+    transform: translate(0px,-50%);
+    font-size: 2.3vh;
+}
+#new-campaign-button {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: inline-block;
+    width: fit-content;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 100%;
+    text-align: center;
+    background-color: var(--foreground2);
+    font-family: raleway-heavy;
+    border: none;
+    color: var(--fg-font-color);
+    transition: color 0.2s, background-color 0.2s;
+}
+#new-campaign-button:hover {
+    color: var(--em-font-color2);
+    background-color: var(--foreground3);
+}
+
+.campaign-box {
+    position: absolute;
+    display: inline-block;
+    top: 10vh;
+    height: 90vh;
+}
+#owned-campaigns-bar {
+    width: 30vw;
+    left: 0px;
+    border-right: 2px solid var(--background3);
+}
+#participating-campaigns-bar {
+    width: 70vw;
+    left: 30vw;
+}
+.cb-title {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: calc(100% + 2px);
+    height: 4vh;
+    font-family: raleway-heavy;
+    color: #ffffff;
+    background-color: var(--foreground2-2);
+    font-size: 2vh;
+}
+.cb-title span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.cb-box {
+    position: absolute;
+    top: 4vh;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: calc(100% - 4vh);
+    overflow-y: scroll;
+}
