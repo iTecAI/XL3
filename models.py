@@ -117,3 +117,17 @@ class NewSpellModel(BaseModel):
 class NewCampaignModel(BaseModel):
     name: str
     password: str
+
+class CampaignResponseModel(BaseModel):
+    result: str
+    campaign: dict
+
+class NewCampaignResponseModel(BaseModel):
+    result: str
+    owned_campaigns: list
+    new_campaign: dict
+
+class MultipleCampaignResponseModel(BaseModel):
+    result: str
+    owned_campaigns: list
+    participating_campaigns: list

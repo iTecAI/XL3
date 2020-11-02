@@ -82,6 +82,19 @@ async function refresh(data) {
                         .attr('src','assets/icons/delete.png')
                     )
                     .addClass('cmp-delete')
+                    .attr('data-id',oc[c].id)
+                    .on('click',function(event){
+                        var path = '/campaigns/'+fingerprint+'/'+$(this).attr('data-id')+'/delete/';
+                        console.log(path);
+                        cpost(
+                            path,
+                            {},function(data){
+                                console.log(data);
+                            },{
+                                alert:true
+                            }
+                        );
+                    })
                 )
                 .append(
                     $('<button></button>')

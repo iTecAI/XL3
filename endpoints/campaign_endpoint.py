@@ -17,7 +17,7 @@ def check_access(fp,cid):
     with open(os.path.join('database','campaigns','registry.json'),'r') as f:
         reg = json.load(f)
     if cid in reg.keys() and cid in server.campaigns.keys():
-        with open(os.path.join('database','campaigns',cid+'.pkl','rb')) as f:
+        with open(os.path.join('database','campaigns',cid+'.pkl'),'rb') as f:
             server.campaigns[cid] = pickle.load(f)
         return cid in server.connections[fp].user.owned_campaigns or cid in server.connections[fp].user.participating_campaigns
     else:
@@ -26,7 +26,7 @@ def check_access(fp,cid):
 @router.post('/new/',responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
-    200: {'model':MultipleCharacterResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
+    200: {'model':NewCampaignModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
         'result':'Success.',
         'owned_campaigns':[
             {
@@ -75,9 +75,10 @@ async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Resp
 @router.get('/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
-    200: {'model':MultipleCharacterResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
+    200: {'model':MultipleCampaignResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
         'result':'Success.',
-        'campaigns':[]
+        'owned_campaigns':[],
+        'participating_campaigns':[]
     }}}}
 })
 async def get_campaigns(fingerprint: str, response: Response):
@@ -103,9 +104,9 @@ async def get_campaigns(fingerprint: str, response: Response):
 @router.get('/{campaign}/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
-    200: {'model':MultipleCharacterResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
+    200: {'model':CampaignResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
         'result':'Success.',
-        'campaigns':[]
+        'campaign':{}
     }}}}
 })
 async def get_campaign(fingerprint: str, campaign: str, response: Response):
@@ -115,7 +116,6 @@ async def get_campaign(fingerprint: str, campaign: str, response: Response):
     if not server.connections[fingerprint].logged_in:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to create campaigns.'}
-    
     if check_access(fingerprint,campaign):
         return {
             'result':'Success.',
@@ -124,3 +124,33 @@ async def get_campaign(fingerprint: str, campaign: str, response: Response):
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Campaign not found.'}
+
+@router.post('/{campaign}/delete/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection or Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def delete_campaign(fingerprint: str, campaign: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to delete campaigns.'}
+    if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
+        logger.info(f'User {fingerprint} is deleting campaign with ID {campaign}.')
+        del server.campaigns[campaign]
+        for u in list(server.users.keys()):
+            if campaign in server.users[u].owned_campaigns:
+                server.users[u].owned_campaigns.remove(campaign)
+            if campaign in server.users[u].participating_campaigns:
+                server.users[u].participating_campaigns.remove(campaign)
+            server.users[u].update()
+        for c in list(server.campaigns.keys()):
+            server.campaigns[c].update()
+        return {'result':'Success'}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Campaign not found or you do not have ownership of it.'}
