@@ -67,6 +67,7 @@ async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Resp
             'owned_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.owned_campaigns],
             'new_campaign':ncp.to_json()
         }
+        server.connections[fingerprint].user.update()
         return rd
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
@@ -150,6 +151,7 @@ async def delete_campaign(fingerprint: str, campaign: str, response: Response):
             server.users[u].update()
         for c in list(server.campaigns.keys()):
             server.campaigns[c].update()
+        server.connections[fingerprint].user.update()
         return {'result':'Success'}
     else:
         response.status_code = status.HTTP_404_NOT_FOUND

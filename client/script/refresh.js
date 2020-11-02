@@ -120,6 +120,41 @@ async function refresh(data) {
             )
             .appendTo($('#ocb-box'));
         }
+        $('#pcb-box').html('');
+        for (var c=0;c<pc.length;c++) {
+            $('<div></div>')
+            .addClass('participating-campaign')
+            .addClass('campaign')
+            .attr({
+                id:'pcbox-'+pc[c].id,
+                'data-id':pc[c].id
+            })
+            .append(
+                $('<span class="cmp-title"></span>').text(pc[c].name)
+                .append(
+                    $('<button></button>')
+                    .append(
+                        $('<img>')
+                        .attr('src','assets/icons/view.png')
+                    )
+                    .addClass('cmp-view')
+                )
+            )
+            .append(
+                $('<div class="cmp-info"></div>')
+                .append(
+                    $('<div></div>')
+                    .append($('<span>Characters: </span>'))
+                    .append($('<span></span>').text(pc[c].characters.length))
+                )
+                .append(
+                    $('<div></div>')
+                    .append($('<span>Maps: </span>'))
+                    .append($('<span></span>').text(Object.keys(pc[c].maps).length))
+                )
+            )
+            .appendTo($('#pcb-box'));
+        }
     }
 
     start = false;

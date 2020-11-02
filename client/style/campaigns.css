@@ -87,7 +87,21 @@
     padding: 10px;
     margin: 0px;
     margin-left: 3%;
-    margin-top: 2%;
+    margin-top: 10px;
+    border: 2px solid var(--background3);
+    background-color: white;
+    border-radius: 5px;
+    border-collapse: collapse;
+}
+.participating-campaign {
+    position: relative;
+    display: inline-block;
+    width: 30%;
+    height: 20%;
+    padding: 10px;
+    margin: 0px;
+    margin-left: 1.5%;
+    margin-top: 10px;
     border: 2px solid var(--background3);
     background-color: white;
     border-radius: 5px;
@@ -99,7 +113,7 @@
     left: -2px;
     display: inline-block;
     width: calc(100% + 4px);
-    height: fit-content;
+    height: 20%;
     text-align: center;
     padding: 0.5%;
     background-color: var(--foreground2-2);
@@ -113,17 +127,21 @@
     width: 100%;
     height: fit-content;
     position: absolute;
-    top: calc(3vh + 1%);
-    left: 0px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 .cmp-info > div {
     display: inline-block;
     width: 100%;
     height: fit-content;
-    padding-top: 5%;
+    padding-top: 2.5%;
     font-family: raleway-heavy;
     position: relative;
     text-align: center;
+}
+.participating-campaign .cmp-info > div {
+    padding-top: 5%;
 }
 
 .cmp-delete {
@@ -168,6 +186,30 @@
     display: inline-block;
     width: 55%;
     height: 60%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.cmp-view {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: inline-block;
+    height: 100%;
+    width: 8%;
+    border: none;
+    background-color: #00000000;
+    transition: background-color 0.2s;
+    border-top-right-radius: 5px;
+}
+.cmp-view:hover {
+    background-color: #00000044;
+}
+.cmp-view img {
+    display: inline-block;
+    width: 75%;
+    height: 80%;
     position: absolute;
     top: 50%;
     left: 50%;

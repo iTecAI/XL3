@@ -39,6 +39,7 @@ $(document).ready(function(){
                         },
                         function(data){
                             console.log('Created connection with fingerprint '+fingerprint);
+                            start = true;
                         }
                     );
                 }
