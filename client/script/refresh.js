@@ -111,11 +111,15 @@ async function refresh(data) {
                     $('<div></div>')
                     .append($('<span>Characters: </span>'))
                     .append($('<span></span>').text(oc[c].characters.length))
+                    .append($('<span> / </span>'))
+                    .append($('<span></span>').text(MAX_CMP_CHARS))
                 )
                 .append(
                     $('<div></div>')
                     .append($('<span>Maps: </span>'))
                     .append($('<span></span>').text(Object.keys(oc[c].maps).length))
+                    .append($('<span> / </span>'))
+                    .append($('<span></span>').text(MAX_CMP_MAPS))
                 )
             )
             .append(
@@ -151,11 +155,15 @@ async function refresh(data) {
                     $('<div></div>')
                     .append($('<span>Characters: </span>'))
                     .append($('<span></span>').text(pc[c].characters.length))
+                    .append($('<span> / </span>'))
+                    .append($('<span></span>').text(MAX_CMP_CHARS))
                 )
                 .append(
                     $('<div></div>')
                     .append($('<span>Maps: </span>'))
                     .append($('<span></span>').text(Object.keys(pc[c].maps).length))
+                    .append($('<span> / </span>'))
+                    .append($('<span></span>').text(MAX_CMP_MAPS))
                 )
             )
             .append(

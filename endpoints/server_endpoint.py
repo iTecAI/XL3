@@ -180,4 +180,37 @@ async def server_config(section: str, variable: str, response: Response):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Section or Variable not found.'}
 
+@router.post('/config/batch/',responses={
+    404: {'model':SimpleResult,'description':'Section or Variable not found','content':{'application/json':{'example.':{'result':'Section or Variable not found.'}}}},
+    200: {'model':SimpleResult,'description':'Successful. Returns dictionary of values.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'values':{
+            'SECTION':{
+                'var1':'value',
+                'var2':'value',
+                'etc':'etc'
+            },
+            'SECTION2':{
+                'var1':'value',
+                'var2':'value',
+                'etc':'etc'
+            }
+        }
+    }}}}
+})
+async def server_config_batch(model: BatchConfigModel, response: Response):
+    vals = {}
+    for s in model.batch.keys():
+        vals[s] = {}
+        for v in model.batch[s]:
+            try:
+                vals[s][v] = CONFIG[s][v]
+            except:
+                response.status_code = status.HTTP_404_NOT_FOUND
+                return {'result':f'Section {s} or Variable {v} not found.'}
+    return {
+        'result':'Success.',
+        'values':vals
+    }
+
         

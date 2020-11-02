@@ -1,7 +1,19 @@
 var MAX_CAMPAIGNS = null;
+var MAX_CMP_CHARS = null;
+var MAX_CMP_MAPS = null;
 
 $(document).ready(async function(){
-    MAX_CAMPAIGNS = Number(await getConfig('CAMPAIGNS','max_campaigns'));
+    var cmp_config = (await getBatchConfig({
+        CAMPAIGNS:[
+            'max_campaigns',
+            'characters_per_campaign',
+            'maps_per_campaign'
+        ]
+    })).CAMPAIGNS;
+
+    MAX_CAMPAIGNS = Number(cmp_config.max_campaigns);
+    MAX_CMP_CHARS = Number(cmp_config.characters_per_campaign);
+    MAX_CMP_MAPS = Number(cmp_config.maps_per_campaign);
     var current_campaigns = await $.get({
         url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/'
     });

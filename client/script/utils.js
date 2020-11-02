@@ -430,3 +430,17 @@ async function getConfig(sect,vari) {
         console.error(error);
     }
 }
+
+async function getBatchConfig(dct) {
+    let result;
+    try {
+        result = await $.post({
+            url: 'http://' + window.location.host + '/server/config/batch/',
+            data: JSON.stringify({batch:dct})
+        });
+        console.log(result.values);
+        return result.values;
+    } catch (error) {
+        console.error(error);
+    }
+}

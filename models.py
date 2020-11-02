@@ -137,3 +137,6 @@ class AddCharacterToCmpModel(BaseModel):
 
 class BatchModel(BaseModel):
     batch: list
+
+class BatchConfigModel(BaseModel):
+    batch: dict
