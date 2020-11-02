@@ -16,6 +16,10 @@ router = APIRouter()
 def check_access(fp,cid):
     with open(os.path.join('database','campaigns','registry.json'),'r') as f:
         reg = json.load(f)
+    for i in reg.keys():
+        if i in server.connections[fp].user.owned_campaigns or i in server.connections[fp].user.participating_campaigns:
+            with open(os.path.join('database','campaigns',i+'.pkl'),'rb') as f:
+                server.campaigns[i] = pickle.load(f)
     if cid in reg.keys() and cid in server.campaigns.keys():
         with open(os.path.join('database','campaigns',cid+'.pkl'),'rb') as f:
             server.campaigns[cid] = pickle.load(f)
