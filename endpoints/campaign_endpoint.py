@@ -14,7 +14,14 @@ logger = logging.getLogger("uvicorn.error")
 router = APIRouter()
 
 def check_access(fp,cid):
-    return (cid in server.connections[fp].user.owned_campaigns or cid in server.connections[fp].user.participating_campaigns) and cid in server.campaigns.keys()
+    with open(os.path.join('database','campaigns','registry.json'),'r') as f:
+        reg = json.load(f)
+    if cid in reg.keys() and cid in server.campaigns.keys():
+        with open(os.path.join('database','campaigns',cid+'.pkl','rb')) as f:
+            server.campaigns[cid] = pickle.load(f)
+        return cid in server.connections[fp].user.owned_campaigns or cid in server.connections[fp].user.participating_campaigns
+    else:
+        return False
 
 @router.post('/new/',responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
@@ -49,17 +56,18 @@ async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Resp
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to create campaigns.'}
     
-    if len(server.connections[fingerprint].user.owned_campaigns) < int(CONFIG['CAMPAIGNS']['cmax_campaigns']):
+    if len(server.connections[fingerprint].user.owned_campaigns) < int(CONFIG['CAMPAIGNS']['max_campaigns']):
         logger.info(f'User {fingerprint} is creating a new campaign.')
-        ncp = Campaign(server.connections[fingerprint].users.uid, model.name)
+        ncp = Campaign(server.connections[fingerprint].user.uid, model.name, model.password)
         server.connections[fingerprint].user.owned_campaigns.append(ncp.id)
         server.connections[fingerprint].user.participating_campaigns.append(ncp.id)
         server.campaigns[ncp.id] = ncp
-        return {
+        rd = {
             'result':'Success.',
             'owned_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.owned_campaigns],
             'new_campaign':ncp.to_json()
         }
+        return rd
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You have reached the maximum amount of campaigns.'}
@@ -79,6 +87,12 @@ async def get_campaigns(fingerprint: str, response: Response):
     if not server.connections[fingerprint].logged_in:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to create campaigns.'}
+    with open(os.path.join('database','campaigns','registry.json'),'r') as f:
+        reg = json.load(f)
+    for i in reg.keys():
+        if i in server.connections[fingerprint].user.owned_campaigns or i in server.connections[fingerprint].user.participating_campaigns:
+            with open(os.path.join('database','campaigns',i+'.pkl'),'rb') as f:
+                server.campaigns[i] = pickle.load(f)
     
     return {
         'result':'Success.',

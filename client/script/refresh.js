@@ -1,5 +1,6 @@
 // Globals
 var loggedIn = null;
+var start = true;
 
 async function refresh(data) {
     var endpoints = data.endpoints;
@@ -13,7 +14,7 @@ async function refresh(data) {
         $('#campaigns-nav').hide(250);
     }
     
-    if (endpoints.client) {
+    if (endpoints.client || start) {
         cget(
             '/client/'+fingerprint+'/settings/',
             {},
@@ -26,7 +27,7 @@ async function refresh(data) {
             }
         );
     }
-    if (endpoints.characters && window.location.pathname.contains('characters')) {
+    if ((endpoints.characters || start) && window.location.pathname.includes('characters')) {
         $('#info-max-characters').text(MAX_CHARACTERS);
         cget(
             '/client/'+fingerprint+'/characters/',
@@ -51,15 +52,62 @@ async function refresh(data) {
             }
         );
     }
-    if (endpoints.campaigns && window.location.pathname.contains('campaigns')) {
+    if ((endpoints.campaigns || start) && window.location.pathname.includes('campaigns')) {
         var current_campaigns = await $.get({
             url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/'
         });
+        MAX_CAMPAIGNS = Number(await getConfig('CAMPAIGNS','max_campaigns'));
+        var owned_campaigns = current_campaigns.owned_campaigns.length;
+        $('#cur-owned').text(owned_campaigns);
+        $('#max-ownable').text(MAX_CAMPAIGNS);
+
         var oc = current_campaigns.owned_campaigns;
+        console.log(oc);
         var pc = current_campaigns.participating_campaigns;
         $('#ocb-box').html('');
         for (var c=0;c<oc.length;c++) {
-
+            $('<div></div>')
+            .addClass('owned-campaign')
+            .addClass('campaign')
+            .attr({
+                id:'cbox-'+oc[c].id,
+                'data-id':oc[c].id
+            })
+            .append(
+                $('<span class="cmp-title"></span>').text(oc[c].name)
+                .append(
+                    $('<button></button>')
+                    .append(
+                        $('<img>')
+                        .attr('src','assets/icons/delete.png')
+                    )
+                    .addClass('cmp-delete')
+                )
+                .append(
+                    $('<button></button>')
+                    .append(
+                        $('<img>')
+                        .attr('src','assets/icons/edit-white.png')
+                    )
+                    .addClass('cmp-edit')
+                )
+            )
+            .append(
+                $('<div class="cmp-info"></div>')
+                .append(
+                    $('<div></div>')
+                    .append($('<span>Characters: </span>'))
+                    .append($('<span></span>').text(oc[c].characters.length))
+                )
+                .append(
+                    $('<div></div>')
+                    .append($('<span>Maps: </span>'))
+                    .append($('<span></span>').text(Object.keys(oc[c].maps).length))
+                )
+            )
+            .appendTo($('#ocb-box'));
         }
     }
+
+    start = false;
 }

@@ -111,7 +111,6 @@ $(document).ready(function(){
     });
 
     $('#login-submit').on('click',function(){
-        $(document).on('click',);
         var data = getFormValues('#login-submit');
         var username = data['login-email'];
         var hashword = sha256(data['login-password']);

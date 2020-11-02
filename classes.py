@@ -3,6 +3,7 @@ import os, time, random
 from _runtime import server, CONFIG
 import secrets
 import pickle
+import hashlib
 
 class BaseItem:
     def __init__(self):
@@ -24,31 +25,37 @@ class Connection(BaseItem):
         self.camp_update = BaseItem()
 
 class Campaign(BaseItem):
-    def __init__(self,owner,name):
+    def __init__(self,owner,name,password):
         super().__init__()
         self.id = secrets.token_urlsafe(16) # Generate 16-byte unique ID for campaign
         self.owner = owner
+        if len(password) == 0:
+            self.password_protected = False
+            self.passhash = ''
+        else:
+            self.password_protected = True
+            self.passhash = hashlib.sha256(password.encode('utf-8')).hexdigest()
         self.name = name
         self.characters = []
         self.settings = {
             'variant_encumbrance':{
                 'display_name':'Variant Encumbrance',
-                'type':bool,
+                'type':'bool',
                 'value':False
             },
             'coin_weight':{
                 'display_name':'Coin Weight',
-                'type':bool,
+                'type':'bool',
                 'value':True
             },
             'roll_hp':{
                 'display_name':'Roll HP',
-                'type':bool,
+                'type':'bool',
                 'value':False
             },
             'max_characters':{
                 'display_name':'Character Limit',
-                'type':int,
+                'type':'int',
                 'min':0,
                 'max':30,
                 'value':5
@@ -63,8 +70,9 @@ class Campaign(BaseItem):
         registry[self.id] = {'id':self.id,'owner':self.owner,'name':self.name}
         with open(os.path.join('database','campaigns','registry.json'),'w') as f:
             json.dump(registry,f)
-        with open(os.path.join('database','campaigns',self.id+'.pkl'),'w') as f:
+        with open(os.path.join('database','campaigns',self.id+'.pkl'),'wb') as f:
             pickle.dump(self,f)
+        self.updated = True
     def to_json(self):
         return {
             'id':self.id,

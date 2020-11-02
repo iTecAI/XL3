@@ -116,3 +116,4 @@ class NewSpellModel(BaseModel):
 
 class NewCampaignModel(BaseModel):
     name: str
+    password: str

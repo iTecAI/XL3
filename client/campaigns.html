@@ -113,5 +113,15 @@
             <div id='pcb-title' class='cb-title'><span>Participating Campaigns</span></div>
             <div id='pcb-box' class='cb-box noscroll'></div>
         </div>
+
+        <div id='new-campaign-dialog' class='form dialog transient'>
+            <div class='title'><span>New Campaign</span></div>
+            <div class='form'>
+                <input type='text' id='campaign-name' placeholder="Name">
+                <input type='password' id='campaign-password' placeholder="Campaign Password (Optional)">
+                <input type='password' id='campaign-password-confirm' placeholder="Confirm Password (Optional)">
+                <button class='form-submit' data-inputs='campaign-name,campaign-password,campaign-password-confirm' id='new-campaign-submit'>Create</button>
+            </div>
+        </div>
     </body>
 </html>
