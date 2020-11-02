@@ -201,6 +201,9 @@ async def add_character_to_campaign(fingerprint: str, campaign: str, model: AddC
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to manage characters.'}
     if check_access(fingerprint,campaign):
+        if len(server.campaigns[campaign].characters) >= int(CONFIG['CAMPAIGNS']['characters_per_campaign']):
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':f'Exceeded maximum number of characters for campaign. Max: {CONFIG["CAMPAIGNS"]["characters_per_campaign"]}'}
         logger.info(f'User {fingerprint} is adding a character with ID {model.charid} to campaign with ID {campaign}.')
         if not model.charid in server.campaigns[campaign].characters:
             server.campaigns[campaign].characters.append(model.charid)
