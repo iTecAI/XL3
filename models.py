@@ -131,3 +131,9 @@ class MultipleCampaignResponseModel(BaseModel):
     result: str
     owned_campaigns: list
     participating_campaigns: list
+
+class AddCharacterToCmpModel(BaseModel):
+    charid: str
+
+class BatchModel(BaseModel):
+    batch: list

@@ -215,3 +215,9 @@
     left: 50%;
     transform: translate(-50%,-50%);
 }
+.cmp-id-box {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    color: #00000066;
+}

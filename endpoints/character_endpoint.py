@@ -213,6 +213,51 @@ async def get_all_characters(fingerprint: str, response: Response):
         'characters':characters
     }       
 
+@router.get('/batch/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MultipleCharacterResponseModel,'description':'Returns character data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'characters':[]
+    }}}}
+})
+async def get_characters_batch(fingerprint: str, model: BatchModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to view characters.'}
+    
+    characters = []
+    to_remove = []
+    for char in model.batch:
+        if char in server.characters.keys():
+            characters.append({
+                'cid':char,
+                'owner':server.characters[char].owner,
+                'campaign':server.characters[char].campaign,
+                'public':server.characters[char].options['public'],
+                'data':server.characters[char].to_dict()
+            })
+        else:
+            try:
+                decache(char)
+                characters.append({
+                    'cid':char,
+                    'owner':server.characters[char].owner,
+                    'campaign':server.characters[char].campaign,
+                    'public':server.characters[char].options['public'],
+                    'data':server.characters[char].to_dict()
+                })
+            except ValueError:
+                to_remove.append(char)
+    for t in to_remove:
+        server.connections[fingerprint].user.owned_characters.remove(t)
+    return {
+        'result':'Success.',
+        'characters':characters
+    }     
 
 @router.get('/{charid}/',responses={
     405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},

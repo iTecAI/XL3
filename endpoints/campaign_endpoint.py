@@ -102,6 +102,35 @@ async def get_campaigns(fingerprint: str, response: Response):
         'participating_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.participating_campaigns]
     }
 
+@router.get('/batch/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MultipleCampaignResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'owned_campaigns':[],
+        'participating_campaigns':[]
+    }}}}
+})
+async def get_campaigns_batch(fingerprint: str, model: BatchModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to create campaigns.'}
+    with open(os.path.join('database','campaigns','registry.json'),'r') as f:
+        reg = json.load(f)
+    for i in reg.keys():
+        if i in server.connections[fingerprint].user.owned_campaigns or i in server.connections[fingerprint].user.participating_campaigns:
+            with open(os.path.join('database','campaigns',i+'.pkl'),'rb') as f:
+                server.campaigns[i] = pickle.load(f)
+    
+    return {
+        'result':'Success.',
+        'owned_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.owned_campaigns and server.campaigns[i].id in model.batch],
+        'participating_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.participating_campaigns and server.campaigns[i].id in model.batch]
+    }
+
 @router.get('/{campaign}/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
@@ -156,3 +185,28 @@ async def delete_campaign(fingerprint: str, campaign: str, response: Response):
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Campaign not found or you do not have ownership of it.'}
+
+@router.post('/{campaign}/add_character/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection or Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def add_character_to_campaign(fingerprint: str, campaign: str, model: AddCharacterToCmpModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage characters.'}
+    if check_access(fingerprint,campaign):
+        logger.info(f'User {fingerprint} is adding a character with ID {model.charid} to campaign with ID {campaign}.')
+        if not model.charid in server.campaigns[campaign].characters:
+            server.campaigns[campaign].characters.append(model.charid)
+            server.connections[fingerprint].user.update()
+            server.campaigns[campaign].update()
+        return {'result':'Success'}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Campaign not found or you do not have access to it.'}

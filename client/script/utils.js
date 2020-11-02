@@ -301,6 +301,45 @@ function buildCharacter(item) {
                             }
                         );
                     })
+            ).append(
+                $('<button></button>')
+                    .addClass('character-menu-cmp-add')
+                    .addClass('character-menu-item')
+                    .attr('data-action', 'cmp-add')
+                    .text('Add to Campaign')
+                    .on('click', function (event) {
+                        bootbox.prompt('Enter ID of campaign to add character to. If you don\'t know the ID, please ask your DM.',function(result){
+                            if (!result) {
+                                return;
+                            }
+                            cpost(
+                                '/campaigns/'+fingerprint+'/'+result+'/add_character/',
+                                {
+                                    charid: result
+                                },function(data){
+                                    console.log(data);
+                                },
+                                {
+                                    alert: true
+                                }
+                            );
+                            $(document).trigger('click');
+                            cget(
+                                '/characters/' + fingerprint + '/',
+                                {}, false,
+                                function (data) {
+                                    $('#character-list').html('');
+                                    console.log(data);
+                                    var chars = data.characters;
+                                    for (var c = 0; c < chars.length; c++) {
+                                        var el = buildCharacter(chars[c]);
+                                        $('#character-list').append(el);
+                                    }
+                                }
+                            );
+                        })
+                        
+                    })
             )
     );
 

@@ -74,7 +74,7 @@ async function refresh(data) {
                 'data-id':oc[c].id
             })
             .append(
-                $('<span class="cmp-title"></span>').text(oc[c].name)
+                $('<span class="cmp-title noselect"></span>').text(oc[c].name)
                 .append(
                     $('<button></button>')
                     .append(
@@ -106,7 +106,7 @@ async function refresh(data) {
                 )
             )
             .append(
-                $('<div class="cmp-info"></div>')
+                $('<div class="cmp-info noselect"></div>')
                 .append(
                     $('<div></div>')
                     .append($('<span>Characters: </span>'))
@@ -117,6 +117,11 @@ async function refresh(data) {
                     .append($('<span>Maps: </span>'))
                     .append($('<span></span>').text(Object.keys(oc[c].maps).length))
                 )
+            )
+            .append(
+                $('<div class="cmp-id-box"></div>')
+                .append($('<span class="noselect">ID: </span>'))
+                .append($('<span></span>').text(oc[c].id))
             )
             .appendTo($('#ocb-box'));
         }
@@ -130,7 +135,7 @@ async function refresh(data) {
                 'data-id':pc[c].id
             })
             .append(
-                $('<span class="cmp-title"></span>').text(pc[c].name)
+                $('<span class="cmp-title noselect"></span>').text(pc[c].name)
                 .append(
                     $('<button></button>')
                     .append(
@@ -141,7 +146,7 @@ async function refresh(data) {
                 )
             )
             .append(
-                $('<div class="cmp-info"></div>')
+                $('<div class="cmp-info noselect"></div>')
                 .append(
                     $('<div></div>')
                     .append($('<span>Characters: </span>'))
@@ -152,6 +157,11 @@ async function refresh(data) {
                     .append($('<span>Maps: </span>'))
                     .append($('<span></span>').text(Object.keys(pc[c].maps).length))
                 )
+            )
+            .append(
+                $('<div class="cmp-id-box"></div>')
+                .append($('<span class="noselect">ID: </span>'))
+                .append($('<span></span>').text(pc[c].id))
             )
             .appendTo($('#pcb-box'));
         }
