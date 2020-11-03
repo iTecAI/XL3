@@ -217,3 +217,31 @@ async def add_character_to_campaign(fingerprint: str, campaign: str, model: AddC
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Campaign not found or you do not have access to it.'}
+
+@router.post('/{campaign}/remove_character/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection or Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def remove_character_from_campaign(fingerprint: str, campaign: str, model: AddCharacterToCmpModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage characters.'}
+    if check_access(fingerprint,campaign):
+        if model.charid in server.campaigns[campaign].characters:
+            server.campaigns[campaign].characters.remove(model.charid)
+            server.connections[fingerprint].user.update()
+            server.campaigns[campaign].update()
+            logger.info(f'User {fingerprint} is removing a character with ID {model.charid} from campaign with ID {campaign}.')
+            return {'result':'Success'}
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {'result':'Character not found or it is not present in this campaign.'}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Campaign not found or you do not have access to it.'}

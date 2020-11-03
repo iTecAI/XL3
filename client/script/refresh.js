@@ -1,11 +1,13 @@
 // Globals
 var loggedIn = null;
 var start = true;
+var uid = null;
 
 async function refresh(data) {
     var endpoints = data.endpoints;
     $('#noconn').hide();
     loggedIn = data.loggedIn;
+    uid = data.userId;
     if (loggedIn) {
         $('#characters-nav').show(250);
         $('#campaigns-nav').show(250);
@@ -71,7 +73,8 @@ async function refresh(data) {
             .addClass('campaign')
             .attr({
                 id:'cbox-'+oc[c].id,
-                'data-id':oc[c].id
+                'data-id':oc[c].id,
+                'data-cmp':JSON.stringify(oc[c])
             })
             .append(
                 $('<span class="cmp-title noselect"></span>').text(oc[c].name)
@@ -103,6 +106,9 @@ async function refresh(data) {
                         .attr('src','assets/icons/edit-white.png')
                     )
                     .addClass('cmp-edit')
+                    .on('click',function(){
+                        loadCampaign(JSON.parse($(this).parents('.campaign').attr('data-cmp')),true);
+                    })
                 )
             )
             .append(
@@ -136,7 +142,8 @@ async function refresh(data) {
             .addClass('campaign')
             .attr({
                 id:'pcbox-'+pc[c].id,
-                'data-id':pc[c].id
+                'data-id':pc[c].id,
+                'data-cmp':JSON.stringify(pc[c])
             })
             .append(
                 $('<span class="cmp-title noselect"></span>').text(pc[c].name)
@@ -147,6 +154,9 @@ async function refresh(data) {
                         .attr('src','assets/icons/view.png')
                     )
                     .addClass('cmp-view')
+                    .on('click',function(){
+                        loadCampaign(JSON.parse($(this).parents('.campaign').attr('data-cmp')),false);
+                    })
                 )
             )
             .append(

@@ -23,7 +23,8 @@ router = APIRouter()
                         'characters':True,
                         'campaigns':True
                     },
-                    'loggedIn':True
+                    'loggedIn':True,
+                    'userId':None
                 }
             }
         },
@@ -41,7 +42,8 @@ async def connection_status(fingerprint: str, response: Response):
                 'characters':any([i.check() for i in server.characters.values()]) or server.connections[fingerprint].char_update.check(),
                 'campaigns':any([i.check() for i in server.campaigns.values()]) or server.connections[fingerprint].camp_update.check()
             },
-            'loggedIn':server.connections[fingerprint].logged_in
+            'loggedIn':server.connections[fingerprint].logged_in,
+            'userId':server.connections[fingerprint].uid
         }
     else:
         response.status_code = status.HTTP_404_NOT_FOUND

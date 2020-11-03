@@ -213,7 +213,7 @@ async def get_all_characters(fingerprint: str, response: Response):
         'characters':characters
     }       
 
-@router.get('/batch/',responses={
+@router.post('/batch/',responses={
     405: {'model':SimpleResult,'description':'You must be logged in to view characters.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     200: {'model':MultipleCharacterResponseModel,'description':'Returns character data.','content':{'application/json':{'example':{
@@ -230,7 +230,6 @@ async def get_characters_batch(fingerprint: str, model: BatchModel, response: Re
         return {'result':'You must be logged in to view characters.'}
     
     characters = []
-    to_remove = []
     for char in model.batch:
         if char in server.characters.keys():
             characters.append({
@@ -251,9 +250,7 @@ async def get_characters_batch(fingerprint: str, model: BatchModel, response: Re
                     'data':server.characters[char].to_dict()
                 })
             except ValueError:
-                to_remove.append(char)
-    for t in to_remove:
-        server.connections[fingerprint].user.owned_characters.remove(t)
+                pass
     return {
         'result':'Success.',
         'characters':characters

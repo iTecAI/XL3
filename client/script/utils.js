@@ -312,10 +312,11 @@ function buildCharacter(item) {
                             if (!result) {
                                 return;
                             }
+                            console.log($($(event.delegateTarget).parents('.character-panel')[0]).attr('data-id'));
                             cpost(
                                 '/campaigns/'+fingerprint+'/'+result+'/add_character/',
                                 {
-                                    charid: result
+                                    charid: $($(event.delegateTarget).parents('.character-panel')[0]).attr('data-id')
                                 },function(data){
                                     console.log(data);
                                 },
