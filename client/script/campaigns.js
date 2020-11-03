@@ -4,7 +4,7 @@ var MAX_CMP_MAPS = null;
 
 function loadCampaign(cmp,editing) {
     if(editing){editing = true;}else{editing = false;}
-    $('#cmp-characters').html('');
+    $('#cmp-characters-list').html('');
     $('#campaign-panel').attr('data-id',cmp.id);
     $('#campaign-panel').prop('data-editing',editing);
     cpost(
@@ -12,7 +12,7 @@ function loadCampaign(cmp,editing) {
         {batch:cmp.characters},
         function(data){
             for (var c=0;c<data.characters.length;c++) {
-                $('#cmp-characters').append(buildCmpCharacter(data.characters[c],editing));
+                $('#cmp-characters-list').append(buildCmpCharacter(data.characters[c],editing));
             }
         },
         {

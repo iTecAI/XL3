@@ -849,8 +849,8 @@ function sheet_gen(char, panel_tab) {
 
         if (path == 'xp') {
             for (var i = 0; i < LEVELXP.length; i++) {
-                if (LEVELXP[i] >= val) {
-                    modify('level', i + 1)
+                if (LEVELXP[i] >= val+1) {
+                    modify('level', i)
                     break;
                 }
             }
