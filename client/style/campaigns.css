@@ -275,6 +275,77 @@
     left: 0px;
     width: 100%;
     height: 95%;
+    overflow-y: scroll;
+}
+#cmp-maps {
+    position: absolute;
+    display: inline-block;
+    width: calc(95% - 320px);
+    padding: 5px;
+    height: 100%;
+    top: 0px;
+    left: 320px;
+    background-color: var(--background);
+}
+
+#cmp-maps-title {
+    position: absolute;
+    display: inline-block;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 5%;
+    background-color: var(--foreground3);
+    color: #ffffff;
+    font-family: raleway-heavy;
+}
+#cmp-maps-title span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 2vh;
+}
+#cmp-maps-list {
+    position: absolute;
+    display: inline-block;
+    top: 5%;
+    left: 0px;
+    width: 100%;
+    height: 95%;
+    overflow-y: scroll;
+    border-left: 2px solid var(--background3);
+}
+
+#cmp-settings {
+    position: absolute;
+    display: inline-block;
+    top: 0px;
+    right: 0px;
+    width: 5%;
+    height: 100%;
+    background-color: var(--foreground3);
+}
+#cmp-settings-toggle {
+    position: absolute;
+    display: inline-block;
+    top: 2vh;
+    left: 1vw;
+    width: 3vw;
+    height: 3vw;
+    background-color: #00000000;
+    transition: background-color 0.2s;
+    border-radius: 1.5vw;
+    border: none;
+}
+#cmp-settings-toggle img {
+    display: inline-block;
+    position: relative;
+    width: 2vw;
+    height: 2vw;
+}
+#cmp-settings-toggle:hover {
+    background-color: #00000033;
 }
 
 /* Character styling */

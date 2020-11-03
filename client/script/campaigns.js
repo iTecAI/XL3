@@ -92,6 +92,7 @@ function buildCmpCharacter(item,editable) {
 }
 
 $(document).ready(async function () {
+    var parameters = getParams();
     var cmp_config = (await getBatchConfig({
         CAMPAIGNS: [
             'max_campaigns',
@@ -139,4 +140,17 @@ $(document).ready(async function () {
             );
         }
     });
+    if (Object.keys(parameters).includes('cmpid')) {
+        var dat = await $.post({
+            url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/batch/',
+            data: JSON.stringify({batch:[parameters.cmpid]})
+        });
+        if (dat.owned_campaigns.length == 1) {
+            loadCampaign(dat.owned_campaigns[0],true);
+        } else if (dat.participating_campaigns.length == 1) {
+            loadCampaign(dat.participating_campaigns[0],false);
+        } else {
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+    }
 });

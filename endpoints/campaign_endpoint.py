@@ -106,7 +106,7 @@ async def get_campaigns(fingerprint: str, response: Response):
         'participating_campaigns':[server.campaigns[i].to_json() for i in server.campaigns.keys() if server.campaigns[i].id in server.connections[fingerprint].user.participating_campaigns]
     }
 
-@router.get('/batch/', responses={
+@router.post('/batch/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     200: {'model':MultipleCampaignResponseModel,'description':'Returns campaign data.','content':{'application/json':{'example':{
