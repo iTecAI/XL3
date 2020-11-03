@@ -444,3 +444,13 @@ async function getBatchConfig(dct) {
         console.error(error);
     }
 }
+
+function getParams() {
+    var search = window.location.search.slice(1).split('&');
+    var output = {};
+    for (var i=0;i<search.length;i++) {
+        var item = search[i].split('=');
+        output[item[0]] = item[1];
+    }
+    return output;
+}

@@ -1,6 +1,8 @@
 var MAX_CHARACTERS = null;
 
 $(document).ready(async function(){
+    var parameters = getParams();
+    console.log(parameters);
     MAX_CHARACTERS = Number(await getConfig('CHARACTERS','max_characters'));
     $(document).tooltip({show: {effect:"fade", delay:500}});
     $('#class-warning').hide();
@@ -52,10 +54,15 @@ $(document).ready(async function(){
         });
     });
 
-    /*cget(
-        '/characters/'+fingerprint+'/f2144cbff64709811bc2cbf30265d6e4cf55fc14ee41888987ed0799cf02d9dd/',
-        {},true,
-        sheet_gen
-    );*/
+    if (Object.keys(parameters).includes('char')) {
+        cget(
+            '/characters/'+fingerprint+'/'+parameters.char+'/',
+            {},true,
+            function(data){
+                sheet_gen(data);
+                activateitem('#character-sheet-display');
+            }
+        );
+    }
     $('#short-rest-panel').slideUp(0);
 });
