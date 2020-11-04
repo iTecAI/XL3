@@ -1,3 +1,4 @@
+from endpoints.character_endpoint import decache
 from fastapi import APIRouter, status, Request, Response
 from util import *
 from classes import *
@@ -204,19 +205,23 @@ async def add_character_to_campaign(fingerprint: str, campaign: str, model: AddC
     if not server.connections[fingerprint].logged_in:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You must be logged in to manage characters.'}
-    if check_access(fingerprint,campaign):
+    if check_access(fingerprint,campaign) and model.charid in server.characters.keys():
         if len(server.campaigns[campaign].characters) >= int(CONFIG['CAMPAIGNS']['characters_per_campaign']):
             response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
             return {'result':f'Exceeded maximum number of characters for campaign. Max: {CONFIG["CAMPAIGNS"]["characters_per_campaign"]}'}
         logger.info(f'User {fingerprint} is adding a character with ID {model.charid} to campaign with ID {campaign}.')
         if not model.charid in server.campaigns[campaign].characters:
+            decache(model.charid)
             server.campaigns[campaign].characters.append(model.charid)
             server.connections[fingerprint].user.update()
             server.campaigns[campaign].update()
+            server.characters[model.charid].campaign = campaign
+            server.characters[model.charid].update()
+            server.characters[model.charid].cache()
         return {'result':'Success'}
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
-        return {'result':'Campaign not found or you do not have access to it.'}
+        return {'result':'Campaign/Character not found or you do not have access to it.'}
 
 @router.post('/{campaign}/remove_character/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
@@ -234,9 +239,13 @@ async def remove_character_from_campaign(fingerprint: str, campaign: str, model:
         return {'result':'You must be logged in to manage characters.'}
     if check_access(fingerprint,campaign):
         if model.charid in server.campaigns[campaign].characters:
+            decache(model.charid)
             server.campaigns[campaign].characters.remove(model.charid)
             server.connections[fingerprint].user.update()
             server.campaigns[campaign].update()
+            server.characters[model.charid].campaign = ''
+            server.characters[model.charid].update()
+            server.characters[model.charid].cache()
             logger.info(f'User {fingerprint} is removing a character with ID {model.charid} from campaign with ID {campaign}.')
             return {'result':'Success'}
         else:

@@ -828,6 +828,15 @@ function sheet_gen(char, panel_tab) {
 
 
     // End generation -- START HOOKS
+    $('#char-in-campaign').off('click');
+    $('#char-in-campaign').hide();
+    if (char.campaign.length > 0) {
+        $('#char-in-campaign').on('click',function(){
+            window.location = window.location.origin + '/campaigns?cmpid=' + char.campaign;
+        });
+        $('#char-in-campaign').show();
+    }
+
     $('input.fit').on('input', function (event) {
         $(event.target).css('width', ($(event.target).val().length + 2) + 'ch');
     })

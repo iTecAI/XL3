@@ -220,6 +220,21 @@
     width: fit-content;
 }
 
+#char-in-campaign {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #ffffff;
+    padding: 3px;
+    border-radius: 3px;
+    background-color: #048ce7;
+    transition: background-color 0.2s;
+    font-family: raleway-heavy;
+}
+#char-in-campaign:hover {
+    background-color: #087cc9;
+}
+
 #char-name {
     font-size: 30px;
     font-family: raleway-heavy;
