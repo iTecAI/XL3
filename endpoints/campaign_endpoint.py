@@ -309,6 +309,11 @@ async def modify_campaign_settings(fingerprint: str, campaign: str, model: Campa
                     fp=fingerprint,
                     cmp=campaign
                 ))
+                if model.name in ['variant_encumbrance','coin_weight','roll_hp']:
+                    for c in server.campaigns[campaign].characters:
+                        server.characters[c].options[model.name] = model.value
+                        server.characters[c].cache()
+                        server.characters[c].update()
         except Exception as e:
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {'result':
