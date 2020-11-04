@@ -29,6 +29,10 @@ var CASTERS = ['bard', 'cleric', 'druid', 'paladin', 'ranger', 'sorcerer', 'warl
 
 var ABILITIES = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
 
+function cond(c, t, f) {
+    if (c) { return t; } else { return f; }
+}
+
 async function getKeyPair() { // Generates or loads key pair
     if (localStorage['keypair'] == undefined || localStorage['keypair'] == 'undefined') {
         var keyPair = await crypto.subtle.generateKey(

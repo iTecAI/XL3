@@ -163,7 +163,7 @@ async def get_campaign(fingerprint: str, campaign: str, response: Response):
 @router.post('/{campaign}/delete/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
     404: {'model':SimpleResult,'description':'Connection or Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
-    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+    200: {'model':SimpleResult,'description':'Deletes campaign, returns success.','content':{'application/json':{'example':{
         'result':'Success.'
     }}}}
 })
@@ -183,8 +183,17 @@ async def delete_campaign(fingerprint: str, campaign: str, response: Response):
             if campaign in server.users[u].participating_campaigns:
                 server.users[u].participating_campaigns.remove(campaign)
             server.users[u].update()
+        with open(os.path.join('database','campaigns','registry.json'),'r') as f:
+            reg = json.load(f)
+        with open(os.path.join('database','campaigns','registry.json'),'w') as f:
+            if campaign in reg.keys():
+                del reg[campaign]
+                f.write(json.dumps(reg))
+        if os.path.exists(os.path.join('database','campaigns',campaign+'.pkl')):
+            os.remove(os.path.join('database','campaigns',campaign+'.pkl'))
         for c in list(server.campaigns.keys()):
             server.campaigns[c].update()
+        server.updates['campaigns'] = True
         server.connections[fingerprint].user.update()
         return {'result':'Success'}
     else:
@@ -194,7 +203,7 @@ async def delete_campaign(fingerprint: str, campaign: str, response: Response):
 @router.post('/{campaign}/add_character/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
     404: {'model':SimpleResult,'description':'Connection or Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
-    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+    200: {'model':SimpleResult,'description':'Adds character, returns success.','content':{'application/json':{'example':{
         'result':'Success.'
     }}}}
 })
@@ -226,7 +235,7 @@ async def add_character_to_campaign(fingerprint: str, campaign: str, model: AddC
 @router.post('/{campaign}/remove_character/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
     404: {'model':SimpleResult,'description':'Connection or Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
-    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+    200: {'model':SimpleResult,'description':'Removes character, returns success.','content':{'application/json':{'example':{
         'result':'Success.'
     }}}}
 })
@@ -254,3 +263,64 @@ async def remove_character_from_campaign(fingerprint: str, campaign: str, model:
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Campaign not found or you do not have access to it.'}
+
+@router.post('/{campaign}/setting/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, Campaign, or Setting not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'Not allowed to modify campaign.','content':{'application/json':{'example':{'result':'You do not own this campaign.'}}}},
+    200: {'model':SimpleResult,'description':'Changes setting, returns success.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def modify_campaign_settings(fingerprint: str, campaign: str, model: CampaignSettingChangeModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage campaigns.'}
+    if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
+        try:
+            if model.name in server.campaigns[campaign].settings.keys():
+                if (
+                    type(model.value) == int and server.campaigns[campaign].settings[model.name]['type'] == 'int'
+                    and server.campaigns[campaign].settings[model.name]['value'] >= server.campaigns[campaign].settings[model.name]['min']
+                    and server.campaigns[campaign].settings[model.name]['value'] <= server.campaigns[campaign].settings[model.name]['max']
+                ):
+                    server.campaigns[campaign].settings[model.name]['value'] = model.value
+                elif type(model.value) == bool and server.campaigns[campaign].settings[model.name]['type'] == 'bool':
+                    server.campaigns[campaign].settings[model.name]['value'] = model.value
+                elif type(model.value) == str and server.campaigns[campaign].settings[model.name]['type'] == 'str':
+                    server.campaigns[campaign].settings[model.name]['value'] = model.value
+                else:
+                    response.status_code = status.HTTP_400_BAD_REQUEST
+                    return {'result':
+                        'Bad value. Given setting: {setting}. Given value: [{value}] of type {vtype}. Setting parameters: {sparams}'.format(
+                            setting=model.name,
+                            value=model.value,
+                            vtype=str(type(model.value)),
+                            sparams=json.dumps(server.campaigns[campaign].settings[model.name])
+                        )
+                    }
+                logger.info('User {fp} changed setting "{setting}" to "{value}" (type {vtype}) in campaign {cmp}.'.format(
+                    setting=model.name,
+                    value=model.value,
+                    vtype=str(type(model.value)),
+                    fp=fingerprint,
+                    cmp=campaign
+                ))
+        except Exception as e:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {'result':
+                'Bad value, caused exception [{exc}]. Given setting: {setting}. Given value: [{value}] of type {vtype}. Setting parameters: {sparams}'.format(
+                    exc=str(e),
+                    setting=model.name,
+                    value=model.value,
+                    vtype=str(type(model.value)),
+                    sparams=json.dumps(server.campaigns[campaign].settings[model.name])
+                )
+            }
+        server.campaigns[campaign].update()
+    else:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this campaign.'}

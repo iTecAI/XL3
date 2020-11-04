@@ -28,9 +28,9 @@
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
-        <script src='script/refresh.js'></script>
-        <script src='script/root.js'></script>
         <script src='script/campaigns.js'></script>
+        <script src='script/root.js'></script>
+        <script src='script/refresh.js'></script>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
@@ -125,6 +125,7 @@
         </div>
 
         <div id='campaign-panel'>
+            <div id='cmp-modal'></div>
             <div id='cmp-characters' class='noselect'>
                 <div id='cmp-characters-title'><span>Characters</span></div>
                 <div id='cmp-characters-list' class='noscroll'>
@@ -141,6 +142,13 @@
                 <button id='cmp-settings-toggle'>
                     <img src='assets/icons/settings_white.png'>
                 </button>
+                <div id='settings-area' class='noscroll noselect'>
+                    <table>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </body>

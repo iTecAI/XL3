@@ -57,7 +57,7 @@ class Campaign(BaseItem):
                 'display_name':'Character Limit',
                 'type':'int',
                 'min':0,
-                'max':30,
+                'max':int(CONFIG['CAMPAIGNS']['characters_per_campaign']),
                 'value':5
             }
         }

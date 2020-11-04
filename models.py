@@ -140,3 +140,7 @@ class BatchModel(BaseModel):
 
 class BatchConfigModel(BaseModel):
     batch: dict
+
+class CampaignSettingChangeModel(BaseModel):
+    name: str
+    value: Any

@@ -118,7 +118,7 @@ async function refresh(data) {
                     .append($('<span>Characters: </span>'))
                     .append($('<span></span>').text(oc[c].characters.length))
                     .append($('<span> / </span>'))
-                    .append($('<span></span>').text(MAX_CMP_CHARS))
+                    .append($('<span></span>').text(cond(oc[c].settings.max_characters.value <= MAX_CMP_CHARS,oc[c].settings.max_characters.value,MAX_CMP_CHARS)))
                 )
                 .append(
                     $('<div></div>')
@@ -166,7 +166,7 @@ async function refresh(data) {
                     .append($('<span>Characters: </span>'))
                     .append($('<span></span>').text(pc[c].characters.length))
                     .append($('<span> / </span>'))
-                    .append($('<span></span>').text(MAX_CMP_CHARS))
+                    .append($('<span></span>').text(cond(pc[c].settings.max_characters.value <= MAX_CMP_CHARS,pc[c].settings.max_characters.value,MAX_CMP_CHARS)))
                 )
                 .append(
                     $('<div></div>')

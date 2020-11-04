@@ -39,10 +39,6 @@ function modformat(num) {
     }
 }
 
-function cond(c, t, f) {
-    if (c) { return t; } else { return f; }
-}
-
 function getCurCont() {
     for (var i = 0; i < dat.inventory.containers.length; i++) {
         if (dat.inventory.current_container == dat.inventory.containers[i].name) {

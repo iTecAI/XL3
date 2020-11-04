@@ -8,4 +8,14 @@ class Server:
         self.users = {}
         self.characters = {}
         self.campaigns = {}
+        self.updates = {
+            'client':False,
+            'characters':False,
+            'campaigns':False
+        }
+    def check(self,u):
+        v = self.updates.copy()[u]
+        self.updates[u] = False
+        return v
+
 server = Server()
