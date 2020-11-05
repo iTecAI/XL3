@@ -150,3 +150,4 @@ class AddMapToCmpModel(BaseModel):
     data: str
     rows: int
     columns: int
+    name: str

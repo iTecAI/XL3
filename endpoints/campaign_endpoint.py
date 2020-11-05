@@ -364,10 +364,41 @@ async def add_map_to_campaign(fingerprint: str, campaign: str, model: AddMapToCm
             'grid':{
                 'columns':model.columns,
                 'rows':model.rows
-            }
+            },
+            'name':model.name
         }
         server.campaigns[campaign].update()
         return {'result':'Success.'}
+    else:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this campaign.'}
+
+@router.post('/{campaign}/maps/remove/{map}', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, Campaign, or Setting not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'Not allowed to modify campaign.','content':{'application/json':{'example':{'result':'You do not own this campaign.'}}}},
+    200: {'model':SimpleResult,'description':'Adds map, returns success.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def remove_map_from_campaign(fingerprint: str, campaign: str, map: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage campaigns.'}
+    if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
+        if map in server.campaigns[campaign].maps.keys():
+            try:
+                del server.campaigns[campaign].maps[map]
+                del_image(map)
+            except KeyError:
+                pass
+            server.campaigns[campaign].update()
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {'result':'Map not found.'}
     else:
         response.status_code = status.HTTP_403_FORBIDDEN
         return {'result':'You do not own this campaign.'}

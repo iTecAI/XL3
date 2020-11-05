@@ -183,6 +183,18 @@ async function refresh(data) {
             )
             .appendTo($('#pcb-box'));
         }
+        if ($('#campaign-panel').hasClass('active')) {
+            var ind = null;
+            for (var c=0;c<oc.length;c++) {
+                if (oc[c].id == $('#campaign-panel').attr('data-id')) {
+                    ind = c;
+                    break;
+                }
+            }
+            if (ind != null) {
+                loadCampaign(oc[ind],$('#campaign-panel').prop('data-editing'));
+            }
+        }
     }
 
     start = false;

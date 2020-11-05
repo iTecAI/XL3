@@ -4,13 +4,13 @@ var MAX_CMP_MAPS = null;
 
 function loadCampaign(cmp, editing) {
     if (editing) { editing = true; } else { editing = false; }
-    $('#cmp-characters-list').html('');
     $('#campaign-panel').attr('data-id', cmp.id);
     $('#campaign-panel').prop('data-editing', editing);
     cpost(
         '/characters/' + fingerprint + '/batch/',
         { batch: cmp.characters },
         function (data) {
+            $('#cmp-characters-list').html('');
             for (var c = 0; c < data.characters.length; c++) {
                 $('#cmp-characters-list').append(buildCmpCharacter(data.characters[c], editing));
             }
@@ -45,7 +45,7 @@ function loadCampaign(cmp, editing) {
                                                 value: value
                                             },
                                             function (data) {
-                                                console.log(data);
+
                                             },
                                             {
                                                 alert: true
@@ -102,6 +102,48 @@ function loadCampaign(cmp, editing) {
             );
         }
         row.appendTo($('#settings-area tbody'));
+    }
+
+    var mkeys = Object.keys(cmp.maps);
+    $('#cmp-maps-list').html('');
+    for (var m = 0; m < mkeys.length; m++) {
+        $('<div class="map noselect"></div>')
+            .attr({
+                id: 'map-' + cmp.maps[mkeys[m]].image_id,
+                'data-id': cmp.maps[mkeys[m]].image_id
+            })
+            .append(
+                $('<div class="map-box noscroll"></div>').append(
+                    $('<img>')
+                        .attr('src', '/images/' + cmp.maps[mkeys[m]].image_id)
+                )
+            )
+            .append($('<div class="grad-overlay"></div>'))
+            .append(
+                $('<div class="map-desc"></div>')
+                .append(
+                    $('<div></div>')
+                    .append($('<span></span>').text(cmp.maps[mkeys[m]].name))
+                    .append($('<span></span>').text(cmp.maps[mkeys[m]].grid.columns + ' x ' + cmp.maps[mkeys[m]].grid.rows))
+                )
+                .append(
+                    $('<button class="delete-map" data-tooltip="Delete" data-tooltip-location="right"></button>')
+                    .append($('<img src="assets/icons/delete-black.png">'))
+                    .on('click',function(event){
+                        cpost(
+                            '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/maps/remove/'+$($(event.delegateTarget).parents('.map')[0]).attr('data-id'),
+                            {},
+                            function(){},
+                            {alert:true}
+                        );
+                    })
+                )
+                .append(
+                    $('<button class="play-map" data-tooltip="Play" data-tooltip-location="right"></button>')
+                    .append($('<img src="assets/icons/play.png">'))
+                )
+            )
+            .appendTo($('#cmp-maps-list'));
     }
 
     activateitem('#campaign-panel');
@@ -256,7 +298,7 @@ $(document).ready(async function () {
                 var path = $('#new-map-btn input').val().replace(/\\/g, '/').split('fakepath/')[1];
                 $('#map-path').text(path);
                 $('#new-map-dialog input').val('');
-                $('#new-map-dialog').attr('data-uri',reader.result);
+                $('#new-map-dialog').attr('data-uri', reader.result);
                 $('#new-map-dialog').addClass('active');
                 $('#cmp-modal').addClass('active');
             } else {
@@ -270,11 +312,11 @@ $(document).ready(async function () {
             reader.readAsDataURL(file);
         }
     });
-    $('#new-map-submit').on('click',function(){
+    $('#new-map-submit').on('click', function () {
         var data = getFormValues('#new-map-submit');
         var mname = data['map-name'];
         var rows = data['map-rows'];
-        var cols = data['map-rows'];
+        var cols = data['map-columns'];
         if (mname.length > 0 && rows.length > 0 && cols.length > 0) {
             rows = Number(rows);
             cols = Number(cols);
@@ -289,17 +331,18 @@ $(document).ready(async function () {
             rows = Math.round(rows);
             cols = Math.round(cols);
             var dat = {
-                data:$('#new-map-dialog').attr('data-uri'),
-                rows:rows,
-                columns:cols
+                data: $('#new-map-dialog').attr('data-uri'),
+                rows: rows,
+                columns: cols,
+                name: mname
             };
             console.log(dat);
             cpost(
-                '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/maps/add/',
+                '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/maps/add/',
                 dat,
                 console.log,
                 {
-                    alert:true
+                    alert: true
                 }
             );
             $('#cmp-modal').trigger('click');

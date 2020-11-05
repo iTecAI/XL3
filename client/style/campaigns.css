@@ -315,6 +315,7 @@
     height: 95%;
     overflow-y: scroll;
     border-left: 2px solid var(--background3);
+    padding-left: 10px;
 }
 #new-map-btn {
     position: absolute;
@@ -474,6 +475,116 @@
 }
 #new-map-dialog {
     z-index: 1002;
+}
+
+/* Maps */
+.map {
+    position: relative;
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    border: 2px solid var(--background3);
+    border-radius: 10px;
+    margin: 5px;
+    background-color: var(--background2);
+}
+.map-box {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 70%;
+    overflow: scroll;
+    border-radius: 8px 8px 0 0;
+}
+.map-box img {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+}
+.map .grad-overlay {
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    height: 6%;
+    bottom: 30%;
+    left: 0px;
+    background-image: linear-gradient(#00000000, var(--background2));
+}
+.map-desc {
+    position: absolute;
+    top: 70%;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 30%;
+}
+.map-desc > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 90%;
+    height: fit-content;
+    display: inline-block;
+}
+.map-desc > div > span {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    font-family: raleway-heavy;
+}
+.delete-map {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #00000000;
+    border: none;
+    border-radius: 5px;
+}
+.delete-map img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+}
+.delete-map:hover img {
+    opacity: 0.4;
+}
+.play-map {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #00000000;
+    border: none;
+    border-radius: 5px;
+}
+.play-map img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+}
+.play-map:hover img {
+    opacity: 0.4;
 }
 
 /* Character styling */
