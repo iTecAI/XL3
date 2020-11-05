@@ -363,7 +363,8 @@ async def add_map_to_campaign(fingerprint: str, campaign: str, model: AddMapToCm
             'entities':{},
             'grid':{
                 'columns':model.columns,
-                'rows':model.rows
+                'rows':model.rows,
+                'size':model.gridsize
             },
             'name':model.name
         }

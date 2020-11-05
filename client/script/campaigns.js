@@ -125,10 +125,12 @@ function loadCampaign(cmp, editing) {
                     $('<div></div>')
                     .append($('<span></span>').text(cmp.maps[mkeys[m]].name))
                     .append($('<span></span>').text(cmp.maps[mkeys[m]].grid.columns + ' x ' + cmp.maps[mkeys[m]].grid.rows))
+                    .append($('<span></span>').text(cmp.maps[mkeys[m]].grid.size +'ft. grid'))
                 )
                 .append(
                     $('<button class="delete-map" data-tooltip="Delete" data-tooltip-location="right"></button>')
                     .append($('<img src="assets/icons/delete-black.png">'))
+                    .toggle(editing)
                     .on('click',function(event){
                         cpost(
                             '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/maps/remove/'+$($(event.delegateTarget).parents('.map')[0]).attr('data-id'),
@@ -317,26 +319,29 @@ $(document).ready(async function () {
         var mname = data['map-name'];
         var rows = data['map-rows'];
         var cols = data['map-columns'];
-        if (mname.length > 0 && rows.length > 0 && cols.length > 0) {
+        var gsize = data['map-grid-size'];
+        if (mname.length > 0 && rows.length > 0 && cols.length > 0 && gsize.length > 0) {
             rows = Number(rows);
             cols = Number(cols);
-            if (isNaN(rows) || isNaN(cols)) {
-                bootbox.alert('Rows and Columns must be whole numbers.');
-                return;
-            }
-            if (rows < 1 || cols < 1) {
-                bootbox.alert('Rows and Columns must be greater than 0.');
+            gsize = Number(gsize);
+            if (isNaN(rows) || isNaN(cols) || isNaN(gsize)) {
+                bootbox.alert('Rows, Columns, and Grid Size must be whole numbers.');
                 return;
             }
             rows = Math.round(rows);
             cols = Math.round(cols);
+            gsize = Math.round(gsize);
+            if (rows < 1 || cols < 1 || gsize < 1) {
+                bootbox.alert('Rows, Columns, and Grid Size must be greater than 0.');
+                return;
+            }
             var dat = {
                 data: $('#new-map-dialog').attr('data-uri'),
                 rows: rows,
                 columns: cols,
-                name: mname
+                name: mname,
+                gridsize: gsize
             };
-            console.log(dat);
             cpost(
                 '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/maps/add/',
                 dat,

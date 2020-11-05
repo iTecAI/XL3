@@ -151,3 +151,4 @@ class AddMapToCmpModel(BaseModel):
     rows: int
     columns: int
     name: str
+    gridsize: int
