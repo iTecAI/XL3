@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>XL3 - Map Player</title>
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="style/root.css">
+        <link rel="stylesheet" type="text/css" href="style/tooltips.css">
+        <link rel="stylesheet" type="text/css" href="style/dialogs.css">
+        <link rel="stylesheet" type="text/css" href="style/switches.css">
+        <link rel="stylesheet" type="text/css" href="style/player.css">
+        
+        <!-- Libraries -->
+        <script src='lib/jsencrypt.min.js'></script>
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/js-base64@3.4.5/base64.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <script src='lib/cookies.min.js'></script>
+        <script src='lib/sha.js'></script>
+        <script src='lib/crc.js'></script>
+
+        <!-- Scripts -->
+        <script src='script/utils.js'></script>
+        <script src='script/refresh.js'></script>
+        <script src='script/root.js'></script>
+        <script src='script/campaigns.js'></script>
+        <script src='script/player.js'></script>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+
+    </head>
+    <body>
+        <div id='noconn' class='noselect'>
+            <span>Cannot connect to server. The server may be down, or your internet may be faulty.</span>
+        </div>
+        <div id='top-bar'>
+            <img src='assets/logo.png'>
+            <div id='topnav'>
+                <button class='top-nav' id='compendium-nav' onclick="window.location='/'">Compendium</button>
+                <button class='top-nav' id='characters-nav' onclick="window.location='/characters'">Characters</button>
+                <button class='top-nav' id='campaigns-nav' onclick="window.location='/campaigns'">Campaigns</button>
+                <button class='top-nav' id='help-nav' onclick="window.location='/help'">Help</button>
+            </div>
+            <button id='login' data-tooltip="Login or Create Account" data-tooltip-location="left"><img src="assets/icons/user.png"></button>
+        </div>
+        <div id='user-actions' class="transient">
+            <button id='logout-btn'>Log Out</button>
+            <button id='user-settings-btn'>Settings</button>
+        </div>
+
+        <div id='modal' class='transient'></div>
+        <div id='login-window' class='form dialog transient'>
+            <div class='title'><span>Log In</span></div>
+            <div class='form'>
+                <input type='text' id='login-email' placeholder="E-Mail">
+                <input type='password' id='login-password' placeholder="Password">
+                <button class='form-submit' data-inputs='login-email,login-password' id='login-submit'>Sign In</button>
+            </div>
+            <div class='extralink noselect'>Don't have an account? <a href='#' class='emp-link' id='create-acct-ref-btn'>Create One</a></div>
+        </div>
+        <div id='sign-up-window' class='form dialog transient'>
+            <div class='title'><span>Create Account</span></div>
+            <div class='form'>
+                <input type='text' id='sign-up-name' placeholder="Display Name">
+                <input type='text' id='sign-up-email' placeholder="E-Mail">
+                <input type='password' id='sign-up-password' placeholder="Password">
+                <button class='form-submit' data-inputs='sign-up-name,sign-up-email,sign-up-password' id='create-acct-submit'>Sign Up</button>
+            </div>
+            <div class='extralink noselect'>Got an account? <a href='#' class='emp-link' id='login-ref-btn'>Log In</a></div>
+        </div>
+        <div id='user-settings-window' class='settings dialog transient'>
+            <div class='title'><span>User Settings</span></div>
+            <div class='tabs'>
+                <div class='tab active' id='tab_acct-settings' data-tab='acct-settings'><span>Account</span></div>
+            </div>
+            <div class='settings-area'>
+                <div class='page active' id='acct-settings'>
+                    <div class='setting'>
+                        <span>Display Name</span>
+                        <input id='client-settings-display_name' type="text" placeholder="Display Name..." class='settings-input' data-setting='display_name'>
+                    </div>
+                    <div class='setting'>
+                        <span>E-Mail</span>
+                        <input id='client-settings-email' type="text" placeholder="Email" class='settings-input' data-setting='email'>
+                    </div>
+                    <div class='setting' id='settings-change-psw'>
+                        <span>Change Password</span>
+                        <input id='client-password-current' type="password" placeholder="Current Password">
+                        <input id='client-password-new' type="password" placeholder="New Password">
+                        <button id='change-psw-btn'>Change Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start player HTML -->
+        <div id='player-panel'>
+            <div id='player-info' class='noselect'>
+                <span id='map-name'></span>
+                <span class='divider'> - </span>
+                <span id='map-dims'></span>
+                <span class='divider'> - </span>
+                <span id='map-scale'></span>
+            </div>
+        </div>
+    </body>
+</html>

@@ -143,6 +143,9 @@ function loadCampaign(cmp, editing) {
                 .append(
                     $('<button class="play-map" data-tooltip="Play" data-tooltip-location="right"></button>')
                     .append($('<img src="assets/icons/play.png">'))
+                    .on('click',function(event){
+                        window.location = window.location.origin + '/player?cmp='+$('#campaign-panel').attr('data-id')+'&map='+$($(event.delegateTarget).parents('.map')[0]).attr('data-id');
+                    })
                 )
             )
             .appendTo($('#cmp-maps-list'));

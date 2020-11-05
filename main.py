@@ -19,7 +19,7 @@ import json
 import random
 import time
 import pickle
-from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint, campaign_endpoint, image_endpoint
+from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint, campaign_endpoint, image_endpoint, player_endpoint
 from _api import *
 from threading import Thread
 
@@ -123,6 +123,11 @@ app.include_router(
     prefix='/images',
     tags=['images']
 )
+app.include_router(
+    player_endpoint.router,
+    prefix='/campaigns/{fingerprint}/player/{campaign}/{map}',
+    tags=['player']
+)
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root
 async def groot():
@@ -139,6 +144,10 @@ async def gcamps():
 @app.get('/help', response_class=HTMLResponse, include_in_schema=False)
 async def ghelp():
     with open(os.path.join('client','help.html'),'r') as f:
+        return f.read()
+@app.get('/player', response_class=HTMLResponse, include_in_schema=False)
+async def ghelp():
+    with open(os.path.join('client','player.html'),'r') as f:
         return f.read()
 
 # Load web server

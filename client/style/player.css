@@ -1,0 +1,28 @@
+div#player-panel {
+    position: absolute;
+    top: 5vh;
+    left: 0px;
+    display: inline-block;
+    width: 100vw;
+    height: 95vh;
+}
+#player-info {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: fit-content;
+    min-height: 2vh;
+    background-color: var(--foreground2-2);
+    padding: 10px;
+    color: #ffffff;
+    font-family: raleway-heavy;
+    font-size: 1.6vh;
+    text-align: center;
+}
+#player-info span {
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+}

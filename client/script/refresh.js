@@ -196,6 +196,12 @@ async function refresh(data) {
             }
         }
     }
+    if ((endpoints.campaigns || start) && window.location.pathname.includes('player')) {
+        var current_map = await $.get({
+            url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/player/'+CAMPAIGN+'/'+MAP+'/'
+        });
+        onPlayerRefresh(current_map.data);
+    }
 
     start = false;
 }

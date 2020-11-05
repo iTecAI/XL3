@@ -152,3 +152,7 @@ class AddMapToCmpModel(BaseModel):
     columns: int
     name: str
     gridsize: int
+
+class MapDataResponseModel(BaseModel):
+    result: str
+    data: dict
