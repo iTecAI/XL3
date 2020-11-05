@@ -19,7 +19,7 @@ import json
 import random
 import time
 import pickle
-from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint, campaign_endpoint
+from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint, campaign_endpoint, image_endpoint
 from _api import *
 from threading import Thread
 
@@ -67,7 +67,7 @@ def reload_open5e_cache(endpoints=['spells','monsters','sections','magicitems'])
 
 # Setup
 '''Build database'''
-folders = ['users','sessions','campaigns','characters','cached',os.path.join('cached','open5e')]
+folders = ['users','sessions','campaigns','characters','cached',os.path.join('cached','open5e'),'images']
 for f in folders:
     try:
         os.makedirs(os.path.join('database',f))
@@ -117,6 +117,11 @@ app.include_router(
     campaign_endpoint.router,
     prefix='/campaigns/{fingerprint}',
     tags=['campaigns']
+)
+app.include_router(
+    image_endpoint.router,
+    prefix='/images',
+    tags=['images']
 )
 
 @app.get('/', response_class=HTMLResponse, include_in_schema=False) # Get index.html when navigated to root

@@ -126,6 +126,16 @@
 
         <div id='campaign-panel'>
             <div id='cmp-modal'></div>
+            <div id='new-map-dialog' class='form dialog noselect transient' data-uri=''>
+                <div class='title'><span>New Map</span></div>
+                <span id='map-path'></span>
+                <div class='form'>
+                    <input type='text' id='map-name' placeholder="Map Name">
+                    <input type='number' id='map-rows' placeholder="# Rows">
+                    <input type='number' id='map-columns' placeholder="# Columns">
+                    <button class='form-submit' data-inputs='map-name,map-rows,map-columns' id='new-map-submit'>Create</button>
+                </div>
+            </div>
             <div id='cmp-characters' class='noselect'>
                 <div id='cmp-characters-title'><span>Characters</span></div>
                 <div id='cmp-characters-list' class='noscroll'>
@@ -133,7 +143,13 @@
                 </div>
             </div>
             <div id='cmp-maps'>
-                <div id='cmp-maps-title'><span>Maps</span></div>
+                <div id='cmp-maps-title' class='noselect'>
+                    <span>Maps</span>
+                    <div id='new-map-btn'>
+                        <span>+ New Map</span>
+                        <input type='file'>
+                    </div>
+                </div>
                 <div id='cmp-maps-list' class='noscroll'>
 
                 </div>

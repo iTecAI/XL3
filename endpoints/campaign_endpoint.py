@@ -329,3 +329,45 @@ async def modify_campaign_settings(fingerprint: str, campaign: str, model: Campa
     else:
         response.status_code = status.HTTP_403_FORBIDDEN
         return {'result':'You do not own this campaign.'}
+
+@router.post('/{campaign}/maps/add/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, Campaign, or Setting not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'Not allowed to modify campaign.','content':{'application/json':{'example':{'result':'You do not own this campaign.'}}}},
+    200: {'model':SimpleResult,'description':'Adds map, returns success.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def add_map_to_campaign(fingerprint: str, campaign: str, model: AddMapToCmpModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage campaigns.'}
+    if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
+        if len(server.campaigns[campaign].maps.keys()) >= int(CONFIG['CAMPAIGNS']['maps_per_campaign']):
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':f"You have reached the maximum number of maps: {CONFIG['CAMPAIGNS']['maps_per_campaign']}"}
+        try:
+            iid = add_image(model.data)
+        except ValueError:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {'result':'You must use a .png or .jpeg image.'}
+        except Exception as e:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {'result':'Malformed data URI, please check image. Error: '+str(e)}
+        server.campaigns[campaign].maps[iid] = {
+            'image_id':iid,
+            'obscuration':{},
+            'entities':{},
+            'grid':{
+                'columns':model.columns,
+                'rows':model.rows
+            }
+        }
+        server.campaigns[campaign].update()
+        return {'result':'Success.'}
+    else:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this campaign.'}

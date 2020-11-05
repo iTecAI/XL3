@@ -1,3 +1,4 @@
+from classes import BaseItem
 from pydantic import BaseModel, create_model, validator
 from typing import Any
 
@@ -144,3 +145,8 @@ class BatchConfigModel(BaseModel):
 class CampaignSettingChangeModel(BaseModel):
     name: str
     value: Any
+
+class AddMapToCmpModel(BaseModel):
+    data: str
+    rows: int
+    columns: int

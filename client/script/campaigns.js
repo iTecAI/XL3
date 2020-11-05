@@ -31,74 +31,74 @@ function loadCampaign(cmp, editing) {
         if (setting.type == 'bool') {
             row.append(
                 $('<td></td>')
-                .append(
-                    $('<label class="switch small"></label>')
                     .append(
-                        $('<input type="checkbox">').prop('checked',setting.value)
-                        .on('change',function(event){
-                            var set = $($(this).parents('tr')[0]).attr('data-setting');
-                            var value = $(this).prop('checked');
-                            cpost(
-                                '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/setting/',
-                                {
-                                    name:set,
-                                    value:value
-                                },
-                                function(data){
-                                    console.log(data);
-                                },
-                                {
-                                    alert: true
-                                }
-                            );
-                            return;
-                        })
+                        $('<label class="switch small"></label>')
+                            .append(
+                                $('<input type="checkbox">').prop('checked', setting.value)
+                                    .on('change', function (event) {
+                                        var set = $($(this).parents('tr')[0]).attr('data-setting');
+                                        var value = $(this).prop('checked');
+                                        cpost(
+                                            '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/setting/',
+                                            {
+                                                name: set,
+                                                value: value
+                                            },
+                                            function (data) {
+                                                console.log(data);
+                                            },
+                                            {
+                                                alert: true
+                                            }
+                                        );
+                                        return;
+                                    })
+                            )
+                            .append(
+                                $('<span class="slider round"></span>')
+                            )
                     )
-                    .append(
-                        $('<span class="slider round"></span>')
-                    )
-                )
             );
         } else if (setting.type == 'int') {
             row.append(
                 $('<td></td>')
-                .append(
-                    $('<input class="cmp-settings-input">')
-                    .attr({
-                        min:setting.min,
-                        max:setting.max
-                    })
-                    .val(setting.value)
-                    .on('change',function(event){
-                        var set = $($(this).parents('tr')[0]).attr('data-setting');
-                        var value = Number($(this).val());
-                        if (isNaN(value)) {
-                            bootbox.alert('Value must be a number.');
-                            $(this).val($(this).attr('min'));
-                            return;
-                        }
-                        if (value <= Number($(this).attr('max')) && value >= Number($(this).attr('min'))) {
-                            cpost(
-                                '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/setting/',
-                                {
-                                    name:set,
-                                    value:value
-                                },
-                                function(data){
-                                    console.log(data);
-                                },
-                                {
-                                    alert: true
+                    .append(
+                        $('<input class="cmp-settings-input">')
+                            .attr({
+                                min: setting.min,
+                                max: setting.max
+                            })
+                            .val(setting.value)
+                            .on('change', function (event) {
+                                var set = $($(this).parents('tr')[0]).attr('data-setting');
+                                var value = Number($(this).val());
+                                if (isNaN(value)) {
+                                    bootbox.alert('Value must be a number.');
+                                    $(this).val($(this).attr('min'));
+                                    return;
                                 }
-                            );
-                            return;
-                        } else {
-                            bootbox.alert('Value must be a number from '+$(this).attr('min')+' through '+$(this).attr('max')+'.');
-                            $(this).val($(this).attr('min'));
-                            return;
-                        }
-                    })
-                )
+                                if (value <= Number($(this).attr('max')) && value >= Number($(this).attr('min'))) {
+                                    cpost(
+                                        '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/setting/',
+                                        {
+                                            name: set,
+                                            value: value
+                                        },
+                                        function (data) {
+                                            console.log(data);
+                                        },
+                                        {
+                                            alert: true
+                                        }
+                                    );
+                                    return;
+                                } else {
+                                    bootbox.alert('Value must be a number from ' + $(this).attr('min') + ' through ' + $(this).attr('max') + '.');
+                                    $(this).val($(this).attr('min'));
+                                    return;
+                                }
+                            })
+                    )
             );
         }
         row.appendTo($('#settings-area tbody'));
@@ -246,5 +246,66 @@ $(document).ready(async function () {
     $('#cmp-modal').on('click', function () {
         $('#cmp-settings').toggleClass('active', false);
         $('#cmp-modal').toggleClass('active', false);
+    });
+    $('#new-map-btn input').on('change', function () {
+        var file = document.querySelector('#new-map-btn input').files[0];
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+            if (reader.result.includes('image/png') || reader.result.includes('image/jpg') || reader.result.includes('image/jpeg')) {
+                console.log(reader.result);
+                var path = $('#new-map-btn input').val().replace(/\\/g, '/').split('fakepath/')[1];
+                $('#map-path').text(path);
+                $('#new-map-dialog input').val('');
+                $('#new-map-dialog').attr('data-uri',reader.result);
+                $('#new-map-dialog').addClass('active');
+                $('#cmp-modal').addClass('active');
+            } else {
+                bootbox.alert('Image must be a .png or .jpeg.');
+                return;
+            }
+
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
+    $('#new-map-submit').on('click',function(){
+        var data = getFormValues('#new-map-submit');
+        var mname = data['map-name'];
+        var rows = data['map-rows'];
+        var cols = data['map-rows'];
+        if (mname.length > 0 && rows.length > 0 && cols.length > 0) {
+            rows = Number(rows);
+            cols = Number(cols);
+            if (isNaN(rows) || isNaN(cols)) {
+                bootbox.alert('Rows and Columns must be whole numbers.');
+                return;
+            }
+            if (rows < 1 || cols < 1) {
+                bootbox.alert('Rows and Columns must be greater than 0.');
+                return;
+            }
+            rows = Math.round(rows);
+            cols = Math.round(cols);
+            var dat = {
+                data:$('#new-map-dialog').attr('data-uri'),
+                rows:rows,
+                columns:cols
+            };
+            console.log(dat);
+            cpost(
+                '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/maps/add/',
+                dat,
+                console.log,
+                {
+                    alert:true
+                }
+            );
+            $('#cmp-modal').trigger('click');
+        } else {
+            bootbox.alert('Please fill in all inputs.');
+            return;
+        }
     });
 });
