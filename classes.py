@@ -62,6 +62,7 @@ class Campaign(BaseItem):
             }
         }
         self.maps = {}
+        self.homebrew = []
 
         self.update()
     def update(self):
@@ -80,7 +81,8 @@ class Campaign(BaseItem):
             'name':self.name,
             'characters':self.characters,
             'settings':self.settings,
-            'maps':self.maps
+            'maps':self.maps,
+            'homebrew':self.homebrew
         }
     
     @classmethod

@@ -98,6 +98,7 @@ def getmod(score):
 
 class Creature:
     def __init__(self,options={},**kwargs):
+        self.src = None
         self.data = self.get_creature_info(kwargs)
         self.options = defaults(options,{
             'rollhp':False
@@ -315,7 +316,8 @@ class Creature:
             'spellcasting':self.spellcasting,
             'meta':{
                 'slug':self.slug,
-                'img':self.img
+                'img':self.img,
+                'src':self.src
             }
         }
     

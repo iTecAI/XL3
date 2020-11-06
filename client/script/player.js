@@ -93,7 +93,7 @@ $(document).ready(function () {
         panning = true;
     });
 
-    $('#map').on('mouseup', function (e) {
+    $(document).on('mouseup', function (e) {
         panning = false;
     });
 

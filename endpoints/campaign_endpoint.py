@@ -40,7 +40,8 @@ def check_access(fp,cid):
                 'name':'name',
                 'characters':'character ids',
                 'settings':'settings dict',
-                'maps':'dict of maps'
+                'maps':'dict of maps',
+                'homebrew':'list of homebrew creatures'
             }
         ],
         'new_campaign':{
@@ -49,7 +50,8 @@ def check_access(fp,cid):
                 'name':'name',
                 'characters':'character ids',
                 'settings':'settings dict',
-                'maps':'dict of maps'
+                'maps':'dict of maps',
+                'homebrew':'list of homebrew creatures'
             }
     }}}}
 })
@@ -176,6 +178,11 @@ async def delete_campaign(fingerprint: str, campaign: str, response: Response):
         return {'result':'You must be logged in to delete campaigns.'}
     if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
         logger.info(f'User {fingerprint} is deleting campaign with ID {campaign}.')
+        for i in server.campaigns[campaign].maps.keys():
+            try:
+                del_image(server.campaigns[campaign].maps[i]['image_id'])
+            except KeyError:
+                pass
         del server.campaigns[campaign]
         for u in list(server.users.keys()):
             if campaign in server.users[u].owned_campaigns:
