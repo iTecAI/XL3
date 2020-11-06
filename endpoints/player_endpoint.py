@@ -44,10 +44,49 @@ async def get_map(fingerprint: str, campaign: str, map: str, response: Response)
         return {'result':'Connection not found for user.'}
     if not server.connections[fingerprint].logged_in:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
-        return {'result':'You must be logged in to create campaigns.'}
+        return {'result':'You must be logged in to view maps.'}
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/modify/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def get_map(fingerprint: str, campaign: str, map: str, model: MapModifyModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    cd = 'server.campaigns[campaign].maps[map]["'+'"]["'.join(model.path.split('.'))+'"]'
+    try:
+        prev = eval(cd,globals(),locals())
+        exec(cd+'=model.value',globals(),locals())
+    except KeyError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':f'Setting not found for "{model.path}".'}
+    server.campaigns[campaign].update()
+    logger.info('User {user} changed setting {path} from "{previous}" to "{current}" on map {map} in campaign {cmp}'.format(
+        user=fingerprint,
+        path=model.path,
+        previous=prev,
+        current=eval(cd,globals(),locals()),
+        map=map,
+        cmp=campaign
+    ))
     return {
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map]

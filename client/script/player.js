@@ -19,6 +19,11 @@ function onPlayerRefresh(map) {
     $('#map-name').text(map.name);
     $('#map-dims').text(map.grid.columns+' x '+map.grid.rows+' ('+(map.grid.columns*map.grid.size)+' ft. x '+(map.grid.rows*map.grid.size)+' ft.)');
     $('#map-scale').text(map.grid.size+' ft.');
+
+    $('#st-name').val(map.name);
+    $('#st-grid-rows').val(map.grid.rows);
+    $('#st-grid-columns').val(map.grid.columns);
+    $('#st-grid-size').val(map.grid.size);
 }
 
 $(document).ready(function(){
@@ -28,4 +33,27 @@ $(document).ready(function(){
     }
     CAMPAIGN = p.cmp;
     MAP = p.map;
+
+    $('#chat-expander').on('click',function(){
+        $('#chat-panel').toggleClass('active');
+    });
+
+    $('#map-settings-btn').on('click',function(){
+        $('#map-settings').toggleClass('active');
+    });
+
+    $('input.modifier').on('change',function(event){
+        var val = $(this).val();
+        if ($(this).attr('type') == 'number') {
+            val = Number(val);
+            if (!isNaN(val) && val > 0) {
+                mPost('/modify/',{path:$(this).attr('data-path'),value:val},function(data){},{alert:true});
+                return;
+            }
+            $(this).val('1');
+        } else {
+            mPost('/modify/',{path:$(this).attr('data-path'),value:val},function(data){},{alert:true});
+            return;
+        }
+    });
 });

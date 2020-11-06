@@ -156,3 +156,7 @@ class AddMapToCmpModel(BaseModel):
 class MapDataResponseModel(BaseModel):
     result: str
     data: dict
+
+class MapModifyModel(BaseModel):
+    path: str
+    value: Any

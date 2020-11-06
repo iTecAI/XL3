@@ -1,4 +1,4 @@
-div#player-panel {
+#player-panel {
     position: absolute;
     top: 5vh;
     left: 0px;
@@ -12,17 +12,105 @@ div#player-panel {
     left: 0px;
     display: inline-block;
     width: 100%;
-    height: fit-content;
-    min-height: 2vh;
+    height: 5%;
     background-color: var(--foreground2-2);
-    padding: 10px;
     color: #ffffff;
     font-family: raleway-heavy;
     font-size: 1.6vh;
-    text-align: center;
+    z-index: 100;
+    -webkit-box-shadow: 0px 0px 9px 0px #000000; 
+    box-shadow: 0px 0px 9px 0px #000000;
 }
-#player-info span {
+#info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#info span {
     display: inline-block;
     position: relative;
     margin-right: 10px;
+}
+#info span img {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+#map-settings-btn {
+    opacity: 1;
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+#map-settings-btn:hover {
+    opacity: 0.8;
+}
+
+#map-settings {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%,0px);
+    display: inline-block;
+    width: fit-content;
+    height: 0px;
+    overflow: hidden;
+    transition: height 0.2s, padding 0.2s;
+    background-color: var(--foreground2-2);
+    padding: 0px;
+    border-radius: 0 0 5px 5px;
+    box-sizing: border-box;
+}
+#map-settings.active {
+    height: 130px;
+    padding: 10px;
+}
+#map-settings input {
+    margin-left: 5px;
+    border-radius: 4px;
+    border: none;
+    padding-left: 5px;
+    font-family: raleway-heavy;
+}
+
+#toolbar {
+    z-index: 90;
+    position: absolute;
+    top: 5%;
+    left: 0px;
+    display: inline-block;
+    height: 95%;
+    width: 3%;
+    background-color: var(--foreground2);
+}
+
+#chat-panel {
+    z-index: 90;
+    position: absolute;
+    top: 5%;
+    right: 0px;
+    display: inline-block;
+    height: 95%;
+    width: 0px;
+    background-color: var(--foreground2);
+    transition: width 0.2s;
+    overflow: visible;
+}
+#chat-panel.active {
+    width: 300px;
+}
+#chat-expander {
+    position: absolute;
+    left: -65px;
+    top: 100px;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    background-color: var(--foreground2-2);
+    border: none;
+    border-radius: 5px 5px 0 0;
+    color: #ffffff;
+    font-family: raleway-heavy;
 }

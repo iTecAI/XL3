@@ -105,12 +105,37 @@
         <!-- Start player HTML -->
         <div id='player-panel'>
             <div id='player-info' class='noselect'>
-                <span id='map-name'></span>
-                <span class='divider'> - </span>
-                <span id='map-dims'></span>
-                <span class='divider'> - </span>
-                <span id='map-scale'></span>
+                <div id='info'>
+                    <span id='map-name'></span>
+                    <span class='divider'> - </span>
+                    <span id='map-dims'></span>
+                    <span class='divider'> - </span>
+                    <span id='map-scale'></span>
+                    <span id='map-settings-btn'>
+                        <img src='assets/icons/settings_white.png'>
+                    </span>
+                </div>
+                <div id='map-settings'>
+                    <table>
+                        <tr>
+                            <td>Name: </td><td><input id='st-name' data-path='name' class='modifier'></td>
+                        </tr>
+                        <tr>
+                            <td>Rows: </td><td><input id='st-grid-rows' data-path='grid.rows' class='modifier' type='number'></td>
+                        </tr>
+                        <tr>
+                            <td>Columns: </td><td><input id='st-grid-columns' data-path='grid.columns' class='modifier' type='number'></td>
+                        </tr>
+                        <tr>
+                            <td>Grid Size (ft.): </td><td><input id='st-grid-size' data-path='grid.size' class='modifier' type='number'></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
+        </div>
+        <div id='toolbar'></div>
+        <div id='chat-panel'>
+            <button id='chat-expander'>Chat</button>
         </div>
     </body>
 </html>
