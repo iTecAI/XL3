@@ -28,8 +28,8 @@ function mGet(endpoint, data, success, alert) {
     );
 }
 
-function onPlayerRefresh(map, owner) {
-    console.log(map, owner);
+function onPlayerRefresh(map, cmp, chars, owner) {
+    // console.log(map, cmp, chars, owner);
     $('#map-name').text(map.name);
     $('#map-dims').text(map.grid.columns + ' x ' + map.grid.rows + ' (' + (map.grid.columns * map.grid.size) + ' ft. x ' + (map.grid.rows * map.grid.size) + ' ft.)');
     $('#map-scale').text(map.grid.size + ' ft.');

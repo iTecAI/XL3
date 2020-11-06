@@ -35,7 +35,10 @@ def check_access(fp,cid,map):
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
         'result':'Success.',
-        'data':{}
+        'data':{},
+        'is_owner':'bool',
+        'cmp':{},
+        'characters':{}
     }}}}
 })
 async def get_map(fingerprint: str, campaign: str, map: str, response: Response):
@@ -48,10 +51,16 @@ async def get_map(fingerprint: str, campaign: str, map: str, response: Response)
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    chars = {}
+    for c in server.campaigns[campaign].characters:
+        decache(c)
+        chars[c] = server.characters[c].to_dict()
     return {
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map],
-        'is_owner':campaign in server.connections[fingerprint].user.owned_campaigns
+        'is_owner':campaign in server.connections[fingerprint].user.owned_campaigns,
+        'cmp':server.campaigns[campaign].to_json(),
+        'characters':chars
     }
 
 @router.post('/modify/', responses={
