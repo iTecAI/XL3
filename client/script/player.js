@@ -127,8 +127,8 @@ $(document).ready(function () {
 
         if ($('#selector').hasClass('selecting')) {
             var o = {
-                x: $('#selector').position().left,
-                y: $('#selector').position().top,
+                x: $('#selector').position().left/scale,
+                y: $('#selector').position().top/scale,
                 w: $('#selector').width(),
                 h: $('#selector').height()
             };
@@ -185,10 +185,11 @@ $(document).ready(function () {
     });
     $('#map').on('mousemove', function (event) {
         if (!$('#selector').hasClass('selecting')) { return; }
-        var x = (event.clientX - $('#map').offset().left);
-        var y = (event.clientY - $('#map').offset().top);
-        var sx = Number($('#selector').attr('data-x'));
-        var sy = Number($('#selector').attr('data-y'));
+        var x = (event.clientX - $('#map').offset().left)/scale;
+        var y = (event.clientY - $('#map').offset().top)/scale;
+        var sx = Number($('#selector').attr('data-x'))/scale;
+        var sy = Number($('#selector').attr('data-y'))/scale;
+        console.log(x,y,sx,sy)
         if (x >= sx && y >= sy) {
             $('#selector').css({
                 top: sy + 'px',
