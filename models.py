@@ -160,3 +160,12 @@ class MapDataResponseModel(BaseModel):
 class MapModifyModel(BaseModel):
     path: str
     value: Any
+
+class ObscureModel(BaseModel):
+    x: int
+    y: int
+    w: int
+    h: int
+
+class EntityReferenceModel(BaseModel):
+    eid: str

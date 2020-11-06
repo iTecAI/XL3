@@ -71,7 +71,7 @@ async def get_map(fingerprint: str, campaign: str, map: str, response: Response)
         'data':{}
     }}}}
 })
-async def get_map(fingerprint: str, campaign: str, map: str, model: MapModifyModel, response: Response):
+async def modify_map(fingerprint: str, campaign: str, map: str, model: MapModifyModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -101,3 +101,67 @@ async def get_map(fingerprint: str, campaign: str, map: str, model: MapModifyMod
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map]
     }
+
+@router.post('/entity/add/obscure/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def add_obscure(fingerprint: str, campaign: str, map: str, model: ObscureModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    server.campaigns[campaign].maps[map]['entities'][secrets.token_urlsafe(32)] = {
+        'type':'obscure',
+        'pos':{
+            'x':model.x,
+            'y':model.y
+        },
+        'dim':{
+            'w':model.w,
+            'h':model.h
+        }
+    }
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/entity/remove/obscure/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def remove_obscure(fingerprint: str, campaign: str, map: str, model: EntityReferenceModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    #if model.eid in server.campaigns[campaign].maps[map]['entities'].keys():
+    del server.campaigns[campaign].maps[map]['entities'][model.eid]
+    
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+
