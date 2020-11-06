@@ -71,7 +71,7 @@ function onPlayerRefresh(map, cmp, chars, owner) {
     $('.obscure').off('click');
     $('.obscure').on('click', function (event) {
         if (!CURSOR == 'alias') { return; }
-        mPost('/entity/remove/obscure/',{eid:$(event.delegateTarget).attr('data-id')},function(data){},{alert:true});
+        mPost('/entity/remove/',{eid:$(event.delegateTarget).attr('data-id')},function(data){},{alert:true});
     });
 }
 

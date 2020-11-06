@@ -137,7 +137,7 @@ async def add_obscure(fingerprint: str, campaign: str, map: str, model: ObscureM
         'data':server.campaigns[campaign].maps[map]
     }
 
-@router.post('/entity/remove/obscure/', responses={
+@router.post('/entity/remove/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
@@ -145,7 +145,7 @@ async def add_obscure(fingerprint: str, campaign: str, map: str, model: ObscureM
         'data':{}
     }}}}
 })
-async def remove_obscure(fingerprint: str, campaign: str, map: str, model: EntityReferenceModel, response: Response):
+async def remove_entity(fingerprint: str, campaign: str, map: str, model: EntityReferenceModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
