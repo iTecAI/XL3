@@ -24,6 +24,8 @@ function onPlayerRefresh(map) {
     $('#st-grid-rows').val(map.grid.rows);
     $('#st-grid-columns').val(map.grid.columns);
     $('#st-grid-size').val(map.grid.size);
+
+    $('#map-img img').attr('src','/images/'+map.image_id);
 }
 
 $(document).ready(function(){
