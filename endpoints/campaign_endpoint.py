@@ -1,3 +1,4 @@
+from pickle import load
 from endpoints.character_endpoint import decache
 from fastapi import APIRouter, status, Request, Response
 from util import *
@@ -75,6 +76,7 @@ async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Resp
             'new_campaign':ncp.to_json()
         }
         server.connections[fingerprint].user.update()
+        server.campaigns[ncp.id].update()
         return rd
     else:
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
@@ -240,6 +242,7 @@ async def delete_campaign(fingerprint: str, campaign: str, response: Response):
                 pass
         del server.campaigns[campaign]
         for u in list(server.users.keys()):
+            load_user(u)
             if campaign in server.users[u].owned_campaigns:
                 server.users[u].owned_campaigns.remove(campaign)
             if campaign in server.users[u].participating_campaigns:

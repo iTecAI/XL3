@@ -6,6 +6,8 @@ function loadCampaign(cmp, editing) {
     if (editing) { editing = true; } else { editing = false; }
     $('#campaign-panel').attr('data-id', cmp.id);
     $('#campaign-panel').prop('data-editing', editing);
+    $('#cmp-settings-toggle').toggle(editing);
+    $('#new-map-btn').toggle(editing);
     cpost(
         '/characters/' + fingerprint + '/batch/', { batch: cmp.characters },
         function(data) {
@@ -18,7 +20,7 @@ function loadCampaign(cmp, editing) {
         }
     );
     var settings = cmp.settings;
-    $('#settings-area tbody').html('');
+    $('#settings-area > table tbody').html('');
     for (var s = 0; s < Object.keys(settings).length; s++) {
         var setting = settings[Object.keys(settings)[s]];
         var row = $('<tr></tr>')
@@ -95,7 +97,7 @@ function loadCampaign(cmp, editing) {
                 )
             );
         }
-        row.appendTo($('#settings-area tbody'));
+        row.appendTo($('#settings-area > table tbody'));
     }
 
     var mkeys = Object.keys(cmp.maps);

@@ -66,7 +66,7 @@ class Campaign(BaseItem):
             }
         }
         self.maps = {}
-        self.homebrew = []
+        self.homebrew = {}
 
         self.update()
     def update(self):
@@ -117,7 +117,10 @@ class User(BaseItem):
         self.owned_campaigns: list = []
         self.participating_campaigns: list = []
     def update(self):
-        server.connections[self.connection].endpoints['client'] = True
+        if self.connection in server.connections.keys():
+            server.connections[self.connection].endpoints['client'] = True
+        else:
+            self.connection = None
         store_user(self.uid)
 
 def update_user_registry(uid):
