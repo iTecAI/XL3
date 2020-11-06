@@ -7,15 +7,13 @@ function loadCampaign(cmp, editing) {
     $('#campaign-panel').attr('data-id', cmp.id);
     $('#campaign-panel').prop('data-editing', editing);
     cpost(
-        '/characters/' + fingerprint + '/batch/',
-        { batch: cmp.characters },
-        function (data) {
+        '/characters/' + fingerprint + '/batch/', { batch: cmp.characters },
+        function(data) {
             $('#cmp-characters-list').html('');
             for (var c = 0; c < data.characters.length; c++) {
                 $('#cmp-characters-list').append(buildCmpCharacter(data.characters[c], editing));
             }
-        },
-        {
+        }, {
             alert: true
         }
     );
@@ -31,74 +29,70 @@ function loadCampaign(cmp, editing) {
         if (setting.type == 'bool') {
             row.append(
                 $('<td></td>')
+                .append(
+                    $('<label class="switch small"></label>')
                     .append(
-                        $('<label class="switch small"></label>')
-                            .append(
-                                $('<input type="checkbox">').prop('checked', setting.value)
-                                    .on('change', function (event) {
-                                        var set = $($(this).parents('tr')[0]).attr('data-setting');
-                                        var value = $(this).prop('checked');
-                                        cpost(
-                                            '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/setting/',
-                                            {
-                                                name: set,
-                                                value: value
-                                            },
-                                            function (data) {
+                        $('<input type="checkbox">').prop('checked', setting.value)
+                        .on('change', function(event) {
+                            var set = $($(this).parents('tr')[0]).attr('data-setting');
+                            var value = $(this).prop('checked');
+                            cpost(
+                                '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/setting/', {
+                                    name: set,
+                                    value: value
+                                },
+                                function(data) {
 
-                                            },
-                                            {
-                                                alert: true
-                                            }
-                                        );
-                                        return;
-                                    })
-                            )
-                            .append(
-                                $('<span class="slider round"></span>')
-                            )
+                                }, {
+                                    alert: true
+                                }
+                            );
+                            return;
+                        })
                     )
+                    .append(
+                        $('<span class="slider round"></span>')
+                    )
+                )
             );
         } else if (setting.type == 'int') {
             row.append(
                 $('<td></td>')
-                    .append(
-                        $('<input class="cmp-settings-input">')
-                            .attr({
-                                min: setting.min,
-                                max: setting.max
-                            })
-                            .val(setting.value)
-                            .on('change', function (event) {
-                                var set = $($(this).parents('tr')[0]).attr('data-setting');
-                                var value = Number($(this).val());
-                                if (isNaN(value)) {
-                                    bootbox.alert('Value must be a number.');
-                                    $(this).val($(this).attr('min'));
-                                    return;
+                .append(
+                    $('<input class="cmp-settings-input">')
+                    .attr({
+                        min: setting.min,
+                        max: setting.max
+                    })
+                    .val(setting.value)
+                    .on('change', function(event) {
+                        var set = $($(this).parents('tr')[0]).attr('data-setting');
+                        var value = Number($(this).val());
+                        if (isNaN(value)) {
+                            bootbox.alert('Value must be a number.');
+                            $(this).val($(this).attr('min'));
+                            return;
+                        }
+                        if (value <= Number($(this).attr('max')) && value >= Number($(this).attr('min'))) {
+                            cpost(
+                                '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/setting/', {
+                                    name: set,
+                                    value: value
+                                },
+                                function(data) {
+                                    console.log(data);
+                                }, {
+                                    alert: true
                                 }
-                                if (value <= Number($(this).attr('max')) && value >= Number($(this).attr('min'))) {
-                                    cpost(
-                                        '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/setting/',
-                                        {
-                                            name: set,
-                                            value: value
-                                        },
-                                        function (data) {
-                                            console.log(data);
-                                        },
-                                        {
-                                            alert: true
-                                        }
-                                    );
-                                    return;
-                                } else {
-                                    bootbox.alert('Value must be a number from ' + $(this).attr('min') + ' through ' + $(this).attr('max') + '.');
-                                    $(this).val($(this).attr('min'));
-                                    return;
-                                }
-                            })
-                    )
+                            );
+                            return;
+                        } else {
+                            bootbox.alert('Value must be a number from ' + $(this).attr('min') + ' through ' + $(this).attr('max') + '.');
+                            $(this).val($(this).attr('min'));
+                            return;
+                        }
+                    })
+                )
             );
         }
         row.appendTo($('#settings-area tbody'));
@@ -115,7 +109,7 @@ function loadCampaign(cmp, editing) {
             .append(
                 $('<div class="map-box noscroll"></div>').append(
                     $('<img>')
-                        .attr('src', '/images/' + cmp.maps[mkeys[m]].image_id)
+                    .attr('src', '/images/' + cmp.maps[mkeys[m]].image_id)
                 )
             )
             .append($('<div class="grad-overlay"></div>'))
@@ -125,26 +119,24 @@ function loadCampaign(cmp, editing) {
                     $('<div></div>')
                     .append($('<span></span>').text(cmp.maps[mkeys[m]].name))
                     .append($('<span></span>').text(cmp.maps[mkeys[m]].grid.columns + ' x ' + cmp.maps[mkeys[m]].grid.rows))
-                    .append($('<span></span>').text(cmp.maps[mkeys[m]].grid.size +'ft. grid'))
+                    .append($('<span></span>').text(cmp.maps[mkeys[m]].grid.size + 'ft. grid'))
                 )
                 .append(
                     $('<button class="delete-map" data-tooltip="Delete" data-tooltip-location="right"></button>')
                     .append($('<img src="assets/icons/delete-black.png">'))
                     .toggle(editing)
-                    .on('click',function(event){
+                    .on('click', function(event) {
                         cpost(
-                            '/campaigns/'+fingerprint+'/'+$('#campaign-panel').attr('data-id')+'/maps/remove/'+$($(event.delegateTarget).parents('.map')[0]).attr('data-id'),
-                            {},
-                            function(){},
-                            {alert:true}
+                            '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/maps/remove/' + $($(event.delegateTarget).parents('.map')[0]).attr('data-id'), {},
+                            function() {}, { alert: true }
                         );
                     })
                 )
                 .append(
                     $('<button class="play-map" data-tooltip="Play" data-tooltip-location="right"></button>')
                     .append($('<img src="assets/icons/play.png">'))
-                    .on('click',function(event){
-                        window.location = window.location.origin + '/player?cmp='+$('#campaign-panel').attr('data-id')+'&map='+$($(event.delegateTarget).parents('.map')[0]).attr('data-id');
+                    .on('click', function(event) {
+                        window.location = window.location.origin + '/player?cmp=' + $('#campaign-panel').attr('data-id') + '&map=' + $($(event.delegateTarget).parents('.map')[0]).attr('data-id');
                     })
                 )
             )
@@ -166,15 +158,15 @@ function buildCmpCharacter(item, editable) {
         .attr('data-id', item.cid)
         .append(
             $('<div class="char-caption"></div>')
-                .append($('<h4></h4>').text(data.name)).css('font-family', 'raleway-heavy')
-                .append(
-                    $('<span class="race-class-line"></span>')
-                        .text(data.race + ' - ' + data.class_display + ' (Level ' + data.level + ')')
-                        .css({
-                            'font-style': 'italic',
-                            'font-family': 'raleway-regular'
-                        })
-                )
+            .append($('<h4></h4>').text(data.name)).css('font-family', 'raleway-heavy')
+            .append(
+                $('<span class="race-class-line"></span>')
+                .text(data.race + ' - ' + data.class_display + ' (Level ' + data.level + ')')
+                .css({
+                    'font-style': 'italic',
+                    'font-family': 'raleway-regular'
+                })
+            )
         );
     element.append(
         $('<div class="char-img"></div>').append($('<img alt="Character Image" src="' + img + '">'))
@@ -182,40 +174,40 @@ function buildCmpCharacter(item, editable) {
     if (editable || item.owner == uid) {
         element.append(
             $('<button class="character-menu-btn"><img src="assets/icons/menu.png"></button>')
-                .on('click', function (event) {
-                    activateitem($(event.target).parent().parent().children('.character-menu'));
-                })
+            .on('click', function(event) {
+                activateitem($(event.target).parent().parent().children('.character-menu'));
+            })
         );
         element.append(
             $('<div class="character-menu transient"></div>')
-                .append(
-                    $('<button></button>')
-                        .addClass('character-menu-edit')
-                        .addClass('character-menu-item')
-                        .attr('data-action', 'edit')
-                        .text('Edit')
-                        .on('click', function (event) {
-                            window.location.href = window.origin + '/characters?char=' + $($(event.delegateTarget).parents('.character-panel')[0]).attr('data-id');
-                        })
-                ).append(
-                    $('<button></button>')
-                        .addClass('character-menu-delete')
-                        .addClass('character-menu-item')
-                        .attr('data-action', 'delete')
-                        .text('Remove from Campaign')
-                        .on('click', function (event) {
-                            cpost(
-                                '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/remove_character/',
-                                {
-                                    charid: $($(event.delegateTarget).parents('.character-panel')[0]).attr('data-id')
-                                }, function (data) {
-                                    console.log(data);
-                                }, { 'alert': true }
-                            );
-                            $(document).trigger('click');
-                            loadCampaign($('#campaign-panel').attr('data-id'), $('#campaign-panel').prop('data-editing'));
-                        })
-                )
+            .append(
+                $('<button></button>')
+                .addClass('character-menu-edit')
+                .addClass('character-menu-item')
+                .attr('data-action', 'edit')
+                .text('Edit')
+                .on('click', function(event) {
+                    window.location.href = window.origin + '/characters?char=' + $($(event.delegateTarget).parents('.character-panel')[0]).attr('data-id');
+                })
+            ).append(
+                $('<button></button>')
+                .addClass('character-menu-delete')
+                .addClass('character-menu-item')
+                .attr('data-action', 'delete')
+                .text('Remove from Campaign')
+                .on('click', function(event) {
+                    cpost(
+                        '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/remove_character/', {
+                            charid: $($(event.delegateTarget).parents('.character-panel')[0]).attr('data-id')
+                        },
+                        function(data) {
+                            console.log(data);
+                        }, { 'alert': true }
+                    );
+                    $(document).trigger('click');
+                    loadCampaign($('#campaign-panel').attr('data-id'), $('#campaign-panel').prop('data-editing'));
+                })
+            )
         );
     }
 
@@ -223,7 +215,7 @@ function buildCmpCharacter(item, editable) {
     return element;
 }
 
-$(document).ready(async function () {
+$(document).ready(async function() {
     var parameters = getParams();
     var cmp_config = (await getBatchConfig({
         CAMPAIGNS: [
@@ -245,28 +237,26 @@ $(document).ready(async function () {
     $('#cur-owned').text(owned_campaigns);
     $('#max-ownable').text(MAX_CAMPAIGNS);
 
-    $('#new-campaign-button').on('click', function () {
+    $('#new-campaign-button').on('click', function() {
         $('#new-campaign-dialog .form input').val('');
         activateDialog('#new-campaign-dialog');
     });
-    $('#new-campaign-submit').on('click', function () {
+    $('#new-campaign-submit').on('click', function() {
         var data = getFormValues('#new-campaign-submit');
         var name = data['campaign-name'];
         var psw = data['campaign-password'];
         var cpsw = data['campaign-password-confirm'];
         if (name.length > 0 && psw == cpsw) {
             cpost(
-                '/campaigns/' + fingerprint + '/new/',
-                {
+                '/campaigns/' + fingerprint + '/new/', {
                     name: name,
                     password: psw
                 },
-                function (data) {
+                function(data) {
                     console.log(data);
                     $('#modal').trigger('click');
                     bootbox.alert('Created new campaign with name ' + data.new_campaign.name + ' and ID ' + data.new_campaign.id + '.');
-                },
-                {
+                }, {
                     alert: true
                 }
             );
@@ -286,18 +276,18 @@ $(document).ready(async function () {
         }
     }
 
-    $('#cmp-settings-toggle').on('click', function () {
+    $('#cmp-settings-toggle').on('click', function() {
         $('#cmp-settings').toggleClass('active');
         $('#cmp-modal').toggleClass('active');
     });
-    $('#cmp-modal').on('click', function () {
+    $('#cmp-modal').on('click', function() {
         $('#cmp-settings').toggleClass('active', false);
         $('#cmp-modal').toggleClass('active', false);
     });
-    $('#new-map-btn input').on('change', function () {
+    $('#new-map-btn input').on('change', function() {
         var file = document.querySelector('#new-map-btn input').files[0];
         var reader = new FileReader();
-        reader.addEventListener("load", function () {
+        reader.addEventListener("load", function() {
             if (reader.result.includes('image/png') || reader.result.includes('image/jpg') || reader.result.includes('image/jpeg')) {
                 console.log(reader.result);
                 var path = $('#new-map-btn input').val().replace(/\\/g, '/').split('fakepath/')[1];
@@ -317,7 +307,7 @@ $(document).ready(async function () {
             reader.readAsDataURL(file);
         }
     });
-    $('#new-map-submit').on('click', function () {
+    $('#new-map-submit').on('click', function() {
         var data = getFormValues('#new-map-submit');
         var mname = data['map-name'];
         var rows = data['map-rows'];
@@ -348,8 +338,7 @@ $(document).ready(async function () {
             cpost(
                 '/campaigns/' + fingerprint + '/' + $('#campaign-panel').attr('data-id') + '/maps/add/',
                 dat,
-                console.log,
-                {
+                console.log, {
                     alert: true
                 }
             );
@@ -358,5 +347,37 @@ $(document).ready(async function () {
             bootbox.alert('Please fill in all inputs.');
             return;
         }
+    });
+
+    $('#join-campaign-button').on('click', function(event) {
+        var cmp = null;
+        bootbox.prompt('Enter campaign ID (Check with your DM)', function(result) {
+            if (!result) { return; }
+            cmp = result;
+            cpost('/campaigns/' + fingerprint + '/check_password_protected/' + result + '/', {}, function(data) {
+                if (data.password_protected) {
+                    bootbox.prompt({
+                        title: 'Campaign is password-protected. Please enter password.',
+                        inputType: 'password',
+                        'callback': function(result) {
+                            cpost(
+                                '/campaigns/' + fingerprint + '/join/', {
+                                    campaign: cmp,
+                                    passhash: sha256(result)
+                                },
+                                function(data) {}, { alert: true }
+                            );
+                        }
+                    })
+                } else {
+                    cpost(
+                        '/campaigns/' + fingerprint + '/join/', {
+                            campaign: cmp
+                        },
+                        function(data) {}, { alert: true }
+                    );
+                }
+            }, { alert: true });
+        });
     });
 });

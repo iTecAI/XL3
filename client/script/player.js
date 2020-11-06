@@ -61,7 +61,7 @@ function onPlayerRefresh(map, cmp, chars, owner) {
                     'id': 'entity-' + eKeys[e],
                     'data-id': eKeys[e]
                 })
-                .toggleClass('owned',owner)
+                .toggleClass('owned', owner)
                 .appendTo(dummy_entities);
         }
     }
@@ -70,8 +70,8 @@ function onPlayerRefresh(map, cmp, chars, owner) {
     // Add event listeners
     $('.obscure').off('click');
     $('.obscure').on('click', function (event) {
-        if (!CURSOR == 'alias') { return; }
-        mPost('/entity/remove/',{eid:$(event.delegateTarget).attr('data-id')},function(data){},{alert:true});
+        if (CURSOR != 'alias') { return; }
+        mPost('/entity/remove/', { eid: $(event.delegateTarget).attr('data-id') }, function (data) { }, { alert: true });
     });
 }
 
@@ -117,6 +117,7 @@ $(document).ready(function () {
 
     // Pan/Zoom functions - https://stackoverflow.com/a/42777567 (with modifications)
     $('#map').on('mousedown', function (e) {
+        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure')) { return; }
         e.preventDefault();
         _start = { x: e.clientX - xoff, y: e.clientY - yoff };
         panning = true;
@@ -127,8 +128,8 @@ $(document).ready(function () {
 
         if ($('#selector').hasClass('selecting')) {
             var o = {
-                x: $('#selector').position().left/scale,
-                y: $('#selector').position().top/scale,
+                x: $('#selector').position().left / scale,
+                y: $('#selector').position().top / scale,
                 w: $('#selector').width(),
                 h: $('#selector').height()
             };
@@ -170,7 +171,7 @@ $(document).ready(function () {
 
     // Selection box
     $('#map').on('mousedown', function (event) {
-        if (!CURSOR == 'crosshair') { return; }
+        if (CURSOR != 'crosshair') { return; }
         $('#selector').attr({
             'data-x': event.clientX - $('#map').offset().left,
             'data-y': event.clientY - $('#map').offset().top
@@ -185,11 +186,11 @@ $(document).ready(function () {
     });
     $('#map').on('mousemove', function (event) {
         if (!$('#selector').hasClass('selecting')) { return; }
-        var x = (event.clientX - $('#map').offset().left)/scale;
-        var y = (event.clientY - $('#map').offset().top)/scale;
-        var sx = Number($('#selector').attr('data-x'))/scale;
-        var sy = Number($('#selector').attr('data-y'))/scale;
-        console.log(x,y,sx,sy)
+        var x = (event.clientX - $('#map').offset().left) / scale;
+        var y = (event.clientY - $('#map').offset().top) / scale;
+        var sx = Number($('#selector').attr('data-x')) / scale;
+        var sy = Number($('#selector').attr('data-y')) / scale;
+        console.log(x, y, sx, sy)
         if (x >= sx && y >= sy) {
             $('#selector').css({
                 top: sy + 'px',

@@ -31,6 +31,8 @@ class Character(BaseItem):
         return {i:getattr(self,i,None) for i in ITEMS}
     def to_json(self,indent=None):
         return json.dumps(self.to_dict(),indent=indent,separators=(',', ':'))
+    def update(self):
+        server.connections[server.users[self.owner].connection].endpoints['characters'] = True
 
     @classmethod
     def from_dict(cls,dct):

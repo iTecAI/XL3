@@ -7,13 +7,7 @@ import hashlib
 
 class BaseItem:
     def __init__(self):
-        self.updated = False
-    def update(self):
-        self.updated = True
-    def check(self):
-        temp = self.updated
-        self.updated = False
-        return temp
+        pass
 class Connection(BaseItem):
     def __init__(self):
         super().__init__()
@@ -21,8 +15,18 @@ class Connection(BaseItem):
         self.uid = None
         self.logged_in = False
         self.timeout = time.time()+5
-        self.char_update = BaseItem()
-        self.camp_update = BaseItem()
+        self.endpoints = {
+            'client':False,
+            'connection':False,
+            'characters':False,
+            'campaigns':False
+        }
+    def check(self,endpoint):
+        t = self.endpoints[endpoint] == True
+        self.endpoints[endpoint] = False
+        return t
+    def update(self):
+        self.endpoints['connection'] = True
 
 class Campaign(BaseItem):
     def __init__(self,owner,name,password):
@@ -73,7 +77,9 @@ class Campaign(BaseItem):
             json.dump(registry,f)
         with open(os.path.join('database','campaigns',self.id+'.pkl'),'wb') as f:
             pickle.dump(self,f)
-        self.updated = True
+        for c in server.connections.keys():
+            if self.id in server.connections[c].user.owned_campaigns or self.id in server.connections[c].user.participating_campaigns:
+                server.connections[c].endpoints['campaigns'] = True
     def to_json(self):
         return {
             'id':self.id,
@@ -111,7 +117,7 @@ class User(BaseItem):
         self.owned_campaigns: list = []
         self.participating_campaigns: list = []
     def update(self):
-        super().update()
+        server.connections[self.connection].endpoints['client'] = True
         store_user(self.uid)
 
 def update_user_registry(uid):

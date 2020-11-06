@@ -80,6 +80,61 @@ async def new_campaign(fingerprint: str, model: NewCampaignModel, response: Resp
         response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
         return {'result':'You have reached the maximum amount of campaigns.'}
 
+@router.post('/join/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def join_campaign(fingerprint: str, model: JoinCampaignModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to create campaigns.'}
+    
+    if model.campaign in server.campaigns.keys():
+        if server.campaigns[model.campaign].password_protected:
+            if server.campaigns[model.campaign].passhash == model.passhash:
+                pass
+            else:
+                response.status_code = status.HTTP_403_FORBIDDEN
+                return {'result':'Incorrect password.'}
+        else:
+            pass
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Campaign not found.'}
+    if not model.campaign in server.connections[fingerprint].user.participating_campaigns:
+        server.connections[fingerprint].user.participating_campaigns.append(model.campaign)
+    server.connections[fingerprint].user.update()
+    server.campaigns[model.campaign].update()
+    return {'result':'Success.'}
+
+@router.post('/check_password_protected/{campaign}/',responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':SimpleResult,'description':'Returns campaign data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'password_protected':'bool'
+    }}}}
+})
+async def passcheck_campaign(fingerprint: str, campaign: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to create campaigns.'}
+    
+    if campaign in server.campaigns.keys():
+        return {'result':'Success.','password_protected':server.campaigns[campaign].password_protected}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Campaign not found.'}
+
 @router.get('/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view characters.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},

@@ -21,7 +21,7 @@
     right: 0px;
     top: 0px;
     display: inline-block;
-    width: fit-content;
+    width: 15%;
     padding-left: 15px;
     padding-right: 15px;
     height: 100%;
@@ -32,7 +32,23 @@
     color: var(--fg-font-color);
     transition: color 0.2s, background-color 0.2s;
 }
-#new-campaign-button:hover {
+#join-campaign-button {
+    position: absolute;
+    right: 15%;
+    top: 0px;
+    display: inline-block;
+    width: 15%;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 100%;
+    text-align: center;
+    background-color: var(--foreground2);
+    font-family: raleway-heavy;
+    border: none;
+    color: var(--fg-font-color);
+    transition: color 0.2s, background-color 0.2s;
+}
+#new-campaign-button:hover, #join-campaign-button:hover {
     color: var(--em-font-color2);
     background-color: var(--foreground3);
 }

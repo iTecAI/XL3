@@ -1,6 +1,6 @@
 from classes import BaseItem
 from pydantic import BaseModel, create_model, validator
-from typing import Any
+from typing import Any, Optional
 
 class ConnectionModel(BaseModel): # Connection model
     fingerprint: str
@@ -169,3 +169,11 @@ class ObscureModel(BaseModel):
 
 class EntityReferenceModel(BaseModel):
     eid: str
+
+class JoinCampaignModel(BaseModel):
+    campaign: str
+    passhash: Optional[str] = None
+
+class PassCheckResponseModel(BaseItem):
+    result: str
+    password_protected: bool

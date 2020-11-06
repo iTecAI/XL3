@@ -37,10 +37,10 @@ async def connection_status(fingerprint: str, response: Response):
         return {
             'result':'Fetched data.',
             'endpoints':{
-                'client':server.connections[fingerprint].user.check() or server.check('client'),
-                'connection':server.connections[fingerprint].check(),
-                'characters':any([i.check() for i in server.characters.values()]) or server.connections[fingerprint].char_update.check() or server.check('characters'),
-                'campaigns':any([i.check() for i in server.campaigns.values()]) or server.connections[fingerprint].camp_update.check() or server.check('campaigns')
+                'client':server.connections[fingerprint].check('client') or server.check('client'),
+                'connection':server.connections[fingerprint].check('connection'),
+                'characters':server.connections[fingerprint].check('characters') or server.check('characters'),
+                'campaigns':server.connections[fingerprint].check('campaigns') or server.check('campaigns')
             },
             'loggedIn':server.connections[fingerprint].logged_in,
             'userId':server.connections[fingerprint].uid
