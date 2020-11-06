@@ -200,7 +200,7 @@ async function refresh(data) {
         var current_map = await $.get({
             url: 'http://' + window.location.host + '/campaigns/'+fingerprint+'/player/'+CAMPAIGN+'/'+MAP+'/'
         });
-        onPlayerRefresh(current_map.data);
+        onPlayerRefresh(current_map.data,current_map.is_owner);
     }
 
     start = false;

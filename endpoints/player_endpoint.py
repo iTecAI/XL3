@@ -50,7 +50,8 @@ async def get_map(fingerprint: str, campaign: str, map: str, response: Response)
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
     return {
         'result':'Success.',
-        'data':server.campaigns[campaign].maps[map]
+        'data':server.campaigns[campaign].maps[map],
+        'is_owner':campaign in server.connections[fingerprint].user.owned_campaigns
     }
 
 @router.post('/modify/', responses={
