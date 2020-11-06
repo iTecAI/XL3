@@ -41,6 +41,7 @@ function onPlayerRefresh(map, cmp, chars, owner) {
 
     $('#map-img img').attr('src', '/images/' + map.image_id);
     $('#dm-tools').toggleClass('active', owner);
+    $('#map-settings-btn').toggle(owner);
     $('#user-tools').toggleClass('active', !owner);
 
     $('#map').css('cursor', CURSOR);
