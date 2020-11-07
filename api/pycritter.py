@@ -311,13 +311,31 @@ class CreatureCritter(Creature):
         self.size = stats['size'].lower()
         self.img = self.data['flavor']['imageUrl']
 
+def get_published_bestiary_creatures(id):
+    lst = []
+    c=1
+    while True:
+        tmp = error(requests.get(
+            url=_url('/publishedbestiaries/' + id + '/creatures/'+str(c))
+        ))
+        if len(tmp) == 0:
+            break
+        lst.extend(tmp)
+        c+=1
+    return lst
+
+
 def get_critterdb(url):
     try:
         path = urllib.parse.urlparse(url.replace('/#','')).path.split('/')[1:]
+        print(path)
         if path[0] == 'creature':
             return CreatureCritter(cid=path[2])
         else:
-            return [CreatureCritter(data=i) for i in get_bestiary_creatures(path[2])]
+            b_meta = error(requests.get(
+                url=_url('/bestiaries/' + path[2])
+            ))
+            return b_meta, [CreatureCritter(data=i) for i in get_bestiary_creatures(path[2])]
     except IndexError:
         raise ValueError('URL is invalid.')
     except:

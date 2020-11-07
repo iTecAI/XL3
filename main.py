@@ -197,7 +197,7 @@ async def check_connections_task():
     oldconn = server.connections.copy()
     for conn in oldconn.keys():
         if oldconn[conn].timeout >= time.time():
-            newconn = oldconn[conn]
+            newconn[conn] = oldconn[conn]
         else:
             logger.info('Timed out connection '+conn)
             cache_user(server.connections[conn].uid)

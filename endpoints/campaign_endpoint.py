@@ -468,3 +468,66 @@ async def remove_map_from_campaign(fingerprint: str, campaign: str, map: str, re
     else:
         response.status_code = status.HTTP_403_FORBIDDEN
         return {'result':'You do not own this campaign.'}
+
+@router.post('/{campaign}/homebrew/add/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to create campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, Campaign, or Setting not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'Not allowed to modify campaign.','content':{'application/json':{'example':{'result':'You do not own this campaign.'}}}},
+    200: {'model':SimpleResult,'description':'Adds HB, returns success.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def add_homebrew_to_campaign(fingerprint: str, campaign: str, model: NewHomebrewModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage campaigns.'}
+    if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
+        try:
+            meta, dat = get_critterdb(model.url)
+            server.campaigns[campaign].homebrew[secrets.token_urlsafe(32)] = {
+                'name':meta['name'],
+                'db_id':meta['_id'],
+                'creatures':dat
+            }
+        except ValueError:
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {'result':'Malformed URL. URLs should look like: https://critterdb.com:443/#/bestiary/view/5f2f1e0e8b3e3b3d0d48a050'}
+        except PermissionError:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {'result':'Creature or Bestiary cannot be accessed, it may not be shared or may not exist.'}
+        server.campaigns[campaign].update()
+        return {'result':'Success.'}
+    else:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this campaign.'}
+
+@router.post('/{campaign}/homebrew/remove/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify campaigns.','content':{'application/json':{'example':{'result':'You must be logged in to view campaigns.'}}}},
+    404: {'model':SimpleResult,'description':'Connection, Campaign not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    403: {'model':SimpleResult,'description':'Not allowed to modify campaign.','content':{'application/json':{'example':{'result':'You do not own this campaign.'}}}},
+    200: {'model':SimpleResult,'description':'Removes HB, returns success.','content':{'application/json':{'example':{
+        'result':'Success.'
+    }}}}
+})
+async def remove_homebrew_from_campaign(fingerprint: str, campaign: str, model: DelHomebrewModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to manage campaigns.'}
+    if check_access(fingerprint,campaign) and campaign in server.connections[fingerprint].user.owned_campaigns:
+        if model.hid in server.campaigns[campaign].homebrew.keys():
+            del server.campaigns[campaign].homebrew[model.hid]
+            server.campaigns[campaign].update()
+            return {'result':'Success.'}
+        else:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {'result':'Bestiary not found.'}
+    else:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You do not own this campaign.'}
+        

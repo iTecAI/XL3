@@ -174,6 +174,12 @@ class JoinCampaignModel(BaseModel):
     campaign: str
     passhash: Optional[str] = None
 
-class PassCheckResponseModel(BaseItem):
+class PassCheckResponseModel(BaseModel):
     result: str
     password_protected: bool
+
+class NewHomebrewModel(BaseModel):
+    url: str
+
+class DelHomebrewModel(BaseModel):
+    hid: str
