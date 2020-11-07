@@ -9,52 +9,52 @@ var CTX_TARGET = null;
 
 // Context menu definitions
 var CONTEXT = {
-    '#entities':{
-        dm:[
+    '#entities': {
+        dm: [
             {
-                conditions:{},
-                items:['add-npc']
+                conditions: {},
+                items: ['add-npc']
             },
             {
-                conditions:{
-                    system:{
-                        has_character:true,
-                        placed_character:false
+                conditions: {
+                    system: {
+                        has_character: true,
+                        placed_character: false
                     }
                 },
-                items:['add-player']
+                items: ['add-player']
             }
         ],
-        pc:[
+        pc: [
             {
-                conditions:{
-                    system:{
-                        has_character:true,
-                        placed_character:false
+                conditions: {
+                    system: {
+                        has_character: true,
+                        placed_character: false
                     }
                 },
-                items:['add-player']
+                items: ['add-player']
             }
         ]
     },
-    '.obscure':{
-        dm:[
+    '.obscure': {
+        dm: [
             {
-                conditions:{},
-                items:['remove-obscure']
+                conditions: {},
+                items: ['remove-obscure']
             }
         ],
-        pc:[]
+        pc: []
     }
 }
 
 var SIZES = {
-    tiny:2,
-    small:5,
-    medium:5,
-    large:10,
-    huge:15,
-    gargantuan:20
+    tiny: 2,
+    small: 5,
+    medium: 5,
+    large: 10,
+    huge: 15,
+    gargantuan: 20
 };
 
 // Setup pan/zoom - https://stackoverflow.com/a/42777567 (with modifications)
@@ -85,7 +85,7 @@ function mGet(endpoint, data, success, alert) {
 
 function getCID() {
     var id = null;
-    for (var ch=0;ch<CMP_DATA.characters.length;ch++) {
+    for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
         if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
             id = CMP_DATA.characters[ch];
             break;
@@ -141,17 +141,22 @@ function onPlayerRefresh(data) {
             var char = chars[ent.id];
             if (char.physical.size.length > 0) {
                 if (Object.keys(SIZES).includes(char.physical.size.toLowerCase())) {
-                    var size = SIZES[char.physical.size.toLowerCase()]*($('#map').width()/(map.grid.size*map.grid.columns));
+                    var size = SIZES[char.physical.size.toLowerCase()] * ($('#map').width() / (map.grid.size * map.grid.columns));
                 } else {
-                    var size = SIZES.medium*($('#map').width()/(map.grid.size*map.grid.columns));
+                    var size = SIZES.medium * ($('#map').width() / (map.grid.size * map.grid.columns));
                 }
             } else {
-                var size = SIZES.medium*($('#map').width()/(map.grid.size*map.grid.columns));
+                var size = SIZES.medium * ($('#map').width() / (map.grid.size * map.grid.columns));
             }
             if (char.image.length > 0) {
                 var img = char.image;
             } else {
                 var img = 'assets/logo.png';
+            }
+            if (CMP_CHARS[ent.id].owner == uid) {
+                var css = {border: '2px solid var(--em-font-color2)'};
+            } else {
+                var css = {};
             }
             $('<div class="entity character"></div>')
                 .css({
@@ -159,7 +164,7 @@ function onPlayerRefresh(data) {
                     left: ent.pos.x + 'px',
                     width: size + 'px',
                     height: size + 'px',
-                    'border-radius': size/2+'px'
+                    'border-radius': size / 2 + 'px'
                 })
                 .attr({
                     'id': 'entity-' + eKeys[e],
@@ -167,7 +172,9 @@ function onPlayerRefresh(data) {
                     'data-char': ent.id
                 })
                 .toggleClass('owned', owner)
-                .append($('<img>').attr('src',img))
+                .append($('<img>').attr('src', img))
+                .append($('<div class="character-stats"></div>').text(CMP_CHARS[ent.id].name + ' - ' + CMP_CHARS[ent.id].hp + '/' + CMP_CHARS[ent.id].max_hp + ' hp'))
+                .css(css)
                 .appendTo(dummy_entities);
         }
     }
@@ -233,8 +240,29 @@ $(document).ready(function () {
 
     // Pan/Zoom functions - https://stackoverflow.com/a/42777567 (with modifications)
     $('#map').on('mousedown', function (e) {
-        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure')) { return; }
+        if (CURSOR != 'move') {return;}
         e.preventDefault();
+        var ret = false;
+        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure')) {
+            $(e.target).toggleClass('moving', true);
+            ret = true;
+        }
+        if ($(e.target).parents('.entity').length > 0 && !$(e.target).hasClass('obscure')) {
+            var item = $(e.target).parents('.entity')[0];
+            var proc = false;
+            if (OWNER) {
+                proc = true;
+            } else if ($(item).hasClass('character') && CMP_CHARS[$(item).attr('data-char')].owner == uid) {
+                proc = true;
+            }
+
+            if (proc) {
+                $(item).toggleClass('moving', true);
+                ret = true;
+            }
+        }
+
+        if (ret) { return; }
         _start = { x: e.clientX - xoff, y: e.clientY - yoff };
         panning = true;
     });
@@ -253,10 +281,31 @@ $(document).ready(function () {
             if (o.h < 10 || o.w < 10) { return; }
             mPost('/entity/add/obscure/', o, function (data) { }, { alert: true });
         }
+        if ($('.entity.moving').length > 0) {
+            mPost('/entity/modify/', {
+                entity: $($('.entity.moving')[0]).attr('data-id'),
+                batch: [
+                    { path: 'pos.x', value: $($('.entity.moving')[0]).position().left / scale },
+                    { path: 'pos.y', value: $($('.entity.moving')[0]).position().top / scale }
+                ]
+            }, function () { }, { alert: true });
+            $('.entity.moving').toggleClass('moving', false);
+        }
     });
 
     $('#map').on('mousemove', function (e) {
         if (!panning || CURSOR != 'move') {
+            if ($('.entity.moving').length > 0 && CURSOR == 'move') {
+                var opts = {
+                    top: ((e.pageY - $('#map').offset().top) / scale - $('.entity.moving').height() / 2),
+                    left: ((e.pageX - $('#map').offset().left) / scale - $('.entity.moving').width() / 2)
+                };
+                if (opts.top < 0) { opts.top = 0; }
+                if (opts.left < 0) { opts.left = 0; }
+                if (opts.top - $('.entity.moving').height() > $('#map').height()) { opts.top = $('#map').height() - $('.entity.moving').height(); }
+                if (opts.left - $('.entity.moving').width() > $('#map').width()) { opts.left = $('#map').width() - $('.entity.moving').width(); }
+                $('.entity.moving').css({ top: opts.top + 'px', left: opts.left + 'px' });
+            }
             return;
         }
         e.preventDefault();
@@ -336,32 +385,32 @@ $(document).ready(function () {
             });
         }
     });
-    $(document).on('contextmenu',function(event){
+    $(document).on('contextmenu', function (event) {
         var ctx = null;
-        for (var s=0;s<Object.keys(CONTEXT).length;s++) {
+        for (var s = 0; s < Object.keys(CONTEXT).length; s++) {
             if ($(event.target).is(Object.keys(CONTEXT)[s])) {
                 ctx = Object.keys(CONTEXT)[s];
                 break;
             }
         }
-        if ($(event.target).attr('id')=='context-menu' || $(event.target).parents('#context-menu').length > 0) {
+        if ($(event.target).attr('id') == 'context-menu' || $(event.target).parents('#context-menu').length > 0) {
             event.preventDefault();
             return;
         }
         if (!ctx) { return; }
         event.preventDefault();
-        var potential = CONTEXT[ctx][cond(OWNER,'dm','pc')];
+        var potential = CONTEXT[ctx][cond(OWNER, 'dm', 'pc')];
         $('#context-menu button').hide();
         var ct = 0;
-        for (var p=0;p<potential.length;p++) {
+        for (var p = 0; p < potential.length; p++) {
             var c = potential[p].conditions;
             var proceed = true;
             if (c.system) {
                 var ks = Object.keys(c.system)
-                for (var i=0;i<ks.length;i++) {
+                for (var i = 0; i < ks.length; i++) {
                     if (ks[i] == 'has_character' && proceed) {
                         var found = false;
-                        for (var ch=0;ch<CMP_DATA.characters.length;ch++) {
+                        for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
                             if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
                                 found = true;
                                 break;
@@ -372,7 +421,7 @@ $(document).ready(function () {
                     if (ks[i] == 'placed_character' && proceed) {
                         var found = false;
                         var id = null;
-                        for (var ch=0;ch<CMP_DATA.characters.length;ch++) {
+                        for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
                             if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
                                 found = true;
                                 id = CMP_DATA.characters[ch];
@@ -383,8 +432,8 @@ $(document).ready(function () {
                             proceed = !c.system[ks[i]]
                         } else {
                             var found = false;
-                            for (var e=0;e<Object.keys(MAP_DATA.entities).length;e++) {
-                                if (MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].type == 'character' && MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].id == id) {
+                            for (var e = 0; e < Object.keys(MAP_DATA.entities).length; e++) {
+                                if (MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].character && MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].id == id) {
                                     found = true;
                                     break;
                                 }
@@ -396,30 +445,30 @@ $(document).ready(function () {
             }
             if (c.classes) {
                 var ks = Object.keys(c.classes)
-                for (var i=0;i<ks.length;i++) {
+                for (var i = 0; i < ks.length; i++) {
                     if ($(event.target).hasClass(ks[i]) != c.classes[ks[i]]) {
                         proceed = false;
                     }
                 }
             }
-            
+
             if (proceed) {
-                for (var i=0;i<potential[p].items.length;i++) {
-                    $('#ctx_'+potential[p].items[i]).show();
+                for (var i = 0; i < potential[p].items.length; i++) {
+                    $('#ctx_' + potential[p].items[i]).show();
                     ct++;
                 }
             }
         }
         if (ct > 0) {
-            CTX_TARGET = {el:event.target,x:event.pageX,y:event.pageY};
+            CTX_TARGET = { el: event.target, x: event.pageX, y: event.pageY };
             $('#context-menu').css({
-                top:event.pageY+5+'px',
-                left:event.pageX+5+'px'
+                top: event.pageY + 5 + 'px',
+                left: event.pageX + 5 + 'px'
             }).show();
         }
     });
-    $(document).on('click',function(event){
-        if ($(event.target).attr('id')=='context-menu' || $(event.target).parents('#context-menu').length > 0) {
+    $(document).on('click', function (event) {
+        if ($(event.target).attr('id') == 'context-menu' || $(event.target).parents('#context-menu').length > 0) {
             return;
         }
         CTX_TARGET = null;
@@ -427,12 +476,12 @@ $(document).ready(function () {
     });
 
     // Context Menu Items
-    $('#ctx_remove-obscure').on('click',function(event){
+    $('#ctx_remove-obscure').on('click', function (event) {
         var el = getctx();
         mPost('/entity/remove/', { eid: $(el.el).attr('data-id') }, function (data) { }, { alert: true });
     });
-    $('#ctx_add-player').on('click',function(event){
+    $('#ctx_add-player').on('click', function (event) {
         var el = getctx();
-        mPost('/entity/add/player/', { charid: getCID(), x:(el.x-$('#map').offset().left)/scale, y:(el.y-$('#map').offset().top)/scale }, function (data) { }, { alert: true });
+        mPost('/entity/add/player/', { charid: getCID(), x: (el.x - $('#map').offset().left) / scale, y: (el.y - $('#map').offset().top) / scale }, function (data) { }, { alert: true });
     });
 });

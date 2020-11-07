@@ -106,6 +106,44 @@ async def modify_map(fingerprint: str, campaign: str, map: str, model: MapModify
         'data':server.campaigns[campaign].maps[map]
     }
 
+@router.post('/modify_batch/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def modify_map_batch(fingerprint: str, campaign: str, map: str, model: BatchModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not campaign in server.connections[fingerprint].user.owned_campaigns:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You are not the owner of this campaign.'}
+    
+    for item in model.batch:
+        path = item['path']
+        val = item['value']
+        cd = 'server.campaigns[campaign].maps[map]["'+'"]["'.join(path.split('.'))+'"]'
+        try:
+            prev = eval(cd,globals(),locals())
+            exec(cd+'=val',globals(),locals())
+        except KeyError:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {'result':f'Setting not found for "{path}".'}
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
 @router.post('/entity/add/obscure/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
@@ -238,5 +276,63 @@ async def add_player(fingerprint: str, campaign: str, map: str, model: AddCharac
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map]
     }
+
+@router.post('/entity/modify/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def modify_entity(fingerprint: str, campaign: str, map: str, model: ModifyEntityModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    try:
+        item = eval(f'server.campaigns[campaign].maps[map]["entities"]["{model.entity}"]',globals(),locals())
+    except IndexError:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':f'Map {model.entity} not found.'}
+    
+    if 'character' in item.keys():
+        if item['character']:
+            if item['id'] in server.connections[fingerprint].user.owned_characters or campaign in server.connections[fingerprint].user.owned_campaigns:
+                pass
+            else:
+                response.status_code = status.HTTP_403_FORBIDDEN
+                server.campaigns[campaign].update()
+                return {'result':'You are not the owner of this character.'}
+        else:
+            response.status_code = status.HTTP_403_FORBIDDEN
+            server.campaigns[campaign].update()
+            return {'result':'You are not the owner of this campaign.'}
+    else:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        server.campaigns[campaign].update()
+        return {'result':'You are not the owner of this campaign.'}
+
+    for item in model.batch:
+        path = item['path']
+        val = item['value']
+        cd = f'server.campaigns[campaign].maps[map]["entities"]["{model.entity}"]["'+'"]["'.join(path.split('.'))+'"]'
+        try:
+            prev = eval(cd,globals(),locals())
+            exec(cd+'=val',globals(),locals())
+        except KeyError:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {'result':f'Setting not found for "{path}".'}
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
 
 

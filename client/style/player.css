@@ -219,6 +219,20 @@
     width: 70%;
     height: 70%;
 }
+.character .character-stats {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translate(-50%,0px);
+    display: none;
+    width: fit-content;
+    height: 30px;
+    color: #ffffff;
+    white-space: nowrap;
+}
+.character:hover .character-stats {
+    display: inline-block;
+}
 
 #context-menu {
     z-index: 99;

@@ -196,3 +196,7 @@ class AddCharacterToMapModel(BaseModel):
     charid: str
     x: int
     y: int
+
+class ModifyEntityModel(BaseModel):
+    entity: str
+    batch: list
