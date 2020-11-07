@@ -77,9 +77,9 @@ def get_section(section,to_html=True):
 
 def get_creatures(limit=0,search=''):
     results = get5e('monsters',limit=limit,search=search)
-    creatures = {}
+    creatures = []
     for result in results:
-        creatures[result['name']] = Creature5e(data=result)
+        creatures.append(Creature5e(data=result))
     return creatures
 
 class Creature5e(Creature):

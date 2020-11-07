@@ -1,3 +1,4 @@
+from re import search
 from endpoints.character_endpoint import decache
 from fastapi import APIRouter, status, Request, Response
 from fastapi.responses import FileResponse
@@ -155,13 +156,43 @@ async def remove_entity(fingerprint: str, campaign: str, map: str, model: Entity
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
-    #if model.eid in server.campaigns[campaign].maps[map]['entities'].keys():
-    del server.campaigns[campaign].maps[map]['entities'][model.eid]
+    if model.eid in server.campaigns[campaign].maps[map]['entities'].keys():
+        del server.campaigns[campaign].maps[map]['entities'][model.eid]
     
     server.campaigns[campaign].update()
     return {
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/creatures/search/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def search_creatures(fingerprint: str, campaign: str, map: str, model: SearchCreaturesModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    
+    creatures = get_creatures(limit=model.limit,search=model.search)
+    for k in server.campaigns[campaign].homebrew.keys():
+        for c in server.campaigns[campaign].homebrew[k]['creatures']:
+            if c.name.lower() in model.search.lower() or model.search.lower() in c.name.lower():
+                creatures.append(c)
+
+    return {
+        'result':'Success.',
+        'creatures':creatures
     }
 
 

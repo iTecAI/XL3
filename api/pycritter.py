@@ -328,7 +328,6 @@ def get_published_bestiary_creatures(id):
 def get_critterdb(url):
     try:
         path = urllib.parse.urlparse(url.replace('/#','')).path.split('/')[1:]
-        print(path)
         if path[0] == 'creature':
             return CreatureCritter(cid=path[2])
         else:

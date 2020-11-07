@@ -183,3 +183,11 @@ class NewHomebrewModel(BaseModel):
 
 class DelHomebrewModel(BaseModel):
     hid: str
+
+class SearchCreaturesModel(BaseModel):
+    search: str
+    limit: int
+
+class CreaturesResponseModel(BaseModel):
+    result: str
+    creatures: list

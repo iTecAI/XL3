@@ -1,6 +1,52 @@
 var CAMPAIGN = null;
 var MAP = null;
 var CURSOR = 'default';
+var OWNER = false;
+var CMP_DATA = {};
+var MAP_DATA = {};
+var CMP_CHARS = {};
+var CTX_TARGET = null;
+
+// Context menu definitions
+var CONTEXT = {
+    '#entities':{
+        dm:[
+            {
+                conditions:{},
+                items:['add-npc']
+            },
+            {
+                conditions:{
+                    system:{
+                        has_character:true,
+                        placed_character:false
+                    }
+                },
+                items:['add-player']
+            }
+        ],
+        pc:[
+            {
+                conditions:{
+                    system:{
+                        has_character:true,
+                        placed_character:false
+                    }
+                },
+                items:['add-player']
+            }
+        ]
+    },
+    '.obscure':{
+        dm:[
+            {
+                conditions:{},
+                items:['remove-obscure']
+            }
+        ],
+        pc:[]
+    }
+}
 
 // Setup pan/zoom - https://stackoverflow.com/a/42777567 (with modifications)
 var scale = 1,
@@ -30,6 +76,10 @@ function mGet(endpoint, data, success, alert) {
 
 function onPlayerRefresh(map, cmp, chars, owner) {
     console.log(map, cmp, chars, owner);
+    CMP_DATA = cmp;
+    MAP_DATA = map;
+    CMP_CHARS = chars;
+    OWNER = owner == true;
     $('#map-name').text(map.name);
     $('#map-dims').text(map.grid.columns + ' x ' + map.grid.rows + ' (' + (map.grid.columns * map.grid.size) + ' ft. x ' + (map.grid.rows * map.grid.size) + ' ft.)');
     $('#map-scale').text(map.grid.size + ' ft.');
@@ -76,7 +126,17 @@ function onPlayerRefresh(map, cmp, chars, owner) {
     });
 }
 
+function getctx() {
+    var ctx = CTX_TARGET;
+    CTX_TARGET = null;
+    $('#context-menu').hide();
+    return ctx;
+}
+
+// Document setup & events
+
 $(document).ready(function () {
+    $('#context-menu').hide();
     $('.tool[data-cursor=' + CURSOR + ']').toggleClass('active', true);
     $('#map').css('cursor', CURSOR);
     var p = getParams();
@@ -191,7 +251,6 @@ $(document).ready(function () {
         var y = (event.clientY - $('#map').offset().top) / scale;
         var sx = Number($('#selector').attr('data-x')) / scale;
         var sy = Number($('#selector').attr('data-y')) / scale;
-        console.log(x, y, sx, sy)
         if (x >= sx && y >= sy) {
             $('#selector').css({
                 top: sy + 'px',
@@ -222,4 +281,92 @@ $(document).ready(function () {
             });
         }
     });
+    $(document).on('contextmenu',function(event){
+        var ctx = null;
+        for (var s=0;s<Object.keys(CONTEXT).length;s++) {
+            if ($(event.target).is(Object.keys(CONTEXT)[s])) {
+                ctx = Object.keys(CONTEXT)[s];
+                break;
+            }
+        }
+        if ($(event.target).attr('id')=='context-menu' || $(event.target).parents('#context-menu').length > 0) {
+            event.preventDefault();
+            return;
+        }
+        if (!ctx) { return; }
+        event.preventDefault();
+        var potential = CONTEXT[ctx][cond(OWNER,'dm','pc')];
+        $('#context-menu button').hide();
+        var ct = 0;
+        for (var p=0;p<potential.length;p++) {
+            var c = potential[p].conditions;
+            var proceed = true;
+            if (c.system) {
+                var ks = Object.keys(c.system)
+                for (var i=0;i<ks.length;i++) {
+                    if (ks[i] == 'has_character' && proceed) {
+                        var found = false;
+                        for (var ch=0;ch<CMP_DATA.characters.length;ch++) {
+                            if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        proceed = found == c.system[ks[i]];
+                    }
+                    if (ks[i] == 'placed_character' && proceed) {
+                        var found = false;
+                        var id = null;
+                        for (var ch=0;ch<CMP_DATA.characters.length;ch++) {
+                            if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
+                                found = true;
+                                id = CMP_DATA.characters[ch];
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            proceed = !c.system[ks[i]]
+                        } else {
+                            proceed = ($('.entity.character[data-id='+id+']').length > 0) == c.system[ks[i]];
+                        }
+                    }
+                }
+            }
+            if (c.classes) {
+                var ks = Object.keys(c.classes)
+                for (var i=0;i<ks.length;i++) {
+                    if ($(event.target).hasClass(ks[i]) != c.classes[ks[i]]) {
+                        proceed = false;
+                    }
+                }
+            }
+            
+            if (proceed) {
+                for (var i=0;i<potential[p].items.length;i++) {
+                    $('#ctx_'+potential[p].items[i]).show();
+                    ct++;
+                }
+            }
+        }
+        if (ct > 0) {
+            CTX_TARGET = event.target;
+            $('#context-menu').css({
+                top:event.pageY+5+'px',
+                left:event.pageX+5+'px'
+            }).show();
+        }
+    });
+    $(document).on('click',function(event){
+        if ($(event.target).attr('id')=='context-menu' || $(event.target).parents('#context-menu').length > 0) {
+            return;
+        }
+        CTX_TARGET = null;
+        $('#context-menu').hide();
+    });
+
+    // Context Menu Items
+    $('#ctx_remove-obscure').on('click',function(event){
+        var el = getctx();
+        mPost('/entity/remove/', { eid: $(el).attr('data-id') }, function (data) { }, { alert: true });
+    })
 });
