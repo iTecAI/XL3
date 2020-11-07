@@ -82,6 +82,9 @@ async def modify_map(fingerprint: str, campaign: str, map: str, model: MapModify
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not campaign in server.connections[fingerprint].user.owned_campaigns:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You are not the owner of this campaign.'}
     cd = 'server.campaigns[campaign].maps[map]["'+'"]["'.join(model.path.split('.'))+'"]'
     try:
         prev = eval(cd,globals(),locals())
@@ -121,8 +124,11 @@ async def add_obscure(fingerprint: str, campaign: str, map: str, model: ObscureM
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not campaign in server.connections[fingerprint].user.owned_campaigns:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You are not the owner of this campaign.'}
     server.campaigns[campaign].maps[map]['entities'][secrets.token_urlsafe(32)] = {
-        'type':'obscure',
+        'obscure':True,
         'pos':{
             'x':model.x,
             'y':model.y
@@ -156,6 +162,9 @@ async def remove_entity(fingerprint: str, campaign: str, map: str, model: Entity
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not campaign in server.connections[fingerprint].user.owned_campaigns:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You are not the owner of this campaign.'}
     if model.eid in server.campaigns[campaign].maps[map]['entities'].keys():
         del server.campaigns[campaign].maps[map]['entities'][model.eid]
     
@@ -193,6 +202,41 @@ async def search_creatures(fingerprint: str, campaign: str, map: str, model: Sea
     return {
         'result':'Success.',
         'creatures':creatures
+    }
+
+@router.post('/entity/add/player/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def add_player(fingerprint: str, campaign: str, map: str, model: AddCharacterToMapModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not model.charid in server.campaigns[campaign].characters:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':f'Character {model.charid} not in campaign.'}
+    server.campaigns[campaign].maps[map]['entities'][secrets.token_urlsafe(32)] = {
+        'character':True,
+        'pos':{
+            'x':model.x,
+            'y':model.y
+        },
+        'id':model.charid
+    }
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
     }
 
 

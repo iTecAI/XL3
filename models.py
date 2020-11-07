@@ -191,3 +191,8 @@ class SearchCreaturesModel(BaseModel):
 class CreaturesResponseModel(BaseModel):
     result: str
     creatures: list
+
+class AddCharacterToMapModel(BaseModel):
+    charid: str
+    x: int
+    y: int

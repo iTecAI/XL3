@@ -193,6 +193,7 @@
     position: absolute;
     display: inline-block;
 }
+
 .obscure {
     background-color: #000000;
     z-index: 100;
@@ -204,6 +205,19 @@
 }
 .obscure.owned:hover {
     background-color: #00000033;
+}
+
+.character {
+    background-color: #ffffff;
+}
+.character img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: inline-block;
+    width: 70%;
+    height: 70%;
 }
 
 #context-menu {

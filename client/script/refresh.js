@@ -1,6 +1,6 @@
 // Globals
 var loggedIn = null;
-var start = true;
+var start = 5;
 var uid = null;
 
 async function refresh(data) {
@@ -16,7 +16,7 @@ async function refresh(data) {
         $('#campaigns-nav').hide(250);
     }
 
-    if (endpoints.client || start) {
+    if (endpoints.client || start > 0) {
         cget(
             '/client/' + fingerprint + '/settings/',
             {},
@@ -29,7 +29,7 @@ async function refresh(data) {
             }
         );
     }
-    if ((endpoints.characters || start) && window.location.pathname.includes('characters')) {
+    if ((endpoints.characters || start > 0) && window.location.pathname.includes('characters')) {
         $('#info-max-characters').text(MAX_CHARACTERS);
         cget(
             '/client/' + fingerprint + '/characters/',
@@ -54,7 +54,7 @@ async function refresh(data) {
             }
         );
     }
-    if ((endpoints.campaigns || start) && window.location.pathname.includes('campaigns')) {
+    if ((endpoints.campaigns || start > 0) && window.location.pathname.includes('campaigns')) {
         var current_campaigns = await $.get({
             url: 'http://' + window.location.host + '/campaigns/' + fingerprint + '/'
         });
@@ -206,12 +206,13 @@ async function refresh(data) {
 
         }
     }
-    if ((endpoints.campaigns || start) && window.location.pathname.includes('player')) {
+    if ((endpoints.campaigns || start > 0) && window.location.pathname.includes('player')) {
         var current_map = await $.get({
             url: 'http://' + window.location.host + '/campaigns/' + fingerprint + '/player/' + CAMPAIGN + '/' + MAP + '/'
         });
-        onPlayerRefresh(current_map.data, current_map.cmp, current_map.characters, current_map.is_owner);
+        console.log(current_map);
+        onPlayerRefresh(current_map);
     }
 
-    start = false;
+    start -= 1;
 }

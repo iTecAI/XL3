@@ -48,6 +48,15 @@ var CONTEXT = {
     }
 }
 
+var SIZES = {
+    tiny:2,
+    small:5,
+    medium:5,
+    large:10,
+    huge:15,
+    gargantuan:20
+};
+
 // Setup pan/zoom - https://stackoverflow.com/a/42777567 (with modifications)
 var scale = 1,
     panning = false,
@@ -74,11 +83,25 @@ function mGet(endpoint, data, success, alert) {
     );
 }
 
-function onPlayerRefresh(map, cmp, chars, owner) {
-    console.log(map, cmp, chars, owner);
-    CMP_DATA = cmp;
-    MAP_DATA = map;
-    CMP_CHARS = chars;
+function getCID() {
+    var id = null;
+    for (var ch=0;ch<CMP_DATA.characters.length;ch++) {
+        if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
+            id = CMP_DATA.characters[ch];
+            break;
+        }
+    }
+    return id;
+}
+
+function onPlayerRefresh(data) {
+    var map = data.data;
+    var owner = data.is_owner;
+    var cmp = data.cmp;
+    var chars = data.characters;
+    CMP_DATA = data.cmp;
+    MAP_DATA = data.data;
+    CMP_CHARS = data.characters;
     OWNER = owner == true;
     $('#map-name').text(map.name);
     $('#map-dims').text(map.grid.columns + ' x ' + map.grid.rows + ' (' + (map.grid.columns * map.grid.size) + ' ft. x ' + (map.grid.rows * map.grid.size) + ' ft.)');
@@ -100,7 +123,7 @@ function onPlayerRefresh(map, cmp, chars, owner) {
     var dummy_entities = $('<div></div>');
     for (var e = 0; e < eKeys.length; e++) {
         var ent = map.entities[eKeys[e]];
-        if (ent.type = 'obscure') {
+        if (ent.obscure) {
             $('<div class="entity obscure"></div>')
                 .css({
                     top: ent.pos.y + 'px',
@@ -113,6 +136,38 @@ function onPlayerRefresh(map, cmp, chars, owner) {
                     'data-id': eKeys[e]
                 })
                 .toggleClass('owned', owner)
+                .appendTo(dummy_entities);
+        } else if (ent.character) {
+            var char = chars[ent.id];
+            if (char.physical.size.length > 0) {
+                if (Object.keys(SIZES).includes(char.physical.size.toLowerCase())) {
+                    var size = SIZES[char.physical.size.toLowerCase()]*($('#map').width()/(map.grid.size*map.grid.columns));
+                } else {
+                    var size = SIZES.medium*($('#map').width()/(map.grid.size*map.grid.columns));
+                }
+            } else {
+                var size = SIZES.medium*($('#map').width()/(map.grid.size*map.grid.columns));
+            }
+            if (char.image.length > 0) {
+                var img = char.image;
+            } else {
+                var img = 'assets/logo.png';
+            }
+            $('<div class="entity character"></div>')
+                .css({
+                    top: ent.pos.y + 'px',
+                    left: ent.pos.x + 'px',
+                    width: size + 'px',
+                    height: size + 'px',
+                    'border-radius': size/2+'px'
+                })
+                .attr({
+                    'id': 'entity-' + eKeys[e],
+                    'data-id': eKeys[e],
+                    'data-char': ent.id
+                })
+                .toggleClass('owned', owner)
+                .append($('<img>').attr('src',img))
                 .appendTo(dummy_entities);
         }
     }
@@ -327,7 +382,14 @@ $(document).ready(function () {
                         if (!found) {
                             proceed = !c.system[ks[i]]
                         } else {
-                            proceed = ($('.entity.character[data-id='+id+']').length > 0) == c.system[ks[i]];
+                            var found = false;
+                            for (var e=0;e<Object.keys(MAP_DATA.entities).length;e++) {
+                                if (MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].type == 'character' && MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].id == id) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            proceed = found == c.system[ks[i]];
                         }
                     }
                 }
@@ -349,7 +411,7 @@ $(document).ready(function () {
             }
         }
         if (ct > 0) {
-            CTX_TARGET = event.target;
+            CTX_TARGET = {el:event.target,x:event.pageX,y:event.pageY};
             $('#context-menu').css({
                 top:event.pageY+5+'px',
                 left:event.pageX+5+'px'
@@ -367,6 +429,10 @@ $(document).ready(function () {
     // Context Menu Items
     $('#ctx_remove-obscure').on('click',function(event){
         var el = getctx();
-        mPost('/entity/remove/', { eid: $(el).attr('data-id') }, function (data) { }, { alert: true });
-    })
+        mPost('/entity/remove/', { eid: $(el.el).attr('data-id') }, function (data) { }, { alert: true });
+    });
+    $('#ctx_add-player').on('click',function(event){
+        var el = getctx();
+        mPost('/entity/add/player/', { charid: getCID(), x:(el.x-$('#map').offset().left)/scale, y:(el.y-$('#map').offset().top)/scale }, function (data) { }, { alert: true });
+    });
 });
