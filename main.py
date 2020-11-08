@@ -159,7 +159,7 @@ if sys.platform == 'win32':
     slashtype = '\\'
     aux = '\\\\'
 
-logger.info('Loading static files.')
+web_paths = []
 for f in files:
     split_path = f[0].split(slashtype)
     if len(split_path) > 1:
@@ -176,11 +176,19 @@ for f in files:
             'async def web_'+fn.replace('.','_').replace('-','_').replace(' ','_').replace('\'','').replace('"','')+'():',
             '\treturn FileResponse("'+dirpath+aux+fn+'")'
         ])
+        web_paths.append(new_path+fn)
         exec(
             code,
             globals(),
             locals()
         )
+
+logger.info(f'Loaded {len(web_paths)} static files.')
+
+@app.get('/static/')
+async def get_static_file_paths():
+    global web_paths
+    return web_paths
 
 # Start tasks
 @app.on_event('startup')
