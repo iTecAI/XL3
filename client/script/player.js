@@ -37,11 +37,11 @@ var CONTEXT = {
             }
         ]
     },
-    '.obscure': {
+    '.entity, .entity .img-container, .entity img': {
         dm: [
             {
                 conditions: {},
-                items: ['remove-obscure']
+                items: ['remove-entity']
             }
         ],
         pc: []
@@ -236,8 +236,8 @@ function onPlayerRefresh(data) {
     $('#entities').html(dummy_entities.html());
 
     // Add event listeners
-    $('.obscure').off('click');
-    $('.obscure').on('click', function (event) {
+    $('.entity').off('click');
+    $('.entity').on('click', function (event) {
         if (CURSOR != 'alias') { return; }
         mPost('/entity/remove/', { eid: $(event.delegateTarget).attr('data-id') }, function (data) { }, { alert: true });
     });
@@ -445,6 +445,7 @@ $(document).ready(function () {
         for (var s = 0; s < Object.keys(CONTEXT).length; s++) {
             if ($(event.target).is(Object.keys(CONTEXT)[s])) {
                 ctx = Object.keys(CONTEXT)[s];
+                console.log(ctx);
                 break;
             }
         }
@@ -531,8 +532,12 @@ $(document).ready(function () {
     });
 
     // Context Menu Items
-    $('#ctx_remove-obscure').on('click', function (event) {
+    $('#ctx_remove-entity').on('click', function (event) {
         var el = getctx();
+        console.log(el.el);
+        if (!$(el.el).hasClass('entity')) {
+            el.el = $(el.el).parents('.entity')[0];
+        }
         mPost('/entity/remove/', { eid: $(el.el).attr('data-id') }, function (data) { }, { alert: true });
     });
     $('#ctx_add-player').on('click', function (event) {
