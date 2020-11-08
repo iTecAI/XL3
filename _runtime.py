@@ -1,6 +1,6 @@
 import configparser, os
 CONFIG = configparser.ConfigParser()
-CONFIG.read(os.path.join('config','server.config'))
+CONFIG.read(os.path.join('config','server.conf'))
 
 class Server:
     def __init__(self):

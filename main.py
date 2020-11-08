@@ -25,7 +25,6 @@ from threading import Thread
 
 # Configs
 VERSION = 0
-
 logger = logging.getLogger("uvicorn.error")
 
 '''if os.path.exists('prikey.pem') and os.path.exists('pubkey.pem'):
