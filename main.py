@@ -159,6 +159,7 @@ if sys.platform == 'win32':
     slashtype = '\\'
     aux = '\\\\'
 
+logger.info('Loading static files.')
 for f in files:
     split_path = f[0].split(slashtype)
     if len(split_path) > 1:
