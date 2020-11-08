@@ -45,7 +45,26 @@ var CONTEXT = {
             }
         ],
         pc: []
+    },
+    '.character, .character .img-container, .character img': {
+        dm: [
+            {
+                conditions: {},
+                items: ['edit-character']
+            }
+        ],
+        pc: [
+            {
+                conditions: {
+                    system: {
+                        owns_character: true
+                    }
+                },
+                items: ['edit-character']
+            }
+        ]
     }
+
 }
 
 var SIZES = {
@@ -184,7 +203,7 @@ function onPlayerRefresh(data) {
                 .append(
                     $('<div class="img-container"></div>').append(
                         $('<img>').attr('src', img)
-                    ).css({'border-radius': size / 2 + 'px'})
+                    ).css({ 'border-radius': size / 2 + 'px' })
                 )
                 .append($('<div class="character-stats"></div>').text(cstat))
                 .css(css)
@@ -227,7 +246,7 @@ function onPlayerRefresh(data) {
                 .append(
                     $('<div class="img-container"></div>').append(
                         $('<img>').attr('src', img)
-                    ).css({'border-radius': size / 2 + 'px'})
+                    ).css({ 'border-radius': size / 2 + 'px' })
                 )
                 .append($('<div class="npc-stats"></div>').text(npc_stats))
                 .appendTo(dummy_entities);
@@ -441,80 +460,92 @@ $(document).ready(function () {
         }
     });
     $(document).on('contextmenu', function (event) {
-        var ctx = null;
+        var ctxs = [];
         for (var s = 0; s < Object.keys(CONTEXT).length; s++) {
             if ($(event.target).is(Object.keys(CONTEXT)[s])) {
-                ctx = Object.keys(CONTEXT)[s];
-                console.log(ctx);
-                break;
+                ctxs.push(Object.keys(CONTEXT)[s]);
             }
         }
+        console.log(ctxs);
         if ($(event.target).attr('id') == 'context-menu' || $(event.target).parents('#context-menu').length > 0) {
             event.preventDefault();
             return;
         }
-        if (!ctx) { return; }
+        if (ctxs.length == 0) { return; }
         event.preventDefault();
-        var potential = CONTEXT[ctx][cond(OWNER, 'dm', 'pc')];
         $('#context-menu button').hide();
-        var ct = 0;
-        for (var p = 0; p < potential.length; p++) {
-            var c = potential[p].conditions;
-            var proceed = true;
-            if (c.system) {
-                var ks = Object.keys(c.system)
-                for (var i = 0; i < ks.length; i++) {
-                    if (ks[i] == 'has_character' && proceed) {
-                        var found = false;
-                        for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
-                            if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        proceed = found == c.system[ks[i]];
-                    }
-                    if (ks[i] == 'placed_character' && proceed) {
-                        var found = false;
-                        var id = null;
-                        for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
-                            if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
-                                found = true;
-                                id = CMP_DATA.characters[ch];
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            proceed = !c.system[ks[i]]
-                        } else {
+        for (var n = 0; n < ctxs.length; n++) {
+            var ctx = ctxs[n];
+            var potential = CONTEXT[ctx][cond(OWNER, 'dm', 'pc')];
+            var ct = 0;
+            for (var p = 0; p < potential.length; p++) {
+                var c = potential[p].conditions;
+                var proceed = true;
+                if (c.system) {
+                    var ks = Object.keys(c.system)
+                    for (var i = 0; i < ks.length; i++) {
+                        if (ks[i] == 'has_character' && proceed) {
                             var found = false;
-                            for (var e = 0; e < Object.keys(MAP_DATA.entities).length; e++) {
-                                if (MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].character && MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].id == id) {
+                            for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
+                                if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
                                     found = true;
                                     break;
                                 }
                             }
                             proceed = found == c.system[ks[i]];
                         }
+                        if (ks[i] == 'placed_character' && proceed) {
+                            var found = false;
+                            var id = null;
+                            for (var ch = 0; ch < CMP_DATA.characters.length; ch++) {
+                                if (CMP_CHARS[CMP_DATA.characters[ch]].owner == uid) {
+                                    found = true;
+                                    id = CMP_DATA.characters[ch];
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                proceed = !c.system[ks[i]]
+                            } else {
+                                var found = false;
+                                for (var e = 0; e < Object.keys(MAP_DATA.entities).length; e++) {
+                                    if (MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].character && MAP_DATA.entities[Object.keys(MAP_DATA.entities)[e]].id == id) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                proceed = found == c.system[ks[i]];
+                            }
+                        }
+                        if (ks[i] == 'owns_character' && proceed) {
+                            if ($(event.target).is('[data-char]')){
+                                var _el = event.target;
+                            } else {
+                                var _el = $(event.target).parents('[data-char]')[0];
+                            }
+                            var char = CMP_CHARS[$(_el).attr('data-char')];
+                            proceed = (char.owner == uid) == c.system[ks[i]];
+                        }
                     }
                 }
-            }
-            if (c.classes) {
-                var ks = Object.keys(c.classes)
-                for (var i = 0; i < ks.length; i++) {
-                    if ($(event.target).hasClass(ks[i]) != c.classes[ks[i]]) {
-                        proceed = false;
+                if (c.classes) {
+                    var ks = Object.keys(c.classes)
+                    for (var i = 0; i < ks.length; i++) {
+                        if ($(event.target).hasClass(ks[i]) != c.classes[ks[i]]) {
+                            proceed = false;
+                        }
                     }
                 }
-            }
 
-            if (proceed) {
-                for (var i = 0; i < potential[p].items.length; i++) {
-                    $('#ctx_' + potential[p].items[i]).show();
-                    ct++;
+                if (proceed) {
+                    for (var i = 0; i < potential[p].items.length; i++) {
+                        $('#ctx_' + potential[p].items[i]).show();
+                        ct++;
+                    }
                 }
             }
         }
+
         if (ct > 0) {
             CTX_TARGET = { el: event.target, x: (event.pageX - $('#map').offset().left) / scale, y: (event.pageY - $('#map').offset().top) / scale };
             $('#context-menu').css({
@@ -558,7 +589,7 @@ $(document).ready(function () {
         $('#noclosemodal').toggleClass('active', true);
         $('#npc-cancel-btn').off('click');
         $('#npc-submit-btn').off('click');
-        $('#npc-cancel-btn').on('click',function(event){
+        $('#npc-cancel-btn').on('click', function (event) {
             $('#npc-img-con img').attr('src', 'assets/logo_med.png');
             $('#add-npc-dialog input').val('');
             $('#add-npc-dialog select').val('medium');
@@ -566,7 +597,7 @@ $(document).ready(function () {
             $('#add-npc-dialog').toggleClass('active', false);
             $('#noclosemodal').toggleClass('active', false);
         });
-        $('#npc-buttons button:first-child').on('click',function(event){
+        $('#npc-buttons button:first-child').on('click', function (event) {
             console.log('click');
             var data = JSON.parse($('#add-npc-dialog').attr('data-selected'));
             data.hp = Number($('#npc-hp-input').val());
@@ -574,11 +605,11 @@ $(document).ready(function () {
             data.name = $('#npc-name-input').val();
             data.size = $('#npc-size-input').val();
             data.img = $('#npc-img-con img').attr('src');
-            mPost('/entity/add/npc/',{
-                x:Number($('#add-npc-dialog').attr('data-x')),
-                y:Number($('#add-npc-dialog').attr('data-y')),
-                data:data,
-            },function(data){console.log(data);},{alert:true});
+            mPost('/entity/add/npc/', {
+                x: Number($('#add-npc-dialog').attr('data-x')),
+                y: Number($('#add-npc-dialog').attr('data-y')),
+                data: data,
+            }, function (data) { console.log(data); }, { alert: true });
             $('#npc-img-con img').attr('src', 'assets/logo_med.png');
             $('#add-npc-dialog input').val('');
             $('#add-npc-dialog select').val('medium');
@@ -656,7 +687,7 @@ $(document).ready(function () {
                         $('#npc-size-input').val(data.size.toLowerCase());
                         $('#npc-hp-input').val(data.hp);
                         $('#npc-ac-input').val(data.ac);
-                        $('#add-npc-dialog').attr('data-selected',$(this).attr('data-creature'));
+                        $('#add-npc-dialog').attr('data-selected', $(this).attr('data-creature'));
                         if (data.img) {
                             $('#npc-img-con img').attr('src', data.img);
                         } else {
