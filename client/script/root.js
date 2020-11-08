@@ -115,6 +115,7 @@ $(document).ready(function(){
         var data = getFormValues('#login-submit');
         var username = data['login-email'];
         var hashword = sha256(data['login-password']);
+        $('#modal').trigger('click');
         cpost(
             '/server/login/',
             {
@@ -122,7 +123,7 @@ $(document).ready(function(){
                 'username':username,
                 'hashword':hashword
             },
-            true,function(){$(document).on('click',);bootbox.alert('Logged in.')},
+            true,function(){$('#modal').trigger('click');bootbox.alert('Logged in.')},
             {
                 alert: true
             }
@@ -134,6 +135,7 @@ $(document).ready(function(){
         var username = data['sign-up-email'];
         var hashword = sha256(data['sign-up-password']);
         var displayName = data['sign-up-name'];
+        $('#modal').trigger('click');
         cpost(
             '/server/login/new/',
             {
@@ -142,7 +144,7 @@ $(document).ready(function(){
                 'hashword':hashword,
                 'name':displayName
             },
-            function(){$(document).on('click',);bootbox.alert('Logged in.')},
+            function(){$('#modal').trigger('click');bootbox.alert('Logged in.')},
             {
                 alert: true
             }

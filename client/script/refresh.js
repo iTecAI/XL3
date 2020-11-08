@@ -20,7 +20,7 @@ async function refresh(data) {
         cget(
             '/client/' + fingerprint + '/settings/',
             {},
-            true,
+            false,
             function (data) {
                 var settings = Object.keys(data.settings);
                 for (var s = 0; s < settings.length; s++) {
