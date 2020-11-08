@@ -200,3 +200,8 @@ class AddCharacterToMapModel(BaseModel):
 class ModifyEntityModel(BaseModel):
     entity: str
     batch: list
+
+class NPCModel(BaseModel):
+    x: int
+    y: int
+    data: dict

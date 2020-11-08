@@ -165,5 +165,54 @@
             <button id='ctx_add-player'>Place Character</button>
             <button id='ctx_remove-obscure'>Remove Obscure</button>
         </div>
+
+        <!-- Dialogs -->
+        <div id='noclosemodal' class=''></div>
+        <div id='add-npc-dialog' class='noselect' data-x='0' data-y='0' data-selected='{}'>
+            <div class='title'><span>Add NPC</span></div>
+            <div id='npc-menu'>
+                <div id='npc-search'><input placeholder="Search..."></div>
+                <div id='npc-table' class='noscroll noselect'>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class='npc-cell-name'>Name</th><th class='npc-cell-size'>Size</th><th class='npc-cell-type'>Type</th><th class='npc-cell-cr'>CR</th><th class='npc-cell-hp'>HP</th><th class='npc-cell-ac'>AC</th><th class='npc-cell-source'>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody class='noscroll'>
+
+                        </tbody>
+                    </table>
+                    <div id='no-content-icon'><img src='assets/logo_med.png'></div>
+                </div>
+            </div>
+            <div id='npc-edit'>
+                <div id='npc-img'>
+                    <div id='npc-img-con'>
+                        <img src='assets/logo_med.png'>
+                    </div>
+                    <div id='npc-img-upload'><input type='file'><span>Upload</span></div>
+                </div>
+                <div id='npc-edit-form'>
+                    <div id='npc-form-box'>
+                        <div><span>Name: </span><input id='npc-name-input'></div>
+                        <div><span>Size: </span><select id='npc-size-input'>
+                            <option value='tiny'>Tiny</option>
+                            <option value='small'>Small</option>
+                            <option value='medium'>Medium</option>
+                            <option value='large'>Large</option>
+                            <option value='huge'>Huge</option>
+                            <option value='gargantuan'>Gargantuan</option>
+                        </select></div>
+                        <div><span>HP: </span><input id='npc-hp-input' type='number' min='0'></div>
+                        <div><span>AC: </span><input id='npc-ac-input' type='number' min='0'></div>
+                    </div>
+                </div>
+                <div id='npc-buttons'>
+                    <button id='npc-submit-btn'>Create</button>
+                    <button id='npc-cancel-btn'>Cancel</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

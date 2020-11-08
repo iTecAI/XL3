@@ -94,6 +94,10 @@ function getCID() {
     return id;
 }
 
+function CapFirstLetter(str) {
+    return str.slice(0, 1).toUpperCase() + str.slice(1, str.length);
+}
+
 function onPlayerRefresh(data) {
     var map = data.data;
     var owner = data.is_owner;
@@ -154,9 +158,14 @@ function onPlayerRefresh(data) {
                 var img = 'assets/logo.png';
             }
             if (CMP_CHARS[ent.id].owner == uid) {
-                var css = {border: '2px solid var(--em-font-color2)'};
+                var css = { border: '2px solid var(--em-font-color2)' };
+                var cstat = CMP_CHARS[ent.id].name + ' - ' + CMP_CHARS[ent.id].hp + '/' + CMP_CHARS[ent.id].max_hp + ' hp';
             } else {
                 var css = {};
+                var cstat = CMP_CHARS[ent.id].name;
+            }
+            if (OWNER) {
+                var cstat = CMP_CHARS[ent.id].name + ' - ' + CMP_CHARS[ent.id].hp + '/' + CMP_CHARS[ent.id].max_hp + ' hp';
             }
             $('<div class="entity character"></div>')
                 .css({
@@ -172,9 +181,55 @@ function onPlayerRefresh(data) {
                     'data-char': ent.id
                 })
                 .toggleClass('owned', owner)
-                .append($('<img>').attr('src', img))
-                .append($('<div class="character-stats"></div>').text(CMP_CHARS[ent.id].name + ' - ' + CMP_CHARS[ent.id].hp + '/' + CMP_CHARS[ent.id].max_hp + ' hp'))
+                .append(
+                    $('<div class="img-container"></div>').append(
+                        $('<img>').attr('src', img)
+                    ).css({'border-radius': size / 2 + 'px'})
+                )
+                .append($('<div class="character-stats"></div>').text(cstat))
                 .css(css)
+                .appendTo(dummy_entities);
+        } else if (ent.npc) {
+            var data = ent.data;
+            data.max_hp = data.hp + 0;
+            if (data.size.length > 0) {
+                if (Object.keys(SIZES).includes((data.size.toLowerCase()))) {
+                    var size = SIZES[data.size.toLowerCase()] * ($('#map').width() / (map.grid.size * map.grid.columns));
+                } else {
+                    var size = SIZES.medium * ($('#map').width() / (map.grid.size * map.grid.columns));
+                }
+            } else {
+                var size = SIZES.medium * ($('#map').width() / (map.grid.size * map.grid.columns));
+            }
+            if (data.img.length > 0) {
+                var img = data.img;
+            } else {
+                var img = 'assets/logo.png';
+            }
+            if (OWNER) {
+                var npc_stats = data.name + ' - ' + data.hp + '/' + data.max_hp + ' hp'
+            } else {
+                var npc_stats = data.name;
+            }
+            $('<div class="entity npc"></div>')
+                .css({
+                    top: ent.pos.y + 'px',
+                    left: ent.pos.x + 'px',
+                    width: size + 'px',
+                    height: size + 'px',
+                    'border-radius': size / 2 + 'px'
+                })
+                .attr({
+                    'id': 'entity-' + eKeys[e],
+                    'data-id': eKeys[e],
+                    'data-npc': JSON.stringify(data)
+                })
+                .append(
+                    $('<div class="img-container"></div>').append(
+                        $('<img>').attr('src', img)
+                    ).css({'border-radius': size / 2 + 'px'})
+                )
+                .append($('<div class="npc-stats"></div>').text(npc_stats))
                 .appendTo(dummy_entities);
         }
     }
@@ -240,7 +295,7 @@ $(document).ready(function () {
 
     // Pan/Zoom functions - https://stackoverflow.com/a/42777567 (with modifications)
     $('#map').on('mousedown', function (e) {
-        if (CURSOR != 'move') {return;}
+        if (CURSOR != 'move') { return; }
         e.preventDefault();
         var ret = false;
         if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure')) {
@@ -460,7 +515,7 @@ $(document).ready(function () {
             }
         }
         if (ct > 0) {
-            CTX_TARGET = { el: event.target, x: event.pageX, y: event.pageY };
+            CTX_TARGET = { el: event.target, x: (event.pageX - $('#map').offset().left) / scale, y: (event.pageY - $('#map').offset().top) / scale };
             $('#context-menu').css({
                 top: event.pageY + 5 + 'px',
                 left: event.pageX + 5 + 'px'
@@ -482,6 +537,152 @@ $(document).ready(function () {
     });
     $('#ctx_add-player').on('click', function (event) {
         var el = getctx();
-        mPost('/entity/add/player/', { charid: getCID(), x: (el.x - $('#map').offset().left) / scale, y: (el.y - $('#map').offset().top) / scale }, function (data) { }, { alert: true });
+        mPost('/entity/add/player/', { charid: getCID(), x: el.x, y: el.y }, function (data) { }, { alert: true });
+    });
+    $('#ctx_add-npc').on('click', function (event) {
+        var el = getctx();
+        $('#add-npc-dialog').attr({
+            'data-x': el.x,
+            'data-y': el.y
+        });
+        $('#npc-img-con img').attr('src', 'assets/logo_med.png');
+        $('#add-npc-dialog input').val('');
+        $('#add-npc-dialog select').val('medium');
+        $('#add-npc-dialog tbody').html('');
+        $('#add-npc-dialog').toggleClass('active', true);
+        $('#noclosemodal').toggleClass('active', true);
+        $('#npc-cancel-btn').off('click');
+        $('#npc-submit-btn').off('click');
+        $('#npc-cancel-btn').on('click',function(event){
+            $('#npc-img-con img').attr('src', 'assets/logo_med.png');
+            $('#add-npc-dialog input').val('');
+            $('#add-npc-dialog select').val('medium');
+            $('#add-npc-dialog tbody').html('');
+            $('#add-npc-dialog').toggleClass('active', false);
+            $('#noclosemodal').toggleClass('active', false);
+        });
+        $('#npc-buttons button:first-child').on('click',function(event){
+            console.log('click');
+            var data = JSON.parse($('#add-npc-dialog').attr('data-selected'));
+            data.hp = Number($('#npc-hp-input').val());
+            data.ac = Number($('#npc-ac-input').val());
+            data.name = $('#npc-name-input').val();
+            data.size = $('#npc-size-input').val();
+            data.img = $('#npc-img-con img').attr('src');
+            mPost('/entity/add/npc/',{
+                x:Number($('#add-npc-dialog').attr('data-x')),
+                y:Number($('#add-npc-dialog').attr('data-y')),
+                data:data,
+            },function(data){console.log(data);},{alert:true});
+            $('#npc-img-con img').attr('src', 'assets/logo_med.png');
+            $('#add-npc-dialog input').val('');
+            $('#add-npc-dialog select').val('medium');
+            $('#add-npc-dialog tbody').html('');
+            $('#add-npc-dialog').toggleClass('active', false);
+            $('#noclosemodal').toggleClass('active', false);
+        });
+    });
+
+
+    // Add NPC Dialog
+    $('#npc-search input').on('change', function (event) {
+        if ($(this).val().length == 0) {
+            $('#npc-table tbody').html('');
+            $('#no-content-icon').show();
+        } else {
+            mPost(
+                '/creatures/search/',
+                {
+                    search: $(this).val().toLowerCase(),
+                    limit: 100
+                },
+                function (data) {
+                    console.log(data);
+                    var dummy_body = $('<tbody></tbody>');
+                    var creatures = data.creatures;
+                    for (var c = 0; c < creatures.length; c++) {
+                        creatures[c].hit_dice = '' + creatures[c].data.hit_dice;
+                        delete creatures[c].data;
+
+                        if (creatures[c].hit_dice != 'undefined') {
+                            var hd_str = creatures[c].hp + ' - (' + creatures[c].hit_dice + ')';
+                        } else {
+                            var hd_str = creatures[c].hp;
+                        }
+
+                        if (creatures[c].src == 'critterdb') {
+                            var hb_str = '⭐ - ';
+                        } else {
+                            var hb_str = '';
+                        }
+
+                        $('<tr class="npc-item"></tr>')
+                            .attr('data-creature', JSON.stringify(creatures[c]))
+                            .attr('data-slug', creatures[c].slug)
+                            .append(
+                                $('<td class="npc-cell-name"></td>').text(hb_str + CapFirstLetter(creatures[c].name))
+                            )
+                            .append(
+                                $('<td class="npc-cell-size"></td>').text(CapFirstLetter(creatures[c].size))
+                            )
+                            .append(
+                                $('<td class="npc-cell-type"></td>').text(CapFirstLetter(creatures[c].type))
+                            )
+                            .append(
+                                $('<td class="npc-cell-cr"></td>').text(creatures[c].challenge_display)
+                            )
+                            .append(
+                                $('<td class="npc-cell-hp"></td>').text(hd_str)
+                            )
+                            .append(
+                                $('<td class="npc-cell-ac"></td>').text(creatures[c].ac)
+                            )
+                            .append(
+                                $('<td class="npc-cell-source"></td>').text(CapFirstLetter(creatures[c].src))
+                            )
+                            .appendTo(dummy_body);
+                    }
+                    $('#npc-table tbody').html(dummy_body.html());
+                    $('.npc-item').on('click', function (event) {
+                        $('.npc-item.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                        var data = JSON.parse($(this).attr('data-creature'));
+                        $('#npc-name-input').val(data.name);
+                        $('#npc-size-input').val(data.size.toLowerCase());
+                        $('#npc-hp-input').val(data.hp);
+                        $('#npc-ac-input').val(data.ac);
+                        $('#add-npc-dialog').attr('data-selected',$(this).attr('data-creature'));
+                        if (data.img) {
+                            $('#npc-img-con img').attr('src', data.img);
+                        } else {
+                            cget('/static/', {}, false, function (static) {
+                                if (static.includes('assets/tokens/' + data.slug + '.png')) {
+                                    $('#npc-img-con img').attr('src', 'assets/tokens/' + data.slug + '.png');
+                                } else {
+                                    $('#npc-img-con img').attr('src', 'assets/logo_med.png');
+                                }
+                            });
+                        }
+                    });
+                    if ($('#npc-table tbody').children('tr').length > 0) {
+                        $('#no-content-icon').hide();
+                    } else {
+                        $('#no-content-icon').show();
+                    }
+                },
+                { alert: true }
+            );
+        }
+    });
+    $('#npc-img-upload input').on('change', function (event) {
+        var file = document.querySelector('#npc-img-upload input').files[0];
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+            console.log(reader.result);
+            $('#npc-img-con img').attr('src', reader.result);
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     });
 });

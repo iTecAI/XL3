@@ -231,11 +231,12 @@ async def search_creatures(fingerprint: str, campaign: str, map: str, model: Sea
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
     
-    creatures = get_creatures(limit=model.limit,search=model.search)
+    creatures = []
     for k in server.campaigns[campaign].homebrew.keys():
         for c in server.campaigns[campaign].homebrew[k]['creatures']:
             if c.name.lower() in model.search.lower() or model.search.lower() in c.name.lower():
                 creatures.append(c)
+    creatures.extend(get_creatures(limit=model.limit,search=model.search))
 
     return {
         'result':'Success.',
@@ -300,7 +301,6 @@ async def modify_entity(fingerprint: str, campaign: str, map: str, model: Modify
     except IndexError:
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':f'Map {model.entity} not found.'}
-    
     if 'character' in item.keys():
         if item['character']:
             if item['id'] in server.connections[fingerprint].user.owned_characters or campaign in server.connections[fingerprint].user.owned_campaigns:
@@ -314,9 +314,10 @@ async def modify_entity(fingerprint: str, campaign: str, map: str, model: Modify
             server.campaigns[campaign].update()
             return {'result':'You are not the owner of this campaign.'}
     else:
-        response.status_code = status.HTTP_403_FORBIDDEN
-        server.campaigns[campaign].update()
-        return {'result':'You are not the owner of this campaign.'}
+        if not campaign in server.connections[fingerprint].user.owned_campaigns:
+            response.status_code = status.HTTP_403_FORBIDDEN
+            server.campaigns[campaign].update()
+            return {'result':'You are not the owner of this campaign.'}
 
     for item in model.batch:
         path = item['path']
@@ -334,5 +335,38 @@ async def modify_entity(fingerprint: str, campaign: str, map: str, model: Modify
         'data':server.campaigns[campaign].maps[map]
     }
 
-
+@router.post('/entity/add/npc/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def add_npc(fingerprint: str, campaign: str, map: str, model: NPCModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not campaign in server.connections[fingerprint].user.owned_campaigns:
+        response.status_code = status.HTTP_403_FORBIDDEN
+        return {'result':'You are not the owner of this campaign.'}
+    server.campaigns[campaign].maps[map]['entities'][secrets.token_urlsafe(32)] = {
+        'npc':True,
+        'pos':{
+            'x':model.x,
+            'y':model.y
+        },
+        'data':model.data
+    }
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
 

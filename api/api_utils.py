@@ -207,7 +207,7 @@ class Creature:
             ret['type'] = ret['desc'].split(': ')[0]
             ret['bonus'] = int(ret['desc'].split(': ')[1].split(', ')[0].split(' ')[0].strip('+'))
 
-            hitparts = split_on(ret['desc'].lower().split('hit: ')[1],[', ',' and '])
+            hitparts = split_on(ret['desc'].lower().split('hit: ')[1],[', ',' and ',' plus '])
             for hit in hitparts:
                 damage = {}
                 damage['average'] = int(hit.split(' ')[0])
