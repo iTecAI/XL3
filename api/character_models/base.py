@@ -26,6 +26,7 @@ class Character(BaseItem):
         self.owner = ''
         self.campaign = ''
         self.id = hashlib.sha256(str(int(time.time())+random.random()).encode('utf-8')).hexdigest()
+        self.version = 0
 
     def to_dict(self):
         return {i:getattr(self,i,None) for i in ITEMS}

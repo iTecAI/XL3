@@ -41,6 +41,7 @@ class Campaign(BaseItem):
             self.passhash = hashlib.sha256(password.encode('utf-8')).hexdigest()
         self.name = name
         self.characters = []
+        self.version = 0
         self.settings = {
             'variant_encumbrance':{
                 'display_name':'Variant Encumbrance',
@@ -116,6 +117,7 @@ class User(BaseItem):
         self.owned_characters: list = []
         self.owned_campaigns: list = []
         self.participating_campaigns: list = []
+        self.version = 0
     def update(self):
         if self.connection in server.connections.keys():
             server.connections[self.connection].endpoints['client'] = True
