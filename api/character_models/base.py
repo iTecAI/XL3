@@ -2,7 +2,7 @@ import json
 from api.api_utils import defaults
 from api.open5e import get5e
 import random, hashlib, time
-from classes import BaseItem
+from classes import *
 import pickle
 from _runtime import server
 import gc, os
@@ -32,7 +32,16 @@ class Character(BaseItem):
     def to_json(self,indent=None):
         return json.dumps(self.to_dict(),indent=indent,separators=(',', ':'))
     def update(self):
-        server.connections[server.users[self.owner].connection].endpoints['characters'] = True
+        load_user(self.owner)
+        try:
+            server.connections[server.users[self.owner].connection].endpoints['characters'] = True
+        except KeyError:
+            pass
+        if (len(self.campaign) > 0):
+            for c in server.connections.keys():
+                if self.campaign in server.connections[c].user.owned_campaigns or self.campaign in server.connections[c].user.participating_campaigns:
+                    server.connections[c].endpoints['characters'] = True
+                    server.connections[c].endpoints['campaigns'] = True
 
     @classmethod
     def from_dict(cls,dct):
