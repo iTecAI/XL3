@@ -137,3 +137,4 @@ lock/
 out.json
 outc.json
 outpc.json
+update_tokens.py
