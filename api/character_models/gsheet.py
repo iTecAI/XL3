@@ -144,9 +144,9 @@ class GSheet(Character):
     def load_character(self,engine):
         all_ranges = [
             'c6','t7','t5','al6','ae7','h14','z12','aj28','r12','u16','v12','r32:r36','y32:y36','ac32:ac36','c15','c20',
-            'c25','c30','c35','c40','i17:i22','i25:i42','i51','i52','i53','n96:n98','x96:x98','ah96:ah98','ak101','d100:d104',
-            'n100:n104','x100:x104','e107','ak113','e119','ak124','e129','ak134','e138','ak142','n106:n110','x106:x110','ah106:ah110',
-            'd112:d117','n112:n117','x112:x117','n118:n121','x118:x121','ah118:ah121','d123:d126','n123:n126','x123:x126',
+            'c25','c30','c35','c40','i17:i22','i25:i42','i51','i52','i53','n96:n98','x96:x98','ah96:ah98','ak101','e107','ak113','e119','ak124',
+            'e129','ak134','e138','ak142','d100:d104','n100:n104','x100:x104','e107','ak113','e119','ak124','e129','ak134','e138','ak142',
+            'n106:n110','x106:x110','ah106:ah110','d112:d117','n112:n117','x112:x117','n118:n121','x118:x121','ah118:ah121','d123:d126','n123:n126','x123:x126',
             'n128:n131','x128:x131','ah128:ah131','d133:d135','n133:n135','x133:x135','n137:n139','x137:x139','ah137:ah139',
             'd141:d143','n141:n143','x141:x143','c91','u91','ab91','ai91','Additional!t69:t79','Additional!ab69:ab79','Additional!ai69:ai79','c176',
             'aj11','ae12:ae14','ae16:ae18','ae20:ae22','ae24:ae26','h11','r45:r56','ac45:ac56','r25','c148','f148','i148',
@@ -334,8 +334,15 @@ class GSheet(Character):
         sp_types = list(sp_types)
         if len(sp_types) == 1:
             self.spell_slots = [{'total':i,'current':i} for i in sps_data[sp_types[0]][mcs_level-1]['spells']]
-        if len(sp_types) > 1:
+        elif len(sp_types) > 1:
             self.spell_slots = [{'total':i,'current':i} for i in sps_data['multiclass'][mcs_level-1]['spells']]
+        else:
+            self.spell_slots = []
+            for i in ['ak101','e107','ak113','e119','ak124','e129','ak134','e138','ak142']:
+                if len(self.get(i)) == 1:
+                    self.spell_slots.append({'total':self.get(i),'current':self.get(i)})
+                else:
+                    self.spell_slots.append({'total':0,'current':0})
 
         spcls = self.get('c91')
         if spcls != '':

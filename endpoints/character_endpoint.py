@@ -143,6 +143,14 @@ router = APIRouter()
 
 def check_access(fp,char):
     try:
+        new_cmps = []
+        for i in server.connections[fp].user.owned_campaigns:
+            if i in server.campaigns.keys():
+                if char in server.campaigns[i].characters:
+                    decache(char)
+                    return True
+                new_cmps.append(i)
+        server.connections[fp].user.owned_campaigns = new_cmps[:]
         if char in server.connections[fp].user.owned_characters:
             decache(char)
             if server.characters[char].owner == None:
@@ -439,7 +447,7 @@ async def delete_character(fingerprint: str, charid: str, response: Response):
     with open(os.path.join('database','characters','registry.json'),'w') as f:
         json.dump(reg,f)
     server.connections[fingerprint].user.owned_characters.remove(charid)
-    server.connections[fingerprint].char_update.update()
+    server.connections[fingerprint].endpoints['character'] = True
     server.connections[fingerprint].user.update()
     return {'result':'Success.'}
 
@@ -551,8 +559,10 @@ async def reset_character(fingerprint: str, charid: str, response: Response):
     pre_cid = server.characters[charid].id
     pre_opts = server.characters[charid].options
     pre_inv = server.characters[charid].inventory
+    pre_owner = server.characters[charid].owner
     server.characters[charid] =  GSheet(sheet_id=sid)
     server.characters[charid].id = pre_cid
+    server.characters[charid].owner = pre_owner
     server.characters[charid].options = pre_opts
     #server.characters[charid].inventory = pre_inv
     

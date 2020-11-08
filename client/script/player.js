@@ -575,6 +575,14 @@ $(document).ready(function () {
         var el = getctx();
         mPost('/entity/add/player/', { charid: getCID(), x: el.x, y: el.y }, function (data) { }, { alert: true });
     });
+    $('#ctx_edit-character').on('click', function (event) {
+        var el = getctx();
+        if ($(el.el).is('[data-char]')) {
+            window.open(window.location.origin+'/characters?char='+$(el.el).attr('data-char'),'_blank');
+        } else {
+            window.open(window.location.origin+'/characters?char='+$($(el.el).parents('[data-char]')[0]).attr('data-char'),'_blank');
+        }
+    });
     $('#ctx_add-npc').on('click', function (event) {
         var el = getctx();
         $('#add-npc-dialog').attr({

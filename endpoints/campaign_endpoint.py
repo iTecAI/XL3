@@ -283,10 +283,14 @@ async def add_character_to_campaign(fingerprint: str, campaign: str, model: AddC
         if len(server.campaigns[campaign].characters) >= int(server.campaigns[campaign].settings['max_characters']['value']):
             response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
             return {'result':f'Exceeded maximum number of characters for campaign. Max: {server.campaigns[campaign].settings["max_characters"]["value"]}'}
+        nc = []
         for i in server.campaigns[campaign].characters:
-            if server.characters[i].owner == server.connections[fingerprint].user.uid:
-                response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
-                return {'result':'You already own a character in this campaign.'}
+            if i in server.characters.keys():
+                nc.append(i)
+                if server.characters[i].owner == server.connections[fingerprint].user.uid:
+                    response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+                    return {'result':'You already own a character in this campaign.'}
+        server.campaigns[campaign].characters = nc[:]
         if not model.charid in server.campaigns[campaign].characters:
             logger.info(f'User {fingerprint} is adding a character with ID {model.charid} to campaign with ID {campaign}.')
             decache(model.charid)

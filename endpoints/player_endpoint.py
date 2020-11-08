@@ -53,9 +53,15 @@ async def get_map(fingerprint: str, campaign: str, map: str, response: Response)
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
     chars = {}
+    nc = [];
     for c in server.campaigns[campaign].characters:
-        decache(c)
-        chars[c] = server.characters[c].to_dict()
+        try:
+            decache(c)
+            chars[c] = server.characters[c].to_dict()
+            nc.append(c)
+        except ValueError:
+            pass
+    server.campaigns[campaign].characters = nc[:]
     return {
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map],
