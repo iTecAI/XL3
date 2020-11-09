@@ -396,21 +396,33 @@ async def post_chat(fingerprint: str, campaign: str, map: str, model: PostChatMo
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
     if len(model.value) <= int(CONFIG['CAMPAIGNS']['max_chat_length']):
+        val = model.value
         server.campaigns[campaign].maps[map]['chat'].append({
-            'content':model.value,
+            'content':val,
             'author':server.connections[fingerprint].user.settings['display_name'],
             'time':time.strftime('%x %I:%M %p'),
             'uid':server.connections[fingerprint].user.uid,
             'iid':secrets.token_urlsafe(16)
         })
     else:
+        val = model.value[:int(CONFIG['CAMPAIGNS']['max_chat_length'])]
         server.campaigns[campaign].maps[map]['chat'].append({
-            'content':model.value[:1000],
+            'content':val,
             'author':server.connections[fingerprint].user.settings['display_name'],
             'time':time.strftime('%x %I:%M %p'),
             'uid':server.connections[fingerprint].user.uid,
             'iid':secrets.token_urlsafe(16)
         })
+    if val.startswith('!') and len(val) > 1:
+        ret = chatbot_interpret(val[1:],fingerprint,campaign,map)
+        if ret:
+            server.campaigns[campaign].maps[map]['chat'].append({
+                'content':ret,
+                'author':'System',
+                'time':time.strftime('%x %I:%M %p'),
+                'uid':'',
+                'iid':secrets.token_urlsafe(16)
+            })
     
     if len(server.campaigns[campaign].maps[map]['chat']) > int(CONFIG['CAMPAIGNS']['max_chat_items']):
         del server.campaigns[campaign].maps[map]['chat'][0]

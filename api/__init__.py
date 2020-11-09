@@ -3,3 +3,4 @@ from api.api_utils import *
 from api.character_models import *
 from api.pycritter import *
 from api.images import *
+from api.chatbot import chatbot_interpret

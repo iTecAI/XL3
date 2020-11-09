@@ -276,6 +276,12 @@
     left: 50%;
     transform: translate(-50%,-50%);
 }
+.chat code {
+    color: white;
+    background-color: #00000022;
+    border-radius: 2px;
+    padding: 2px;
+}
 
 #map-area {
     z-index: 0;
