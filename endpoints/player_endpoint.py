@@ -341,7 +341,7 @@ async def modify_entity(fingerprint: str, campaign: str, map: str, model: Modify
         'data':server.campaigns[campaign].maps[map]
     }
 
-@router.post('/entity/add/npc/', responses={
+@router.post('/chat/', responses={
     405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
     404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
     200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
@@ -349,7 +349,7 @@ async def modify_entity(fingerprint: str, campaign: str, map: str, model: Modify
         'data':{}
     }}}}
 })
-async def add_npc(fingerprint: str, campaign: str, map: str, model: NPCModel, response: Response):
+async def post_chat(fingerprint: str, campaign: str, map: str, model: PostChatModel, response: Response):
     if not fingerprint in server.connections.keys():
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Connection not found for user.'}
@@ -359,18 +359,69 @@ async def add_npc(fingerprint: str, campaign: str, map: str, model: NPCModel, re
     if not check_access(fingerprint,campaign,map):
         response.status_code = status.HTTP_404_NOT_FOUND
         return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
-    if not campaign in server.connections[fingerprint].user.owned_campaigns:
-        response.status_code = status.HTTP_403_FORBIDDEN
-        return {'result':'You are not the owner of this campaign.'}
-    server.campaigns[campaign].maps[map]['entities'][secrets.token_urlsafe(32)] = {
-        'npc':True,
-        'pos':{
-            'x':model.x,
-            'y':model.y
-        },
-        'data':model.data,
-        'displaying_statblock':False
+    if len(model.value) <= int(CONFIG['CAMPAIGNS']['max_chat_length']):
+        server.campaigns[campaign].maps[map]['chat'].append({
+            'content':model.value,
+            'author':server.connections[fingerprint].user.settings['display_name'],
+            'time':time.strftime('%x %I:%M %p'),
+            'uid':server.connections[fingerprint].user.uid,
+            'iid':secrets.token_urlsafe(16)
+        })
+    else:
+        server.campaigns[campaign].maps[map]['chat'].append({
+            'content':model.value[:1000],
+            'author':server.connections[fingerprint].user.settings['display_name'],
+            'time':time.strftime('%x %I:%M %p'),
+            'uid':server.connections[fingerprint].user.uid,
+            'iid':secrets.token_urlsafe(16)
+        })
+    
+    if len(server.campaigns[campaign].maps[map]['chat']) > int(CONFIG['CAMPAIGNS']['max_chat_items']):
+        del server.campaigns[campaign].maps[map]['chat'][0]
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
     }
+
+@router.post('/chat/delete/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def delete_chat(fingerprint: str, campaign: str, map: str, model: DeleteChatModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    
+    found = -1
+    c = 0
+    for i in server.campaigns[campaign].maps[map]['chat']:
+        if i['iid'] == model.iid:
+            found = c
+            break
+        c += 1
+    if (found >= 0):
+        if campaign in server.connections[fingerprint].user.owned_campaigns or server.campaigns[campaign].maps[map]['chat'][found]['uid'] == server.connections[fingerprint].user.uid:
+            del server.campaigns[campaign].maps[map]['chat'][found]
+        else:
+            response.status_code = status.HTTP_403_FORBIDDEN
+            server.campaigns[campaign].update()
+            return {'result':'You are not the owner of this campaign, and have not authored this chat message.'}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':f'Message {model.iid} not found.'}
+
     server.campaigns[campaign].update()
     return {
         'result':'Success.',

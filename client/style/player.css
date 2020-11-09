@@ -127,7 +127,7 @@
     overflow: visible;
 }
 #chat-panel.active {
-    width: 300px;
+    width: 400px;
 }
 #chat-expander {
     position: absolute;
@@ -143,6 +143,138 @@
     border-radius: 5px 5px 0 0;
     color: #ffffff;
     font-family: raleway-heavy;
+}
+#chat-area {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 85%;
+    overflow-y: scroll;
+}
+#chat-area::-webkit-scrollbar {
+    width: 10px;
+}
+#chat-area::-webkit-scrollbar-track {
+    background: #00000000;
+}
+#chat-area::-webkit-scrollbar-thumb {
+    background: #00000044;
+    border-radius: 5px;
+}
+#chat-area::-webkit-scrollbar-thumb:hover {
+    background: #00000066;
+}
+#chat-input {
+    background-color: #00000055;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    display: inline-block;
+    width: 100%;
+    height: 15%;
+}
+#chat-input textarea {
+    background-color: #00000000;
+    color: #ffffff;
+    border: none;
+    font-family: raleway-heavy;
+    resize: none;
+    display: inline-block;
+    width: 90%;
+    height: 100%;
+    padding: 8px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: auto;
+}
+#chat-input textarea::-webkit-scrollbar {
+    width: 10px;
+}
+#chat-input textarea::-webkit-scrollbar-track {
+    background: #00000000;
+}
+#chat-input textarea::-webkit-scrollbar-thumb {
+    background: #00000044;
+    border-radius: 5px;
+}
+#chat-input textarea::-webkit-scrollbar-thumb:hover {
+    background: #00000066;
+}
+#chat-input textarea:focus {
+    outline: none;
+}
+#chat-input button {
+    display: inline-block;
+    width: 10%;
+    height: 100%;
+    padding: 8px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: #00000000;
+    transition: background-color 0.2s;
+    border: none;
+}
+#chat-input button:hover {
+    background-color: #00000022;
+}
+#chat-input button img {
+    display: inline-block;
+    width: 80%;
+    height: auto;
+}
+.chat {
+    position: relative;
+    display: inline-block;
+    width: 90%;
+    height: fit-content;
+    padding: 5px;
+    padding-top: 20px;
+    margin: 10px;
+    margin-left: 5%;
+    background-color: #00000022;
+    border-radius: 5px;
+    color: #ffffff;
+    font-family: raleway-regular;
+}
+.chat .chat-content *:last-child {
+    margin-bottom: 0px;
+}
+.chat .chat-meta {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-style: italic;
+    font-family: raleway-regular;
+    color: #ffffff88;
+    font-size: 1vh;
+}
+.chat .chat-delete {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #00000000;
+    transition: background-color 0.2s;
+    border: none;
+    border-bottom-left-radius: 4px;
+}
+.chat .chat-delete:hover {
+    background-color: #00000022;
+}
+.chat .chat-delete img {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 
 #map-area {

@@ -439,7 +439,8 @@ async def add_map_to_campaign(fingerprint: str, campaign: str, model: AddMapToCm
                 'rows':model.rows,
                 'size':model.gridsize
             },
-            'name':model.name
+            'name':model.name,
+            'chat':[]
         }
         server.campaigns[campaign].update()
         return {'result':'Success.'}

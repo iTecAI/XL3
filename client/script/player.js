@@ -525,6 +525,31 @@ function onPlayerRefresh(data) {
         var nid = $($(event.target).parents('.npc')[0]).attr('data-id');
         NPC_SCROLLS[nid] = $(event.target).scrollTop();
     });
+
+    var converter = new showdown.Converter({tables: true, strikethrough: true});
+    var dummy_chat = $('<div></div>')
+    for (var c=0;c<map.chat.length;c++) {
+        if (OWNER || map.chat[c].uid == uid) {
+            var delete_btn = $('<button class="chat-delete"></button>')
+            .append($('<img>').attr('src','assets/icons/delete.png'));
+        } else {
+            var delete_btn = '';
+        }
+
+        $('<div class="chat"></div>')
+        .attr({
+            'data-id':map.chat[c].iid,
+            'data-owner':map.chat[c].uid
+        })
+        .append($('<div class="chat-meta noselect"></div>').text(map.chat[c].author + ' - ' + map.chat[c].time))
+        .append($('<div class="chat-content"></div>').html(converter.makeHtml(map.chat[c].content)))
+        .append(delete_btn)
+        .appendTo(dummy_chat);
+    }
+    $('#chat-area').html(dummy_chat.html());
+    $('#chat-area .chat-delete').on('click',function(e){
+        mPost('/chat/delete/',{iid:$($(e.target).parents('.chat')[0]).attr('data-id')},function(data){},{alert:true});
+    });
 }
 
 function getctx() {
@@ -1042,5 +1067,9 @@ $(document).ready(function () {
         if (file) {
             reader.readAsDataURL(file);
         }
+    });
+
+    $('#send-btn').on('click',function(event){
+        mPost('/chat/',{value:$('#chat-input textarea').val()},function(data){$('#chat-input textarea').val('');},{alert:true});
     });
 });

@@ -205,3 +205,9 @@ class NPCModel(BaseModel):
     x: int
     y: int
     data: dict
+
+class PostChatModel(BaseModel):
+    value: str
+
+class DeleteChatModel(BaseModel):
+    iid: str

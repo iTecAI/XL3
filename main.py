@@ -231,7 +231,21 @@ async def reload_cached():
             with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
                 f.write(str(int(time.time())))
 
-
+for _f in [os.path.join('database','campaigns',i) for i in os.listdir(os.path.join('database','campaigns')) if i.endswith('.pkl')]:
+    with open(_f,'rb') as f:
+        obj = pickle.load(f)
+    for m in obj.maps.keys():
+        if not 'chat' in obj.maps[m].keys():
+            obj.maps[m]['chat'] = []
+        nchat = []
+        if (not eval(CONFIG['RUNTIME']['clear_chat'])):
+            for c in obj.maps[m]['chat']:
+                if type(c) == dict:
+                    nchat.append(c)
+        obj.maps[m]['chat'] = nchat[:]
+    
+    with open(_f,'wb') as f:
+        pickle.dump(obj,f)
 
 if __name__ == "__main__":
     uvicorn.run('main:app', host="127.0.0.1", port=5000, log_level="info", access_log=False)
