@@ -247,7 +247,8 @@ for _f in [os.path.join('database','campaigns',i) for i in os.listdir(os.path.jo
             obj.maps[m]['initiative'] = {
                 'running':False,
                 'order':{},
-                'current':None
+                'current':None,
+                'started':False
             }
     
     with open(_f,'wb') as f:
