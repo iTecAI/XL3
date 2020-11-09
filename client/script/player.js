@@ -1216,7 +1216,11 @@ $(document).ready(function () {
         mPost('/initiative/start/',{},function(data){},{alert:true});
     });
     $('#stop-initiative').on('click',function(data){
-        mPost('/initiative/stop/',{},function(data){},{alert:true});
+        bootbox.confirm('Are you sure you want to end initiative?',function(res){
+            if (res) {
+                mPost('/initiative/stop/',{},function(data){},{alert:true});
+            }
+        });
     });
     $('#proceed-initiative').on('click',function(data){
         mPost('/initiative/next/',{},function(data){},{alert:true});
