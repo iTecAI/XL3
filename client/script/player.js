@@ -349,6 +349,11 @@ function onPlayerRefresh(data) {
     }
     $('#entities').html(dummy_entities.html());
 
+    if (MAP_DATA.initiative.started) {
+        $('.entity[data-id='+MAP_DATA.initiative.order[MAP_DATA.initiative.current]+']').append($('<div class="init-notifier noselect">Initiative</div>'));
+    }
+    
+
     // Add event listeners
     $('.entity').off('click');
     $('.entity').on('click', function (event) {
@@ -715,11 +720,11 @@ $(document).ready(function () {
         if ($(e.target).parents('.npc-stats-main').length > 0 || $(e.target).is('.npc-stats-main')) { return; }
         e.preventDefault();
         var ret = false;
-        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure') && $(e.target).parents('.npc-stats-main').length == 0 && !$(e.target).is('.npc-stats-main')) {
+        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure') && $(e.target).parents('.npc-stats-main').length == 0 && !$(e.target).is('.npc-stats-main') && !$(e.target).is('.init-notifier')) {
             $(e.target).toggleClass('moving', true);
             ret = true;
         }
-        if ($(e.target).parents('.entity').length > 0 && !$(e.target).hasClass('obscure') && $(e.target).parents('.npc-stats-main').length == 0 && !$(e.target).is('.npc-stats-main')) {
+        if ($(e.target).parents('.entity').length > 0 && !$(e.target).hasClass('obscure') && $(e.target).parents('.npc-stats-main').length == 0 && !$(e.target).is('.npc-stats-main') && !$(e.target).is('.init-notifier')) {
             var item = $(e.target).parents('.entity')[0];
             var proc = false;
             if (OWNER) {
