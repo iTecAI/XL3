@@ -872,3 +872,110 @@
 #npc-form-box div select:focus {
     outline: none;
 }
+
+/* Init Tools */
+#init-tools {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%,0px);
+    display: inline-block;
+    width: 30%;
+    height: 42px;
+    background-color: var(--foreground3);
+    z-index: 110;
+    border-radius: 15px 15px 0 0;
+    transition: height 0.2s;
+}
+#init-tools.active {
+    height: 300px;
+}
+#init-list {
+    display: inline-block;
+    height: 0px;
+    width: calc(100% - 20px);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    overflow-y: auto;
+    transition: height 0.2s;
+    background-color: var(--foreground2);
+    border-radius: 5px;
+}
+#init-tools.active #init-list {
+    height: 250px;
+}
+#init-list .init-item {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    padding: 5px;
+    color: white;
+    font-family: raleway-regular;
+    background-color: #00000000;
+    transition: background-color 0.2s;
+    margin: 0px;
+}
+#init-list .init-item:hover, #init-list .init-item.cur {
+    background-color: #00000022;
+}
+#init-list .init-item .init-roll {
+    position: relative;
+    display: inline-block;
+    width: 10%;
+    height: 100%;
+    margin: 0px;
+    text-align: center;
+    padding: 2px;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+#init-list .init-item .init-name {
+    position: relative;
+    display: inline-block;
+    width: 89%;
+    height: 100%;
+    margin: 0px;
+    padding: 2px;
+}
+
+
+#init-buttons {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translate(-50%,0px);
+    display: inline-block;
+    height: 32px;
+    width: fit-content;
+}
+#init-buttons button {
+    background-color: #00000000;
+    border: none;
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    position: relative;
+    margin-left: 15px;
+    transition: opacity 0.2s;
+}
+#init-buttons button:hover {
+    opacity: 0.8;
+}
+#init-buttons button img {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#expand-initiative {
+    transform: rotate(-90deg);
+    transition: transform 0.2s;
+}
+#init-tools.active #expand-initiative {
+    transform: rotate(90deg);
+}

@@ -145,6 +145,17 @@
                     <button class='tool' data-cursor='move' data-tooltip="Move Objects" data-tooltip-location="right"><img src='assets/icons/tools/move.png'></button>
                 </div>
             </div>
+            <div id='init-tools' class='active'>
+                <div id='init-list' class='noscroll noselect'>
+
+                </div>
+                <div id='init-buttons'>
+                    <button id='start-initiative' data-tooltip="Start Initiative" data-tooltip-location="top"><img src='assets/icons/play-white.png'></button>
+                    <button id='stop-initiative' data-tooltip="Stop Initiative" data-tooltip-location="top"><img src='assets/icons/stop.png'></button>
+                    <button id='proceed-initiative' data-tooltip="Next" data-tooltip-location="top"><img src='assets/icons/next.png'></button>
+                    <button id='expand-initiative'><img src='assets/icons/next.png'></button>
+                </div>
+            </div>
             <div id='chat-panel'>
                 <button id='chat-expander'>Chat</button>
                 <div id='chat-area'>
@@ -176,6 +187,7 @@
             <button id='ctx_show-stats'>Show Statblock</button>
             <button id='ctx_hide-stats'>Hide Statblock</button>
             <button id='ctx_roll-initiative'>Roll Initiative</button>
+            <button id='ctx_remove-initiative'>Remove From Initiative</button>
         </div>
 
         <!-- Dialogs -->

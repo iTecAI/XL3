@@ -521,7 +521,162 @@ async def add_to_initiative(fingerprint: str, campaign: str, map: str, model: En
     if not server.campaigns[campaign].maps[map]['initiative']['running']:
         server.campaigns[campaign].maps[map]['initiative']['order'] = {}
         server.campaigns[campaign].maps[map]['initiative']['running'] = True
-    server.campaigns[campaign].maps[map]['initiative']['order'][roll] = model.eid
+        server.campaigns[campaign].maps[map]['initiative']['started'] = False
+        server.campaigns[campaign].maps[map]['initiative']['order'][roll] = model.eid
+        server.campaigns[campaign].maps[map]['initiative']['current'] = roll
+    else:
+        server.campaigns[campaign].maps[map]['initiative']['order'][roll] = model.eid
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/initiative/remove/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def remove_from_initiative(fingerprint: str, campaign: str, map: str, model: EntityReferenceModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if model.eid in server.campaigns[campaign].maps[map]['initiative']['order'].values():
+        found = -1
+        for i in server.campaigns[campaign].maps[map]['initiative']['order'].keys():
+            if server.campaigns[campaign].maps[map]['initiative']['order'][i] == model.eid:
+                found = i
+                break
+        if found >= 0:
+            sorted_order = sorted(server.campaigns[campaign].maps[map]['initiative']['order'].keys(),reverse=True)
+            if len(sorted_order) <= 1:
+                del server.campaigns[campaign].maps[map]['initiative']['order'][found]
+                server.campaigns[campaign].maps[map]['initiative']['running'] = False
+                server.campaigns[campaign].maps[map]['initiative']['started'] = False
+                server.campaigns[campaign].maps[map]['initiative']['current'] = None
+                server.campaigns[campaign].update()
+                return {
+                    'result':'Success.',
+                    'data':server.campaigns[campaign].maps[map]
+                }
+            if server.campaigns[campaign].maps[map]['initiative']['current'] == found:
+                if sorted_order.index(found)+1 >= len(sorted_order):
+                    server.campaigns[campaign].maps[map]['initiative']['current'] = sorted_order[0]
+                else:
+                    server.campaigns[campaign].maps[map]['initiative']['current'] = sorted_order[sorted_order.index(found)+1]
+            del server.campaigns[campaign].maps[map]['initiative']['order'][found]
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Character not found.'}
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/initiative/next/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def proceed_initiative(fingerprint: str, campaign: str, map: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not server.campaigns[campaign].maps[map]['initiative']['started']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Initiative has not yet been started.'}
+    sorted_order = sorted(server.campaigns[campaign].maps[map]['initiative']['order'].keys(),reverse=True)
+    if sorted_order.index(server.campaigns[campaign].maps[map]['initiative']['current'])+1 >= len(sorted_order):
+        server.campaigns[campaign].maps[map]['initiative']['current'] = sorted_order[0]
+    else:
+        server.campaigns[campaign].maps[map]['initiative']['current'] = sorted_order[sorted_order.index(server.campaigns[campaign].maps[map]['initiative']['current'])+1]
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/initiative/start/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def start_initiative(fingerprint: str, campaign: str, map: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not server.campaigns[campaign].maps[map]['initiative']['running']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'No creatures in initiative.'}
+    if server.campaigns[campaign].maps[map]['initiative']['started']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Initiative has already started.'}
+    server.campaigns[campaign].maps[map]['initiative']['started'] = True
+    sorted_order = sorted(server.campaigns[campaign].maps[map]['initiative']['order'].keys(),reverse=True)
+    server.campaigns[campaign].maps[map]['initiative']['current'] = sorted_order[0]
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }
+
+@router.post('/initiative/stop/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def stop_initiative(fingerprint: str, campaign: str, map: str, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not server.campaigns[campaign].maps[map]['initiative']['running']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'No creatures in initiative.'}
+    server.campaigns[campaign].maps[map]['initiative']['running'] = False
+    server.campaigns[campaign].maps[map]['initiative']['started'] = False
+    server.campaigns[campaign].maps[map]['initiative']['current'] = None
+    server.campaigns[campaign].maps[map]['initiative']['order'] = {}
 
     server.campaigns[campaign].update()
     return {

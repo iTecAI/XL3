@@ -60,6 +60,14 @@ var CONTEXT = {
                     }
                 },
                 items: ['roll-initiative']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true
+                    }
+                },
+                items: ['remove-initiative']
             }
             
         ],
@@ -83,6 +91,18 @@ var CONTEXT = {
                     }
                 },
                 items: ['roll-initiative']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true
+                    },
+                    system: {
+                        running_initiative: true,
+                        owns_character: true
+                    }
+                },
+                items: ['remove-initiative']
             }
         ]
     },
@@ -111,6 +131,14 @@ var CONTEXT = {
                     }
                 },
                 items: ['roll-initiative']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true
+                    }
+                },
+                items: ['remove-initiative']
             }
         ],
         pc: []
@@ -198,6 +226,11 @@ function onPlayerRefresh(data) {
     $('#map-settings-btn').toggle(owner);
     $('#user-tools').toggleClass('active', !owner);
 
+    $('#init-tools').toggle(owner && map.initiative.running);
+    $('#start-initiative').toggle(!map.initiative.started);
+    $('#stop-initiative').toggle(map.initiative.started);
+    $('#proceed-initiative').toggle(map.initiative.started);
+
     $('#map').css('cursor', CURSOR);
 
     var eKeys = Object.keys(map.entities);
@@ -258,6 +291,7 @@ function onPlayerRefresh(data) {
                     'data-char': ent.id
                 })
                 .toggleClass('owned', owner)
+                .toggleClass('initiative',(map.initiative.running && Object.values(map.initiative.order).includes(eKeys[e])))
                 .append(
                     $('<div class="img-container"></div>').append(
                         $('<img>').attr('src', img)
@@ -309,6 +343,7 @@ function onPlayerRefresh(data) {
                 )
                 .append($('<div class="npc-stats"></div>').text(npc_stats))
                 .toggleClass('showing-stats', ent.displaying_statblock)
+                .toggleClass('initiative',(map.initiative.running && Object.values(map.initiative.order).includes(eKeys[e])))
                 .appendTo(dummy_entities);
         }
     }
@@ -322,6 +357,36 @@ function onPlayerRefresh(data) {
     });
 
     if (OWNER) {
+        if (MAP_DATA.initiative.running) {
+            var dummy_init = $('<div></div>');
+            var ikeys = Object.keys(MAP_DATA.initiative.order);
+            ikeys.sort(function(a, b){return b-a});
+            for (var i=0;i<ikeys.length;i++) {
+                var el = $('<div class="init-item"></div>');
+                el.attr({
+                    'data-roll':ikeys[i],
+                    'data-eid':MAP_DATA.initiative.order[ikeys[i]]
+                });
+                el.append(
+                    $('<span class="init-roll"></span>').text(Math.round(ikeys[i]))
+                );
+                if (MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].npc == true) {
+                    el.append(
+                        $('<span class="init-name"></span>').text(MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].data.name)
+                    );
+                } else {
+                    el.append(
+                        $('<span class="init-name"></span>').text(chars[MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].id].name)
+                    );
+                }
+                if (MAP_DATA.initiative.current == ikeys[i]) {
+                    el.addClass('cur');
+                }
+                dummy_init.append(el);
+            }
+            $('#init-list').html(dummy_init.html());
+        }
+
         $('.npc.showing-stats').each(function (i, e) {
             var data = JSON.parse($(e).attr('data-npc'));
             var stats = $('<div class="npc-stats-main noselect"></div>');
@@ -604,6 +669,7 @@ function getctx() {
 
 $(document).ready(function () {
     $('#context-menu').hide();
+    $('#init-tools').hide();
     $('.tool[data-cursor=' + CURSOR + ']').toggleClass('active', true);
     $('#map').css('cursor', CURSOR);
     var p = getParams();
@@ -859,7 +925,7 @@ $(document).ready(function () {
                             proceed = (char.owner == uid) == c.system[ks[i]];
                         }
                         if (ks[i] == 'running_initiative' && proceed) {
-                            proceed = map.initiative.running == c.system[ks[i]];
+                            proceed = MAP_DATA.initiative.running == c.system[ks[i]];
                         }
                     }
                 }
@@ -1019,8 +1085,19 @@ $(document).ready(function () {
                 eid: $($(el.el).parents('.entity')[0]).attr('data-id')
             }, function (data) { }, { alert: true });
         }
-    })
-
+    });
+    $('#ctx_remove-initiative').on('click',function(event){
+        var el = getctx();
+        if ($(el.el).is('.entity')) {
+            mPost('/initiative/remove/', {
+                eid: $(el.el).attr('data-id')
+            }, function (data) { }, { alert: true });
+        } else {
+            mPost('/initiative/remove/', {
+                eid: $($(el.el).parents('.entity')[0]).attr('data-id')
+            }, function (data) { }, { alert: true });
+        }
+    });
 
     // Add NPC Dialog
     $('#npc-search input').on('change', function (event) {
@@ -1126,5 +1203,17 @@ $(document).ready(function () {
 
     $('#send-btn').on('click',function(event){
         mPost('/chat/',{value:$('#chat-input textarea').val()},function(data){$('#chat-input textarea').val('');},{alert:true});
+    });
+
+    // Init tools
+    $('#expand-initiative').on('click',function(data){$('#init-tools').toggleClass('active')});
+    $('#start-initiative').on('click',function(data){
+        mPost('/initiative/start/',{},function(data){},{alert:true});
+    });
+    $('#stop-initiative').on('click',function(data){
+        mPost('/initiative/stop/',{},function(data){},{alert:true});
+    });
+    $('#proceed-initiative').on('click',function(data){
+        mPost('/initiative/next/',{},function(data){},{alert:true});
     });
 });
