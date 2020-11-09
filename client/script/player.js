@@ -297,7 +297,7 @@ function onPlayerRefresh(data) {
             var data = JSON.parse($(e).attr('data-npc'));
             var stats = $('<div class="npc-stats-main noselect"></div>');
             stats.append(
-                $('<div class="title"></div>').append(statIn(data.name, 'name', true))
+                $('<div class="title"></div>').append(statIn(data.name, 'name', true).css({width:'100%'}))
             );
             stats.append(
                 $('<div class="sub"></div>').append([statIn(CapFirstLetter(data.size), 'size'), data.type, ', ', data.alignment])
@@ -412,9 +412,12 @@ function onPlayerRefresh(data) {
                 if (data.special_abilities[a].name.toLowerCase().includes('spellcasting')) {
                     continue;
                 }
+                if (Object.keys(data.special_abilities[a]).includes('description')) {
+                    data.special_abilities[a].desc = data.special_abilities[a].description;
+                }
                 $('<div></div>')
                     .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).text(data.special_abilities[a].name + '. '))
-                    .append($('<span></span>').text(data.special_abilities[a].desc))
+                    .append($('<span></span>').html(data.special_abilities[a].desc.replace(/\n/g, '<br>')))
                     .appendTo(stats);
             }
             if (Object.keys(data.spellcasting).length > 0) {
@@ -448,11 +451,14 @@ function onPlayerRefresh(data) {
                                 }
                             }
                             var spells = $('<div></div>');
+                            if (Object.keys(_spells).includes('Cantrip')) {
+                                _spells['Cantrips'] = _spells['Cantrip'];
+                            }
                             $(spells).append(
                                 $('<div></div>').html('<strong>Cantrips</strong> (At Will): ' + _spells['Cantrips'].map(function (a) { return a.spell; }).join(', '), '.<br>')
                             );
                             for (var l = 0; l < Object.keys(_spells).length; l++) {
-                                if (Object.keys(_spells)[l].toLowerCase() == 'cantrips') {
+                                if (Object.keys(_spells)[l].toLowerCase() == 'cantrips' || Object.keys(_spells)[l].toLowerCase() == 'cantrip') {
                                     continue;
                                 } else {
                                     $(spells).append(
@@ -480,9 +486,12 @@ function onPlayerRefresh(data) {
             stats.append($('<div class="title">Actions</div>').css({ 'font-size': '2.5vh' }))
             stats.append($('<div class="horiz-sep"></div>'));
             for (var a = 0; a < data.actions.length; a++) {
+                if (Object.keys(data.actions[a]).includes('description')) {
+                    data.actions[a].desc = data.actions[a].description;
+                }
                 $('<div></div>')
                     .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).text(data.actions[a].name + '. '))
-                    .append($('<span></span>').text(data.actions[a].desc))
+                    .append($('<span></span>').html(data.actions[a].desc.replace(/\n/g, '<br>')))
                     .appendTo(stats);
             }
 
@@ -491,9 +500,12 @@ function onPlayerRefresh(data) {
                 stats.append($('<div class="title">Legendary Actions</div>').css({ 'font-size': '2.5vh' }))
                 stats.append($('<div class="horiz-sep"></div>'));
                 for (var a = 0; a < data.legendary_actions.length; a++) {
+                    if (Object.keys(data.legendary_actions[a]).includes('description')) {
+                        data.legendary_actions[a].desc = data.legendary_actions[a].description;
+                    }
                     $('<div></div>')
                         .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).text(data.legendary_actions[a].name + '. '))
-                        .append($('<span></span>').text(data.legendary_actions[a].desc))
+                        .append($('<span></span>').html(data.legendary_actions[a].desc.replace(/\n/g, '<br>')))
                         .appendTo(stats);
                 }
             }
