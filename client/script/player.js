@@ -317,27 +317,27 @@ function onPlayerRefresh(data) {
                             .append($('<tr></tr>')
                                 .append(
                                     $('<td></td>')
-                                        .text(data.abilities.strength.score + ' (' + cond(data.abilities.strength.modifier < 0, '-', '+') + data.abilities.strength.modifier + ')')
+                                        .text(data.abilities.strength.score + ' (' + cond(data.abilities.strength.modifier < 1, '', '+') + data.abilities.strength.modifier + ')')
                                 )
                                 .append(
                                     $('<td></td>')
-                                        .text(data.abilities.dexterity.score + ' (' + cond(data.abilities.dexterity.modifier < 0, '-', '+') + data.abilities.dexterity.modifier + ')')
+                                        .text(data.abilities.dexterity.score + ' (' + cond(data.abilities.dexterity.modifier < 1, '', '+') + data.abilities.dexterity.modifier + ')')
                                 )
                                 .append(
                                     $('<td></td>')
-                                        .text(data.abilities.constitution.score + ' (' + cond(data.abilities.constitution.modifier < 0, '-', '+') + data.abilities.constitution.modifier + ')')
+                                        .text(data.abilities.constitution.score + ' (' + cond(data.abilities.constitution.modifier < 1, '', '+') + data.abilities.constitution.modifier + ')')
                                 )
                                 .append(
                                     $('<td></td>')
-                                        .text(data.abilities.intelligence.score + ' (' + cond(data.abilities.intelligence.modifier < 0, '-', '+') + data.abilities.intelligence.modifier + ')')
+                                        .text(data.abilities.intelligence.score + ' (' + cond(data.abilities.intelligence.modifier < 1, '', '+') + data.abilities.intelligence.modifier + ')')
                                 )
                                 .append(
                                     $('<td></td>')
-                                        .text(data.abilities.wisdom.score + ' (' + cond(data.abilities.wisdom.modifier < 0, '-', '+') + data.abilities.wisdom.modifier + ')')
+                                        .text(data.abilities.wisdom.score + ' (' + cond(data.abilities.wisdom.modifier < 1, '', '+') + data.abilities.wisdom.modifier + ')')
                                 )
                                 .append(
                                     $('<td></td>')
-                                        .text(data.abilities.charisma.score + ' (' + cond(data.abilities.charisma.modifier < 0, '-', '+') + data.abilities.charisma.modifier + ')')
+                                        .text(data.abilities.charisma.score + ' (' + cond(data.abilities.charisma.modifier < 1, '', '+') + data.abilities.charisma.modifier + ')')
                                 )
                             )
                     )
@@ -347,7 +347,7 @@ function onPlayerRefresh(data) {
             var abs = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
             for (var k = 0; k < abs.length; k++) {
                 if (data.abilities[abs[k]].save >= data.abilities[abs[k]].modifier + data.proficiency_bonus || data.abilities[abs[k]].save < data.abilities[abs[k]].modifier) {
-                    $(savesEl).append(CapFirstLetter(abs[k]).slice(0, 3) + ' ' + cond(data.abilities[abs[k]].save < 0, '-', '+') + data.abilities[abs[k]].save + ', ');
+                    $(savesEl).append(CapFirstLetter(abs[k]).slice(0, 3) + ' ' + cond(data.abilities[abs[k]].save < 1, '', '+') + data.abilities[abs[k]].save + ', ');
                 }
             }
             stats.append(
@@ -359,7 +359,7 @@ function onPlayerRefresh(data) {
             var sks = Object.keys(data.skills);
             for (var k = 0; k < sks.length; k++) {
                 if (data.skills[sks[k]] >= data.abilities[SKILLS[sks[k]]].modifier + data.proficiency_bonus || data.skills[sks[k]] < data.abilities[SKILLS[sks[k]]].modifier) {
-                    $(skillsEl).append(CapFirstLetter(sks[k]) + ' ' + cond(data.skills[sks[k]] < 0, '-', '+') + data.skills[sks[k]] + ', ');
+                    $(skillsEl).append(CapFirstLetter(sks[k]) + ' ' + cond(data.skills[sks[k]] < 1, '', '+') + data.skills[sks[k]] + ', ');
                 }
             }
             stats.append(
