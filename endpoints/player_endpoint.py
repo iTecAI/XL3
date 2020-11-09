@@ -464,7 +464,6 @@ async def delete_chat(fingerprint: str, campaign: str, map: str, model: DeleteCh
             del server.campaigns[campaign].maps[map]['chat'][found]
         else:
             response.status_code = status.HTTP_403_FORBIDDEN
-            server.campaigns[campaign].update()
             return {'result':'You are not the owner of this campaign, and have not authored this chat message.'}
     else:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -476,3 +475,56 @@ async def delete_chat(fingerprint: str, campaign: str, map: str, model: DeleteCh
         'data':server.campaigns[campaign].maps[map]
     }
 
+# Initiative commands
+@router.post('/initiative/add/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':MapDataResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'data':{}
+    }}}}
+})
+async def add_to_initiative(fingerprint: str, campaign: str, map: str, model: EntityReferenceModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if model.eid in server.campaigns[campaign].maps[map]['entities'].keys():
+        if 'npc' in server.campaigns[campaign].maps[map]['entities'][model.eid].keys():
+            if not campaign in server.connections[fingerprint].user.owned_campaigns:
+                response.status_code = status.HTTP_403_FORBIDDEN
+                return {'result':'You are not the owner of this campaign.'}
+            else:
+                roll = random.randint(1,20) + server.campaigns[campaign].maps[map]['entities'][model.eid]['data']['abilities']['dexterity']['modifier'] + random.random()/10
+        elif 'character' in server.campaigns[campaign].maps[map]['entities'][model.eid].keys():
+            if not campaign in server.connections[fingerprint].user.owned_campaigns and server.campaigns[campaign].maps[map]['entities'][model.eid]['id'] != server.connections[fingerprint].user.uid:
+                response.status_code = status.HTTP_403_FORBIDDEN
+                return {'result':'You are not the owner of this campaign or this character.'}
+            else:
+                roll = random.randint(1,20) + server.characters[server.campaigns[campaign].maps[map]['entities'][model.eid]['id']].init + random.random()/10
+        else:
+            response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+            return {'result':'Cannot add this entity to initiative as it is not an NPC or Character.'}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Character not found.'}
+    
+    if server.campaigns[campaign].maps[map]['initiative']['running'] and model.eid in server.campaigns[campaign].maps[map]['initiative']['order'].values():
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Cannot add this entity to initiative as it is already in initiative.'}
+    
+    if not server.campaigns[campaign].maps[map]['initiative']['running']:
+        server.campaigns[campaign].maps[map]['initiative']['order'] = {}
+        server.campaigns[campaign].maps[map]['initiative']['running'] = True
+    server.campaigns[campaign].maps[map]['initiative']['order'][roll] = model.eid
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'data':server.campaigns[campaign].maps[map]
+    }

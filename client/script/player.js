@@ -52,7 +52,16 @@ var CONTEXT = {
             {
                 conditions: {},
                 items: ['edit-character']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': false
+                    }
+                },
+                items: ['roll-initiative']
             }
+            
         ],
         pc: [
             {
@@ -62,6 +71,18 @@ var CONTEXT = {
                     }
                 },
                 items: ['edit-character']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': false
+                    },
+                    system: {
+                        running_initiative: true,
+                        owns_character: true
+                    }
+                },
+                items: ['roll-initiative']
             }
         ]
     },
@@ -82,6 +103,14 @@ var CONTEXT = {
                     }
                 },
                 items: ['hide-stats']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': false
+                    }
+                },
+                items: ['roll-initiative']
             }
         ],
         pc: []
@@ -770,7 +799,6 @@ $(document).ready(function () {
                 ctxs.push(Object.keys(CONTEXT)[s]);
             }
         }
-        console.log(ctxs);
         if ($(event.target).attr('id') == 'context-menu' || $(event.target).parents('#context-menu').length > 0) {
             event.preventDefault();
             return;
@@ -784,7 +812,6 @@ $(document).ready(function () {
             var ct = 0;
             for (var p = 0; p < potential.length; p++) {
                 var c = potential[p].conditions;
-                console.log(c);
                 var proceed = true;
                 if (c.system) {
                     var ks = Object.keys(c.system)
@@ -830,6 +857,9 @@ $(document).ready(function () {
                             }
                             var char = CMP_CHARS[$(_el).attr('data-char')];
                             proceed = (char.owner == uid) == c.system[ks[i]];
+                        }
+                        if (ks[i] == 'running_initiative' && proceed) {
+                            proceed = map.initiative.running == c.system[ks[i]];
                         }
                     }
                 }
@@ -977,6 +1007,19 @@ $(document).ready(function () {
             }, function (data) { }, { alert: true });
         }
     });
+
+    $('#ctx_roll-initiative').on('click',function(event){
+        var el = getctx();
+        if ($(el.el).is('.entity')) {
+            mPost('/initiative/add/', {
+                eid: $(el.el).attr('data-id')
+            }, function (data) { }, { alert: true });
+        } else {
+            mPost('/initiative/add/', {
+                eid: $($(el.el).parents('.entity')[0]).attr('data-id')
+            }, function (data) { }, { alert: true });
+        }
+    })
 
 
     // Add NPC Dialog

@@ -243,6 +243,12 @@ for _f in [os.path.join('database','campaigns',i) for i in os.listdir(os.path.jo
                 if type(c) == dict:
                     nchat.append(c)
         obj.maps[m]['chat'] = nchat[:]
+        if not 'initiative' in obj.maps[m].keys():
+            obj.maps[m]['initiative'] = {
+                'running':False,
+                'order':{},
+                'current':None
+            }
     
     with open(_f,'wb') as f:
         pickle.dump(obj,f)
