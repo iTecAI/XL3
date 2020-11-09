@@ -368,7 +368,8 @@ async def add_npc(fingerprint: str, campaign: str, map: str, model: NPCModel, re
             'x':model.x,
             'y':model.y
         },
-        'data':model.data
+        'data':model.data,
+        'displaying_statblock':False
     }
     server.campaigns[campaign].update()
     return {

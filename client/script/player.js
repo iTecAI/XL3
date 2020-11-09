@@ -6,6 +6,7 @@ var CMP_DATA = {};
 var MAP_DATA = {};
 var CMP_CHARS = {};
 var CTX_TARGET = null;
+var NPC_SCROLLS = {};
 
 // Context menu definitions
 var CONTEXT = {
@@ -63,6 +64,27 @@ var CONTEXT = {
                 items: ['edit-character']
             }
         ]
+    },
+    '.npc, .npc .img-container, .npc img': {
+        dm: [
+            {
+                conditions: {
+                    parent_classes: {
+                        'showing-stats': false
+                    }
+                },
+                items: ['show-stats']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'showing-stats': true
+                    }
+                },
+                items: ['hide-stats']
+            }
+        ],
+        pc: []
     }
 
 }
@@ -115,6 +137,13 @@ function getCID() {
 
 function CapFirstLetter(str) {
     return str.slice(0, 1).toUpperCase() + str.slice(1, str.length);
+}
+
+function statIn(cur, path, notfit) {
+    return $('<input class="stat-in" spellcheck="false">')
+        .attr('data-path', path)
+        .toggleClass('fit', !notfit)
+        .val(cur.toString());
 }
 
 function onPlayerRefresh(data) {
@@ -210,15 +239,16 @@ function onPlayerRefresh(data) {
                 .appendTo(dummy_entities);
         } else if (ent.npc) {
             var data = ent.data;
-            data.max_hp = data.hp + 0;
             if (data.size.length > 0) {
                 if (Object.keys(SIZES).includes((data.size.toLowerCase()))) {
                     var size = SIZES[data.size.toLowerCase()] * ($('#map').width() / (map.grid.size * map.grid.columns));
                 } else {
                     var size = SIZES.medium * ($('#map').width() / (map.grid.size * map.grid.columns));
+                    data.size = 'medium';
                 }
             } else {
                 var size = SIZES.medium * ($('#map').width() / (map.grid.size * map.grid.columns));
+                data.size = 'medium';
             }
             if (data.img.length > 0) {
                 var img = data.img;
@@ -249,6 +279,7 @@ function onPlayerRefresh(data) {
                     ).css({ 'border-radius': size / 2 + 'px' })
                 )
                 .append($('<div class="npc-stats"></div>').text(npc_stats))
+                .toggleClass('showing-stats', ent.displaying_statblock)
                 .appendTo(dummy_entities);
         }
     }
@@ -259,6 +290,240 @@ function onPlayerRefresh(data) {
     $('.entity').on('click', function (event) {
         if (CURSOR != 'alias') { return; }
         mPost('/entity/remove/', { eid: $(event.delegateTarget).attr('data-id') }, function (data) { }, { alert: true });
+    });
+
+    if (OWNER) {
+        $('.npc.showing-stats').each(function (i, e) {
+            var data = JSON.parse($(e).attr('data-npc'));
+            var stats = $('<div class="npc-stats-main noselect"></div>');
+            stats.append(
+                $('<div class="title"></div>').append(statIn(data.name, 'name', true))
+            );
+            stats.append(
+                $('<div class="sub"></div>').append([statIn(CapFirstLetter(data.size), 'size'), data.type, ', ', data.alignment])
+            );
+            stats.append($('<div class="horiz-sep"></div>'));
+            stats.append(
+                $('<div></div>').append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Armor Class: '), statIn(data.ac, 'ac'))
+            );
+            stats.append(
+                $('<div></div>').append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Hit Points: '), statIn(data.hp, 'hp'), ' / ', statIn(data.max_hp, 'max_hp'))
+            );
+            stats.append($('<div class="horiz-sep"></div>'));
+            stats.append(
+                $('<table class="class-stats"><thead><tr><th>STR</th><th>DEX</th><th>CON</th><th>INT</th><th>WIS</th><th>CHA</th></tr></thead></table>')
+                    .append(
+                        $('<tbody></tbody>')
+                            .append($('<tr></tr>')
+                                .append(
+                                    $('<td></td>')
+                                        .text(data.abilities.strength.score + ' (' + cond(data.abilities.strength.modifier < 0, '-', '+') + data.abilities.strength.modifier + ')')
+                                )
+                                .append(
+                                    $('<td></td>')
+                                        .text(data.abilities.dexterity.score + ' (' + cond(data.abilities.dexterity.modifier < 0, '-', '+') + data.abilities.dexterity.modifier + ')')
+                                )
+                                .append(
+                                    $('<td></td>')
+                                        .text(data.abilities.constitution.score + ' (' + cond(data.abilities.constitution.modifier < 0, '-', '+') + data.abilities.constitution.modifier + ')')
+                                )
+                                .append(
+                                    $('<td></td>')
+                                        .text(data.abilities.intelligence.score + ' (' + cond(data.abilities.intelligence.modifier < 0, '-', '+') + data.abilities.intelligence.modifier + ')')
+                                )
+                                .append(
+                                    $('<td></td>')
+                                        .text(data.abilities.wisdom.score + ' (' + cond(data.abilities.wisdom.modifier < 0, '-', '+') + data.abilities.wisdom.modifier + ')')
+                                )
+                                .append(
+                                    $('<td></td>')
+                                        .text(data.abilities.charisma.score + ' (' + cond(data.abilities.charisma.modifier < 0, '-', '+') + data.abilities.charisma.modifier + ')')
+                                )
+                            )
+                    )
+            )
+            stats.append($('<div class="horiz-sep"></div>'));
+            var savesEl = $('<span></span>');
+            var abs = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+            for (var k = 0; k < abs.length; k++) {
+                if (data.abilities[abs[k]].save >= data.abilities[abs[k]].modifier + data.proficiency_bonus || data.abilities[abs[k]].save < data.abilities[abs[k]].modifier) {
+                    $(savesEl).append(CapFirstLetter(abs[k]).slice(0, 3) + ' ' + cond(data.abilities[abs[k]].save < 0, '-', '+') + data.abilities[abs[k]].save + ', ');
+                }
+            }
+            stats.append(
+                $('<div></div>')
+                    .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Saving Throws: '))
+                    .append(savesEl)
+            );
+            var skillsEl = $('<span></span>');
+            var sks = Object.keys(data.skills);
+            for (var k = 0; k < sks.length; k++) {
+                if (data.skills[sks[k]] >= data.abilities[SKILLS[sks[k]]].modifier + data.proficiency_bonus || data.skills[sks[k]] < data.abilities[SKILLS[sks[k]]].modifier) {
+                    $(skillsEl).append(CapFirstLetter(sks[k]) + ' ' + cond(data.skills[sks[k]] < 0, '-', '+') + data.skills[sks[k]] + ', ');
+                }
+            }
+            stats.append(
+                $('<div></div>')
+                    .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Skills: '))
+                    .append(skillsEl)
+            );
+            if (Object.keys(data.immune).length > 0) {
+                stats.append(
+                    $('<div></div>')
+                        .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Damage Immunities: '))
+                        .append(Object.keys(data.immune).map(function (v) {
+                            return data.immune[v].damage_condition.join(' ') + ' ' + v;
+                        }).join(', '))
+                );
+            }
+            if (Object.keys(data.resist).length > 0) {
+                stats.append(
+                    $('<div></div>')
+                        .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Damage Resistances: '))
+                        .append(Object.keys(data.resist).map(function (v) {
+                            return data.resist[v].damage_condition.join(' ') + ' ' + v;
+                        }).join(', '))
+                );
+            }
+            if (Object.keys(data.vuln).length > 0) {
+                stats.append(
+                    $('<div></div>')
+                        .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Damage Vulnerabilities: '))
+                        .append(Object.keys(data.vuln).map(function (v) {
+                            return data.vuln[v].damage_condition.join(' ') + ' ' + v;
+                        }).join(', '))
+                );
+            }
+            if (Object.keys(data.condition_immunities).length > 0) {
+                stats.append(
+                    $('<div></div>')
+                        .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Condition Immunities: '))
+                        .append(data.condition_immunities.join(', '))
+                );
+            }
+            stats.append(
+                $('<div></div>')
+                    .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy' }).text('Challenge: '))
+                    .append(data.challenge_display)
+            );
+            stats.append($('<div class="horiz-sep"></div>'));
+
+            for (var a = 0; a < data.special_abilities.length; a++) {
+                if (data.special_abilities[a].name.toLowerCase().includes('spellcasting')) {
+                    continue;
+                }
+                $('<div></div>')
+                    .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).text(data.special_abilities[a].name + '. '))
+                    .append($('<span></span>').text(data.special_abilities[a].desc))
+                    .appendTo(stats);
+            }
+            if (Object.keys(data.spellcasting).length > 0) {
+                var sk = Object.keys(data.spellcasting);
+                for (var k = 0; k < sk.length; k++) {
+                    var spi = data.spellcasting[sk[k]];
+                    if (spi.automated) {
+                        var auto = 'Automated. Components: ' + spi.components.join(', ') + '. Attack bonus: +' + spi.bonus + ', Save DC: ' + spi.dc + '. Ability: ' + CapFirstLetter(spi.ability) + '.';
+                        var _spells = {};
+                        var desc = '';
+                        if (spi.type == 'innate') {
+                            for (var s = 0; s < spi.spells.length; s++) {
+                                if (Object.keys(_spells).includes(spi.spells[s].per_day)) {
+                                    _spells[spi.spells[s].per_day].push(spi.spells[s].spell);
+                                } else {
+                                    _spells[spi.spells[s].per_day] = [spi.spells[s].spell];
+                                }
+                            }
+                            var spells = $('<div></div>');
+                            for (var l = 0; l < Object.keys(_spells).length; l++) {
+                                $(spells).append(
+                                    $('<div></div>').html('<strong>' + Object.keys(_spells)[l] + ': </strong><em>' + _spells[Object.keys(_spells)[l]].join(', ') + '.</em><br>')
+                                );
+                            }
+                        } else {
+                            for (var s = 0; s < spi.spells.length; s++) {
+                                if (Object.keys(_spells).includes(spi.spells[s].level.toString())) {
+                                    _spells[spi.spells[s].level].push({ spell: spi.spells[s].spell, slots: spi.spells[s].slots });
+                                } else {
+                                    _spells[spi.spells[s].level] = [{ spell: spi.spells[s].spell, slots: spi.spells[s].slots }];
+                                }
+                            }
+                            var spells = $('<div></div>');
+                            $(spells).append(
+                                $('<div></div>').html('<strong>Cantrips</strong> (At Will): ' + _spells['Cantrips'].map(function (a) { return a.spell; }).join(', '), '.<br>')
+                            );
+                            for (var l = 0; l < Object.keys(_spells).length; l++) {
+                                if (Object.keys(_spells)[l].toLowerCase() == 'cantrips') {
+                                    continue;
+                                } else {
+                                    $(spells).append(
+                                        $('<div></div>').append('<strong>Level ' + Object.keys(_spells)[l] + '</strong>', ' (', statIn(spi.slots[Number(Object.keys(_spells)[l])], 'spellcasting.' + sk[k] + '.slots.' + Object.keys(_spells)[l]), '/', _spells[Object.keys(_spells)[l]][0].slots, '): ', _spells[Object.keys(_spells)[l]].map(function (a) { return a.spell; }).join(', '), '.<br>')
+                                    );
+                                }
+                            }
+                        }
+                    } else {
+                        var auto = 'Not Automated.';
+                        var spells = '<br>';
+                        var desc = '<br>' + spi.desc.replace(/\n/g, '<br>');
+                    }
+                    var sel = $('<div></div>')
+                        .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).html(sk[k] + '.<br>'))
+                        .append($('<span class="sub"></span>').html(auto))
+                        .append(spells)
+                        .append($('<div></div>').html(desc));
+
+
+                    stats.append(sel);
+                }
+            }
+            stats.append('<br>');
+            stats.append($('<div class="title">Actions</div>').css({ 'font-size': '2.5vh' }))
+            stats.append($('<div class="horiz-sep"></div>'));
+            for (var a = 0; a < data.actions.length; a++) {
+                $('<div></div>')
+                    .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).text(data.actions[a].name + '. '))
+                    .append($('<span></span>').text(data.actions[a].desc))
+                    .appendTo(stats);
+            }
+
+            if (data.legendary_actions.length > 0) {
+                stats.append('<br>');
+                stats.append($('<div class="title">Legendary Actions</div>').css({ 'font-size': '2.5vh' }))
+                stats.append($('<div class="horiz-sep"></div>'));
+                for (var a = 0; a < data.legendary_actions.length; a++) {
+                    $('<div></div>')
+                        .append($('<span></span>').css({ color: 'var(--dnd1)', 'font-weight': 'bold', 'font-family': 'raleway-heavy', 'font-style': 'italic' }).text(data.legendary_actions[a].name + '. '))
+                        .append($('<span></span>').text(data.legendary_actions[a].desc))
+                        .appendTo(stats);
+                }
+            }
+
+            stats.appendTo($(e));
+            if (Object.keys(NPC_SCROLLS).includes($(e).attr('data-id'))) {
+                $($(e).children('.npc-stats-main')[0]).scrollTop(NPC_SCROLLS[$(e).attr('data-id')]);
+            }
+        });
+        $('.npc.showing-stats .stat-in.fit').on('input', function (event) {
+            $(event.target).css('width', ($(event.target).val().length + 1) + 'ch');
+        }).each(function (index, elem) {
+            $(elem).css('width', ($(elem).val().length + 1) + 'ch');
+        });
+        $('.npc.showing-stats .stat-in').on('change',function(event){
+            var val = $(event.target).val();
+            if (!isNaN(Number(val))) {
+                val = Number(val);
+            }
+            mPost('/entity/modify/',{
+                entity: $($(event.target).parents('.npc')[0]).attr('data-id'),
+                batch:[
+                    {path:'data.'+$(event.target).attr('data-path'),value:val}
+                ]
+            },function(data){},{alert:true});
+        });
+    }
+    $('.npc.showing-stats .npc-stats-main').on('scroll', function (event) {
+        var nid = $($(event.target).parents('.npc')[0]).attr('data-id');
+        NPC_SCROLLS[nid] = $(event.target).scrollTop();
     });
 }
 
@@ -315,13 +580,14 @@ $(document).ready(function () {
     // Pan/Zoom functions - https://stackoverflow.com/a/42777567 (with modifications)
     $('#map').on('mousedown', function (e) {
         if (CURSOR != 'move') { return; }
+        if ($(e.target).parents('.npc-stats-main').length > 0 || $(e.target).is('.npc-stats-main')) { return; }
         e.preventDefault();
         var ret = false;
-        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure')) {
+        if ($(e.target).hasClass('entity') && !$(e.target).hasClass('obscure') && $(e.target).parents('.npc-stats-main').length == 0 && !$(e.target).is('.npc-stats-main')) {
             $(e.target).toggleClass('moving', true);
             ret = true;
         }
-        if ($(e.target).parents('.entity').length > 0 && !$(e.target).hasClass('obscure')) {
+        if ($(e.target).parents('.entity').length > 0 && !$(e.target).hasClass('obscure') && $(e.target).parents('.npc-stats-main').length == 0 && !$(e.target).is('.npc-stats-main')) {
             var item = $(e.target).parents('.entity')[0];
             var proc = false;
             if (OWNER) {
@@ -390,6 +656,7 @@ $(document).ready(function () {
 
     $('#map').on('wheel', function (e) {
         if (CURSOR != 'move') { return; }
+        if ($(e.target).parents('.npc-stats-main').length > 0 || $(e.target).is('.npc-stats-main')) { return; }
         e.preventDefault();
         // take the scale into account with the offset
         var xs = (e.clientX - xoff) / scale,
@@ -480,6 +747,7 @@ $(document).ready(function () {
             var ct = 0;
             for (var p = 0; p < potential.length; p++) {
                 var c = potential[p].conditions;
+                console.log(c);
                 var proceed = true;
                 if (c.system) {
                     var ks = Object.keys(c.system)
@@ -518,7 +786,7 @@ $(document).ready(function () {
                             }
                         }
                         if (ks[i] == 'owns_character' && proceed) {
-                            if ($(event.target).is('[data-char]')){
+                            if ($(event.target).is('[data-char]')) {
                                 var _el = event.target;
                             } else {
                                 var _el = $(event.target).parents('[data-char]')[0];
@@ -532,6 +800,14 @@ $(document).ready(function () {
                     var ks = Object.keys(c.classes)
                     for (var i = 0; i < ks.length; i++) {
                         if ($(event.target).hasClass(ks[i]) != c.classes[ks[i]]) {
+                            proceed = false;
+                        }
+                    }
+                }
+                if (c.parent_classes) {
+                    var ks = Object.keys(c.parent_classes)
+                    for (var i = 0; i < ks.length; i++) {
+                        if (($(event.target).parents('.' + ks[i]).length == 0) == c.parent_classes[ks[i]]) {
                             proceed = false;
                         }
                     }
@@ -578,9 +854,9 @@ $(document).ready(function () {
     $('#ctx_edit-character').on('click', function (event) {
         var el = getctx();
         if ($(el.el).is('[data-char]')) {
-            window.open(window.location.origin+'/characters?char='+$(el.el).attr('data-char'),'_blank');
+            window.open(window.location.origin + '/characters?char=' + $(el.el).attr('data-char'), '_blank');
         } else {
-            window.open(window.location.origin+'/characters?char='+$($(el.el).parents('[data-char]')[0]).attr('data-char'),'_blank');
+            window.open(window.location.origin + '/characters?char=' + $($(el.el).parents('[data-char]')[0]).attr('data-char'), '_blank');
         }
     });
     $('#ctx_add-npc').on('click', function (event) {
@@ -609,6 +885,7 @@ $(document).ready(function () {
             console.log('click');
             var data = JSON.parse($('#add-npc-dialog').attr('data-selected'));
             data.hp = Number($('#npc-hp-input').val());
+            data.max_hp = Number($('#npc-hp-input').val())
             data.ac = Number($('#npc-ac-input').val());
             data.name = $('#npc-name-input').val();
             data.size = $('#npc-size-input').val();
@@ -625,6 +902,43 @@ $(document).ready(function () {
             $('#add-npc-dialog').toggleClass('active', false);
             $('#noclosemodal').toggleClass('active', false);
         });
+    });
+
+    $('#ctx_show-stats').on('click', function (event) {
+        var el = getctx();
+        if ($(el.el).is('.npc')) {
+            mPost('/entity/modify/', {
+                entity: $(el.el).attr('data-id'),
+                batch: [
+                    { path: 'displaying_statblock', value: true }
+                ]
+            }, function (data) { }, { alert: true });
+        } else {
+            mPost('/entity/modify/', {
+                entity: $($(el.el).parents('.npc')[0]).attr('data-id'),
+                batch: [
+                    { path: 'displaying_statblock', value: true }
+                ]
+            }, function (data) { }, { alert: true });
+        }
+    });
+    $('#ctx_hide-stats').on('click', function (event) {
+        var el = getctx();
+        if ($(el.el).is('.npc')) {
+            mPost('/entity/modify/', {
+                entity: $(el.el).attr('data-id'),
+                batch: [
+                    { path: 'displaying_statblock', value: false }
+                ]
+            }, function (data) { }, { alert: true });
+        } else {
+            mPost('/entity/modify/', {
+                entity: $($(el.el).parents('.npc')[0]).attr('data-id'),
+                batch: [
+                    { path: 'displaying_statblock', value: false }
+                ]
+            }, function (data) { }, { alert: true });
+        }
     });
 
 

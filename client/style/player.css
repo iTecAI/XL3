@@ -280,6 +280,99 @@
     display: inline-block;
 }
 
+.npc-stats-main {
+    position: absolute;
+    display: inline-block;
+    top: calc(100% + 10px);
+    left: calc(100% + 10px);
+    width: 600px;
+    height: fit-content;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #ffffff;
+    -webkit-box-shadow: 0px 0px 11px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 11px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 11px 0px rgba(0,0,0,0.75);
+    border-radius: 5px;
+    font-family: raleway-regular;
+    z-index: 80;
+    cursor: auto;
+}
+.npc-stats-main::-webkit-scrollbar {
+    width: 10px;
+}
+.npc-stats-main::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 5px 5px 0;
+}
+.npc-stats-main::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.171);
+    border-radius: 5px;
+}
+.npc-stats-main::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.288);
+}
+.npc-stats-main > div {
+    display: inline-block;
+    width: 100%;
+    height: fit-content;
+}
+.npc-stats-main .title {
+    font-family: raleway-heavy;
+    font-size: 3vh;
+    font-weight: bold;
+    color: var(--dnd1);
+}
+.npc-stats-main .sub {
+    font-size: 1.5vh;
+    font-style: italic;
+}
+.npc-stats-main .horiz-sep {
+    background-color: var(--dnd1);
+    background: linear-gradient(to right, var(--dnd1), rgba(0,0,0,0));
+    width: 100%;
+    height: 2px;
+    margin: 0px;
+    vertical-align: top;
+}
+.stat-in {
+    display: inline-block;
+    color: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    border: none;
+    border-radius: 4px;
+    background-color: #00000000;
+    transition: background-color 0.2s;
+    margin-right: 2px;
+}
+.stat-in:hover, .stat-in:focus {
+    background-color: #00000022;
+}
+.stat-in::selection {
+    background-color:#aaaaaa62;
+}
+.stat-in::-moz-selection {
+    background-color: #aaaaaa62;
+}
+
+.class-stats, .class-stats thead, .class-stats tbody, .class-stats tr {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+.class-stats td, .class-stats th {
+    display: inline-block;
+    width: calc(100% / 6);
+    height: fit-content;
+    margin: 0px;
+    text-align: center;
+}
+
+
+/* CTX menu */
 #context-menu {
     z-index: 99;
     display: inline-block;

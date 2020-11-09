@@ -60,20 +60,20 @@ $(document).ready(function () {
         MOUSEX = event.pageX;
         MOUSEY = event.pageY;
     });
-    $(document).on('click',function(event){
+    $(document).on('click', function (event) {
         if ($(event.target).parents('.sp-spell-info').length == 0 && !$(event.target).hasClass('sp-spell-info')) {
             $('.sp-spell-info').remove();
         }
     })
 });
 
-function buildFirstSpell(data,name) {
+function buildFirstSpell(data, name) {
     var converter = new showdown.Converter({ tables: true, strikethrough: true });
     if (data.length == 0) {
         return;
     }
     var item = null;
-    for (var i=0;i<data.length;i++) {
+    for (var i = 0; i < data.length; i++) {
         if (data[i].slug == name) {
             item = data[i];
         }
@@ -117,20 +117,20 @@ function buildFirstSpell(data,name) {
     spell.css({
         top: (MOUSEY + 5) + 'px',
         left: (MOUSEX + 5) + 'px',
-        width:'30vw',
-        height:'fit-content',
-        'max-height':'30vh'
+        width: '30vw',
+        height: 'fit-content',
+        'max-height': '30vh'
     });
-    console.log($(spell).width(),MOUSEX + 5 + $(spell).width(),$(window).width());
+    console.log($(spell).width(), MOUSEX + 5 + $(spell).width(), $(window).width());
     if (MOUSEX + 5 + $(spell).width() > $(window).width()) {
         spell.css({
-            left:'unset',
+            left: 'unset',
             right: '10px'
         });
     }
     if (MOUSEY + 5 + $(spell).height() > $(window).height()) {
         spell.css({
-            top:'unset',
+            top: 'unset',
             bottom: '10px'
         });
     }
@@ -767,12 +767,12 @@ function sheet_gen(char, panel_tab) {
                         cget(
                             '/compendium/search/spells/?limit=300&search=' + $(this).val().toLowerCase().replace(/ /g, '-'),
                             {}, false,
-                            function(data){
-                                buildFirstSpell(data,$(event.target).val().toLowerCase().replace(/ /g, '-'))
+                            function (data) {
+                                buildFirstSpell(data, $(event.target).val().toLowerCase().replace(/ /g, '-'))
                             }
                         );
                     })
-                    .on('change',function(event){
+                    .on('change', function (event) {
                         cpost(
                             '/characters/' + fingerprint + '/' + $('#character-sheet-display').attr('data-id') + '/modify/spells/edit/',
                             {
@@ -793,27 +793,27 @@ function sheet_gen(char, panel_tab) {
         }
         $('#sp-block-' + l + ' .sp-block-spells').append(
             $('<input>')
-            .addClass('new-spell')
-            .attr({
-                'data-level':l,
-                'placeholder':'New Spell'
-            })
-            .on('change',function(event){
-                cpost(
-                    '/characters/' + fingerprint + '/' + $('#character-sheet-display').attr('data-id') + '/modify/spells/new/',
-                    {
-                        spellClass: $('#sp-class-select').val(),
-                        spellLevel: Number($(this).attr('data-level')),
-                        spellName: $(this).val()
-                    },
-                    function (data) {
-                        sheet_gen(data, $('#main-tabs .active').attr('data-tab'));
-                    },
-                    {
-                        alert: true
-                    }
-                );
-            })
+                .addClass('new-spell')
+                .attr({
+                    'data-level': l,
+                    'placeholder': 'New Spell'
+                })
+                .on('change', function (event) {
+                    cpost(
+                        '/characters/' + fingerprint + '/' + $('#character-sheet-display').attr('data-id') + '/modify/spells/new/',
+                        {
+                            spellClass: $('#sp-class-select').val(),
+                            spellLevel: Number($(this).attr('data-level')),
+                            spellName: $(this).val()
+                        },
+                        function (data) {
+                            sheet_gen(data, $('#main-tabs .active').attr('data-tab'));
+                        },
+                        {
+                            alert: true
+                        }
+                    );
+                })
         );
     }
 
@@ -827,7 +827,7 @@ function sheet_gen(char, panel_tab) {
     $('#char-in-campaign').off('click');
     $('#char-in-campaign').hide();
     if (char.campaign.length > 0) {
-        $('#char-in-campaign').on('click',function(){
+        $('#char-in-campaign').on('click', function () {
             window.location = window.location.origin + '/campaigns?cmpid=' + char.campaign;
         });
         $('#char-in-campaign').show();
@@ -854,7 +854,7 @@ function sheet_gen(char, panel_tab) {
 
         if (path == 'xp') {
             for (var i = 0; i < LEVELXP.length; i++) {
-                if (LEVELXP[i] >= val+1) {
+                if (LEVELXP[i] >= val + 1) {
                     modify('level', i)
                     break;
                 }
