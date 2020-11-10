@@ -502,7 +502,7 @@ async def add_to_initiative(fingerprint: str, campaign: str, map: str, model: En
             else:
                 roll = random.randint(1,20) + server.campaigns[campaign].maps[map]['entities'][model.eid]['data']['abilities']['dexterity']['modifier'] + random.random()/10
         elif 'character' in server.campaigns[campaign].maps[map]['entities'][model.eid].keys():
-            if not campaign in server.connections[fingerprint].user.owned_campaigns and server.campaigns[campaign].maps[map]['entities'][model.eid]['id'] != server.connections[fingerprint].user.uid:
+            if (not campaign in server.connections[fingerprint].user.owned_campaigns) and server.characters[server.campaigns[campaign].maps[map]['entities'][model.eid]['id']].owner != server.connections[fingerprint].user.uid:
                 response.status_code = status.HTTP_403_FORBIDDEN
                 return {'result':'You are not the owner of this campaign or this character.'}
             else:

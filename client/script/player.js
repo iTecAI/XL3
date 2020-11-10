@@ -68,8 +68,19 @@ var CONTEXT = {
                     }
                 },
                 items: ['remove-initiative']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true,
+                        'self':false
+                    },
+                    system: {
+                        initiative_started:true
+                    }
+                },
+                items: ['attack']
             }
-            
         ],
         pc: [
             {
@@ -103,6 +114,20 @@ var CONTEXT = {
                     }
                 },
                 items: ['remove-initiative']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true,
+                        'self':false
+                    },
+                    system: {
+                        has_character: true,
+                        placed_character: true,
+                        player_in_initiative: true
+                    }
+                },
+                items: ['attack']
             }
         ]
     },
@@ -139,9 +164,34 @@ var CONTEXT = {
                     }
                 },
                 items: ['remove-initiative']
+            },
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true
+                    },
+                    system: {
+                        initiative_started:true
+                    }
+                },
+                items: ['attack']
             }
         ],
-        pc: []
+        pc: [
+            {
+                conditions: {
+                    parent_classes: {
+                        'initiative': true
+                    },
+                    system: {
+                        has_character: true,
+                        placed_character: true,
+                        player_in_initiative: true
+                    }
+                },
+                items: ['attack']
+            }
+        ]
     }
 
 }
@@ -226,10 +276,15 @@ function onPlayerRefresh(data) {
     $('#map-settings-btn').toggle(owner);
     $('#user-tools').toggleClass('active', !owner);
 
-    $('#init-tools').toggle(owner && map.initiative.running);
-    $('#start-initiative').toggle(!map.initiative.started);
-    $('#stop-initiative').toggle(map.initiative.started);
-    $('#proceed-initiative').toggle(map.initiative.started);
+    $('#init-tools').toggle(map.initiative.running);
+    $('#start-initiative').toggle(owner && !map.initiative.started);
+    $('#stop-initiative').toggle(owner && map.initiative.started);
+    if (map.initiative.started) {
+        $('#proceed-initiative').toggle((owner || $('.entity[data-id='+map.initiative.order[map.initiative.current]+']').hasClass('self')) && map.initiative.started);
+    } else {
+        $('#proceed-initiative').hide();
+    }
+    
 
     $('#map').css('cursor', CURSOR);
 
@@ -270,9 +325,11 @@ function onPlayerRefresh(data) {
             if (CMP_CHARS[ent.id].owner == uid) {
                 var css = { border: '2px solid var(--em-font-color2)' };
                 var cstat = CMP_CHARS[ent.id].name + ' - ' + CMP_CHARS[ent.id].hp + '/' + CMP_CHARS[ent.id].max_hp + ' hp';
+                var self = true;
             } else {
                 var css = {};
                 var cstat = CMP_CHARS[ent.id].name;
+                var self = false;
             }
             if (OWNER) {
                 var cstat = CMP_CHARS[ent.id].name + ' - ' + CMP_CHARS[ent.id].hp + '/' + CMP_CHARS[ent.id].max_hp + ' hp';
@@ -291,6 +348,7 @@ function onPlayerRefresh(data) {
                     'data-char': ent.id
                 })
                 .toggleClass('owned', owner)
+                .toggleClass('self',self)
                 .toggleClass('initiative',(map.initiative.running && Object.values(map.initiative.order).includes(eKeys[e])))
                 .append(
                     $('<div class="img-container"></div>').append(
@@ -350,7 +408,37 @@ function onPlayerRefresh(data) {
     $('#entities').html(dummy_entities.html());
 
     if (MAP_DATA.initiative.started) {
-        $('.entity[data-id='+MAP_DATA.initiative.order[MAP_DATA.initiative.current]+']').append($('<div class="init-notifier noselect">Initiative</div>'));
+        $('.entity[data-id='+MAP_DATA.initiative.order[MAP_DATA.initiative.current]+']').append($('<div class="init-notifier noselect">Initiative</div>')).addClass('current-initiative');
+    }
+
+    if (MAP_DATA.initiative.running) {
+        var dummy_init = $('<div></div>');
+        var ikeys = Object.keys(MAP_DATA.initiative.order);
+        ikeys.sort(function(a, b){return b-a});
+        for (var i=0;i<ikeys.length;i++) {
+            var el = $('<div class="init-item"></div>');
+            el.attr({
+                'data-roll':ikeys[i],
+                'data-eid':MAP_DATA.initiative.order[ikeys[i]]
+            });
+            el.append(
+                $('<span class="init-roll"></span>').text(Math.round(ikeys[i]))
+            );
+            if (MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].npc == true) {
+                el.append(
+                    $('<span class="init-name"></span>').text(MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].data.name)
+                );
+            } else {
+                el.append(
+                    $('<span class="init-name"></span>').text(chars[MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].id].name)
+                );
+            }
+            if (MAP_DATA.initiative.current == ikeys[i]) {
+                el.addClass('cur');
+            }
+            dummy_init.append(el);
+        }
+        $('#init-list').html(dummy_init.html());
     }
     
 
@@ -362,35 +450,6 @@ function onPlayerRefresh(data) {
     });
 
     if (OWNER) {
-        if (MAP_DATA.initiative.running) {
-            var dummy_init = $('<div></div>');
-            var ikeys = Object.keys(MAP_DATA.initiative.order);
-            ikeys.sort(function(a, b){return b-a});
-            for (var i=0;i<ikeys.length;i++) {
-                var el = $('<div class="init-item"></div>');
-                el.attr({
-                    'data-roll':ikeys[i],
-                    'data-eid':MAP_DATA.initiative.order[ikeys[i]]
-                });
-                el.append(
-                    $('<span class="init-roll"></span>').text(Math.round(ikeys[i]))
-                );
-                if (MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].npc == true) {
-                    el.append(
-                        $('<span class="init-name"></span>').text(MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].data.name)
-                    );
-                } else {
-                    el.append(
-                        $('<span class="init-name"></span>').text(chars[MAP_DATA.entities[MAP_DATA.initiative.order[ikeys[i]]].id].name)
-                    );
-                }
-                if (MAP_DATA.initiative.current == ikeys[i]) {
-                    el.addClass('cur');
-                }
-                dummy_init.append(el);
-            }
-            $('#init-list').html(dummy_init.html());
-        }
 
         $('.npc.showing-stats').each(function (i, e) {
             var data = JSON.parse($(e).attr('data-npc'));
@@ -931,6 +990,32 @@ $(document).ready(function () {
                         }
                         if (ks[i] == 'running_initiative' && proceed) {
                             proceed = MAP_DATA.initiative.running == c.system[ks[i]];
+                        }
+                        if (ks[i] == 'initiative_started' && proceed) {
+                            proceed = MAP_DATA.initiative.started == c.system[ks[i]];
+                        }
+                        if (ks[i] == 'player_in_initiative' && proceed) {
+                            if (OWNER) {
+                                proceed = true == c.system[ks[i]];
+                            } else {
+                                if (!MAP_DATA.initiative.started) {
+                                    proceed = false == c.system[ks[i]];
+                                } else {
+                                    var found = false;
+                                    for (var ch=0;ch<Object.keys(CMP_CHARS).length;ch++) {
+                                        if (CMP_CHARS[Object.keys(CMP_CHARS)[ch]].owner == uid) {
+                                            console.log(Object.values(MAP_DATA.initiative.order).includes($('.character[data-char='+CMP_CHARS[Object.keys(CMP_CHARS)[ch]].id+']').attr('data-id')));
+                                            proceed = Object.values(MAP_DATA.initiative.order).includes($('.character[data-char='+CMP_CHARS[Object.keys(CMP_CHARS)[ch]].id+']').attr('data-id')) == c.system[ks[i]];
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!found) {
+                                        proceed = false == c.system[ks[i]];
+                                    }
+                                    
+                                }
+                            }
                         }
                     }
                 }
