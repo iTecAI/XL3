@@ -211,3 +211,12 @@ class PostChatModel(BaseModel):
 
 class DeleteChatModel(BaseModel):
     iid: str
+
+class AttackModel(BaseModel):
+    target: str
+    attack: dict
+    adv: Optional[str] = ''
+
+class AttackResponseModel(BaseModel):
+    result: str
+    attack: dict

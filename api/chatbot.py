@@ -10,12 +10,6 @@ from _runtime import server, CONFIG
 import logging
 logger = logging.getLogger("uvicorn.error")
 
-def cond(c,t,f):
-    if c:
-        return t
-    else:
-        return f
-
 def chatbot_interpret(content,fingerprint,campaign,map):
     raw_split = content.split(' ')
     cmd = raw_split[0]

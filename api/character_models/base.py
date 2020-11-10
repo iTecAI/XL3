@@ -1,5 +1,5 @@
-import json
-from api.api_utils import defaults
+import json, d20
+from api.api_utils import defaults, cond
 from api.open5e import get5e
 import random, hashlib, time
 from classes import *
@@ -112,5 +112,71 @@ class Character(BaseItem):
                     elif _armor[item['slug']]['type'] == 'shield':
                         shield_mod += _armor[item['slug']]['ac']
             self.ac['base'] += shield_mod
+    
+    def recieve_attack(self,atk,adv=None,bonus_override=None):
+        if not atk['automated']:
+            raise ValueError('Attack is not automated.')
+
+        data_register = {
+            'hit':False,
+            'damage':0,
+            'damage_str':'',
+            'damage_raw':'',
+            'roll_total':0,
+            'roll_str':''
+        }
+        if bonus_override != None:
+            bonus = bonus_override
+        else:
+            if 'bonus' in atk.keys():
+                bonus = atk['bonus']
+            else:
+                bonus = atk['bonus_mod']
+        if adv == 'adv':
+            adstr = 'kh1'
+            ad2 = '2'
+        elif adv == 'dis':
+            adstr = 'kl1'
+            ad2 = '2'
+        else:
+            adstr = ''
+            ad2 = ''
+        roll = d20.roll(ad2+'d20'+adstr+cond(bonus<0,'','+')+str(bonus))
+        data_register['roll_total'] = roll.total
+        data_register['roll_str'] = str(roll)
+        if roll.total >= self.ac['base'] + self.ac['mod']:
+            data_register['hit'] = True
+            dmg_str = ''
+            for d in atk['damage']:
+                dmg_str += '('
+                if len(d['mods']) == 0:
+                    mods = ['nonmagical']
+                else:
+                    mods = d['mods'][:]
+                dmg_str += d['roll']
+                if d['type'].lower() in self.vuln.keys():
+                    if any([i in self.vuln[d['type'].lower()]['damage_condtion'] for i in mods]) or len(self.vuln[d['type'].lower()]['damage_condtion']) == 0:
+                        dmg_str += '*2'
+                if d['type'].lower() in self.resist.keys():
+                    if any([i in self.resist[d['type'].lower()]['damage_condtion'] for i in mods]) or len(self.resist[d['type'].lower()]['damage_condtion']) == 0:
+                        dmg_str += '/2'
+                if d['type'].lower() in self.immune.keys():
+                    if any([i in self.immune[d['type'].lower()]['damage_condtion'] for i in mods]) or len(self.immune[d['type'].lower()]['damage_condtion']) == 0:
+                        dmg_str += '*0'
+                dmg_str += ')+'
+            dmg_str = dmg_str.strip('+')
+            data_register['damage_raw'] = dmg_str
+            dmg_roll = d20.roll(dmg_str)
+            data_register['damage'] = dmg_roll.total
+            data_register['damage_str'] = str(dmg_roll)
+            self.hp -= dmg_roll.total
+            if self.hp > self.max_hp:
+                self.hp = self.max_hp+0
+            if self.hp < 0:
+                self.hp = 0
+            self.update()
+            self.cache()
+        
+        return data_register
         
     

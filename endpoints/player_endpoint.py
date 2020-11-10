@@ -683,3 +683,102 @@ async def stop_initiative(fingerprint: str, campaign: str, map: str, response: R
         'result':'Success.',
         'data':server.campaigns[campaign].maps[map]
     }
+
+def recieve_attack(data,atk,adv=None,bonus_override=None):
+    if not atk['automated']:
+        raise ValueError('Attack is not automated.')
+
+    data_register = {
+        'hit':False,
+        'damage':0,
+        'damage_str':'',
+        'damage_raw':'',
+        'roll_total':0,
+        'roll_str':''
+    }
+    if bonus_override != None:
+        bonus = bonus_override
+    else:
+        bonus = atk['bonus_mod']
+    if adv == 'adv':
+        adstr = 'kh1'
+        ad2 = '2'
+    elif adv == 'dis':
+        adstr = 'kl1'
+        ad2 = '2'
+    else:
+        adstr = ''
+        ad2 = ''
+    roll = d20.roll(ad2+'d20'+adstr+cond(bonus<0,'','+')+str(bonus))
+    data_register['roll_total'] = roll.total
+    data_register['roll_str'] = str(roll)
+    if roll.total >= data['ac']:
+        data_register['hit'] = True
+        dmg_str = ''
+        for d in atk['damage']:
+            dmg_str += '('
+            if len(d['mods']) == 0:
+                mods = ['nonmagical']
+            else:
+                mods = d['mods'][:]
+            dmg_str += d['roll']
+            if d['type'].lower() in data['vuln'].keys():
+                if any([i in data['vuln'][d['type'].lower()]['damage_condtion'] for i in mods]) or len(data['vuln'][d['type'].lower()]['damage_condtion']) == 0:
+                    dmg_str += '*2'
+            if d['type'].lower() in data['resist'].keys():
+                if any([i in data['resist'][d['type'].lower()]['damage_condtion'] for i in mods]) or len(data['resist'][d['type'].lower()]['damage_condtion']) == 0:
+                    dmg_str += '/2'
+            if d['type'].lower() in data['immune'].keys():
+                if any([i in data['immune'][d['type'].lower()]['damage_condtion'] for i in mods]) or len(data['immune'][d['type'].lower()]['damage_condtion']) == 0:
+                    dmg_str += '*0'
+            dmg_str += ')+'
+        dmg_str = dmg_str.strip('+')
+        data_register['damage_raw'] = dmg_str
+        dmg_roll = d20.roll(dmg_str)
+        data_register['damage'] = dmg_roll.total
+        data_register['damage_str'] = str(dmg_roll)
+        data['hp'] -= dmg_roll.total
+    
+    return data_register, data['hp']
+
+@router.post('/initiative/run_attack/', responses={
+    405: {'model':SimpleResult,'description':'You must be logged in to modify maps.','content':{'application/json':{'example':{'result':'You must be logged in to modify maps.'}}}},
+    404: {'model':SimpleResult,'description':'Connection not found','content':{'application/json':{'example':{'result':'Connection not found for user.'}}}},
+    200: {'model':AttackResponseModel,'description':'Returns map data.','content':{'application/json':{'example':{
+        'result':'Success.',
+        'attack':{}
+    }}}}
+})
+async def run_attack(fingerprint: str, campaign: str, map: str, model: AttackModel, response: Response):
+    if not fingerprint in server.connections.keys():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Connection not found for user.'}
+    if not server.connections[fingerprint].logged_in:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'You must be logged in to modify maps.'}
+    if not check_access(fingerprint,campaign,map):
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Map or Campaign not found, or you don\'t have access to it.'}
+    if not server.campaigns[campaign].maps[map]['initiative']['running']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'No creatures in initiative.'}
+    if not server.campaigns[campaign].maps[map]['initiative']['started']:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Initiative is not started.'}
+    if not model.target in server.campaigns[campaign].maps[map]['initiative']['order'].values():
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':'Target creature is not in initiative.'}
+    try:
+        if 'npc' in server.campaigns[campaign].maps[map]['entities'][model.target].keys():
+            result, server.campaigns[campaign].maps[map]['entities'][model.target]['data']['hp'] = recieve_attack(server.campaigns[campaign].maps[map]['entities'][model.target]['data'],model.attack,model.adv)
+        elif 'character' in server.campaigns[campaign].maps[map]['entities'][model.target].keys():
+            result = server.characters[server.campaigns[campaign].maps[map]['entities'][model.target]['id']].recieve_attack(model.attack,model.adv)
+    except ValueError:
+        response.status_code = status.HTTP_405_METHOD_NOT_ALLOWED
+        return {'result':'Attack is not automated.'}
+
+    server.campaigns[campaign].update()
+    return {
+        'result':'Success.',
+        'attack':result
+    }

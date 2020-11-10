@@ -177,6 +177,28 @@
                     <div id='selector' data-x="0" data-y="0"></div>
                 </div>
             </div>
+            <div id='attack-window' data-selected=''>
+                <div id='attack-source-target'>
+                    Source: <span id='atk-s'></span> - Target: <span id='atk-t'></span> - ADV 
+                    <label class="switch small">
+                        <input type="checkbox" id='atk-adv'>
+                        <span class="slider round"></span>
+                    </label> - DIS 
+                    <label class="switch small">
+                        <input type="checkbox" id='atk-dis'>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div id='attacks' class='noselect'>
+
+                </div>
+                <div id='attack-buttons'>
+                    <button id='src-sel-left' data-tooltip="Previous Attack Source" data-tooltip-location="top"><img src='assets/icons/previous.png'></button>
+                    <button id='src-sel-right' data-tooltip="Next Attack Source" data-tooltip-location="top"><img src='assets/icons/next.png'></button>
+                    <button id='atk-btn' data-tooltip="Attack" data-tooltip-location="top"><img src='assets/icons/sword.png'></button>
+                    <button id='atk-cancel-btn' data-tooltip="Cancel" data-tooltip-location="top"><img src='assets/icons/cancel.png'></button>
+                </div>
+            </div>
         </div>
 
         <div id='context-menu'>

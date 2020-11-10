@@ -96,8 +96,8 @@ class GSheet(Character):
                 for t in split_on(d,['[',']'])[1].split(' '):
                     if t in ['magical','nonmagical','adamantine','silvered']:
                         mods.append(t)
-                    elif t in DAMAGETYPES:
-                        dtype = t
+                    elif t.lower() in DAMAGETYPES:
+                        dtype = t.lower()
                     else:
                         pass
                 ret['damage'].append({

@@ -7,6 +7,9 @@ var MAP_DATA = {};
 var CMP_CHARS = {};
 var CTX_TARGET = null;
 var NPC_SCROLLS = {};
+var ATK_SOURCE = '7WdlM4qpJLGH9QXpcrK_Xh0kUOpIEPxhGUJRDKIRESY';
+var ATK_TARGET = 'ea3YCI-tSwT4Wnh_fKC6DveULoIqc6c_Vx8joHtzWIU';
+var ATK_DATA = {};
 
 // Context menu definitions
 var CONTEXT = {
@@ -72,8 +75,7 @@ var CONTEXT = {
             {
                 conditions: {
                     parent_classes: {
-                        'initiative': true,
-                        'self':false
+                        'initiative': true
                     },
                     system: {
                         initiative_started:true
@@ -253,6 +255,66 @@ function statIn(cur, path, notfit) {
         .val(cur.toString());
 }
 
+function buildAttackElement(source,target) {
+    if (MAP_DATA.entities[source].npc) {
+        $('#atk-s').text(MAP_DATA.entities[source].data.name);
+        var atks = MAP_DATA.entities[source].data.actions;
+    }
+    if (MAP_DATA.entities[target].npc) {
+        $('#atk-t').text(MAP_DATA.entities[target].data.name);
+    }
+    if (MAP_DATA.entities[source].character) {
+        $('#atk-s').text(CMP_CHARS[MAP_DATA.entities[source].id].name);
+        var atks = CMP_CHARS[MAP_DATA.entities[source].id].attacks;
+    }
+    if (MAP_DATA.entities[target].character) {
+        $('#atk-t').text(CMP_CHARS[MAP_DATA.entities[target].id].name);
+    }
+    $('#src-sel-left').toggle(OWNER);
+    $('#src-sel-right').toggle(OWNER);
+    var converter = new showdown.Converter({tables: true, strikethrough: true});
+    
+    var dummy_atks = $('<div></div>');
+    for (var a=0;a<atks.length;a++) {
+        var el = $('<div class="attack"></div>');
+        el.attr('data-attack',JSON.stringify(atks[a]));
+        if (atks[a].automated) {
+            el.addClass('automated');
+            el.append($('<div class="atk-title"></div>').text(atks[a].name+' - Automated'));
+            el.append($('<div class="atk-desc"></div>').html(converter.makeHtml(atks[a].desc)));
+            var automation = $('<div class="atk-automation"></div>');
+            automation.append($('<div><strong>Automation:</strong></div>'));
+            automation.append($('<div></div>').append('<em>Bonus: </em>').append($('<span></span>').text(atks[a].bonus)));
+            automation.append($('<div><em>Damage:</em></div>'));
+            var dmglist = $('<ul></ul>');
+            for (var d=0;d<atks[a].damage.length;d++) {
+                if (atks[a].damage[d].mods.length > 0) {
+                    var mods = ' [<em>'+atks[a].damage[d].mods.join('</em><em>')+'</em>]';
+                } else {
+                    var mods = '';
+                }
+                dmglist.append(
+                    $('<li></li>').html(atks[a].damage[d].roll+' '+atks[a].damage[d].type+mods)
+                );
+            }
+            automation.append(dmglist);
+
+            el.append(automation);
+        } else {
+            el.append($('<div class="atk-title"></div>').text(atks[a].name));
+            el.append($('<div class="atk-desc"></div>').html(converter.makeHtml(atks[a].desc)));
+        }
+        dummy_atks.append(el);
+    }
+    $('#attacks').html(dummy_atks.html());
+    $('#attacks .attack.automated').on('click',function(event){
+        $('#attacks .attack.automated').toggleClass('selected',false);
+        $('#attack-window').attr('data-selected',$(event.delegateTarget).attr('data-attack'));
+        $(event.delegateTarget).toggleClass('selected',true);
+        ATK_DATA = JSON.parse($(event.delegateTarget).attr('data-attack'));
+    });
+}
+
 function onPlayerRefresh(data) {
     var map = data.data;
     var owner = data.is_owner;
@@ -262,6 +324,10 @@ function onPlayerRefresh(data) {
     MAP_DATA = data.data;
     CMP_CHARS = data.characters;
     OWNER = owner == true;
+
+    if (ATK_SOURCE && ATK_TARGET) {
+        buildAttackElement(ATK_SOURCE,ATK_TARGET);
+    }
     $('#map-name').text(map.name);
     $('#map-dims').text(map.grid.columns + ' x ' + map.grid.rows + ' (' + (map.grid.columns * map.grid.size) + ' ft. x ' + (map.grid.rows * map.grid.size) + ' ft.)');
     $('#map-scale').text(map.grid.size + ' ft.');
@@ -734,6 +800,7 @@ function getctx() {
 $(document).ready(function () {
     $('#context-menu').hide();
     $('#init-tools').hide();
+    $('#attack-window').hide();
     $('.tool[data-cursor=' + CURSOR + ']').toggleClass('active', true);
     $('#map').css('cursor', CURSOR);
     var p = getParams();
@@ -1188,6 +1255,35 @@ $(document).ready(function () {
             }, function (data) { }, { alert: true });
         }
     });
+    $('#ctx_attack').on('click',function(event){
+        var el = getctx();
+        if ($(el.el).is('.entity.inititative')) {
+            var tid = $(el.el).attr('data-id');
+        } else if ($(el.el).parents('.entity.initiative').length > 0) {
+            var tid = $($(el.el).parents('.entity.initiative')[0]).attr('data-id');
+        }
+        ATK_SOURCE = null;
+        ATK_TARGET = null;
+        if (OWNER) {
+            ATK_SOURCE = MAP_DATA.initiative.order[MAP_DATA.initiative.current];
+            ATK_TARGET = tid;
+        } else {
+            for (var c=0;c<Object.keys(CMP_CHARS).length;c++) {
+                if (CMP_CHARS[Object.keys(CMP_CHARS)[c]].owner == uid) {
+                    ATK_SOURCE = $('.character[data-char='+Object.keys(CMP_CHARS)[c]+']').attr('data-id');
+                }
+            }
+            ATK_TARGET = tid;
+        }
+        if (ATK_SOURCE && ATK_TARGET) {
+            buildAttackElement(ATK_SOURCE,ATK_TARGET);
+            $('#attack-window').show();
+        } else {
+            $('#attack-window').hide();
+            ATK_SOURCE = null;
+            ATK_TARGET = null;
+        }
+    });
 
     // Add NPC Dialog
     $('#npc-search input').on('change', function (event) {
@@ -1309,5 +1405,79 @@ $(document).ready(function () {
     });
     $('#proceed-initiative').on('click',function(data){
         mPost('/initiative/next/',{},function(data){},{alert:true});
+    });
+
+    // Attack window
+    $('#src-sel-left').on('click',function(event){
+        if (OWNER && Object.values(MAP_DATA.initiative.order).includes(ATK_SOURCE)) {
+            var current = 0;
+            var okeys = Object.keys(MAP_DATA.initiative.order);
+            okeys.sort(function(a, b){return b-a});
+            for (var k=0;k<okeys.length;k++) {
+                if (MAP_DATA.initiative.order[okeys[k]] == ATK_SOURCE) {
+                    current = okeys[k];
+                    break;
+                }
+            }
+            var cindex = k-1;
+            if (cindex < 0) {
+                cindex = okeys.length-1;
+            }
+            ATK_SOURCE = MAP_DATA.initiative.order[okeys[cindex]];
+            buildAttackElement(ATK_SOURCE,ATK_TARGET);
+        }
+    });
+    $('#src-sel-right').on('click',function(event){
+        if (OWNER && Object.values(MAP_DATA.initiative.order).includes(ATK_SOURCE)) {
+            var current = 0;
+            var okeys = Object.keys(MAP_DATA.initiative.order);
+            okeys.sort(function(a, b){return b-a});
+            for (var k=0;k<okeys.length;k++) {
+                if (MAP_DATA.initiative.order[okeys[k]] == ATK_SOURCE) {
+                    current = okeys[k];
+                    break;
+                }
+            }
+            var cindex = k+1;
+            if (cindex >= okeys.length) {
+                cindex = 0;
+            }
+            ATK_SOURCE = MAP_DATA.initiative.order[okeys[cindex]];
+            buildAttackElement(ATK_SOURCE,ATK_TARGET);
+        }
+    });
+    $('#atk-cancel-btn').on('click',function(event){
+        $('#attack-window').hide();
+        ATK_SOURCE = null;
+        ATK_TARGET = null;
+    });
+    $('#atk-btn').on('click',function(event){
+        if (ATK_SOURCE && ATK_TARGET && Object.keys(ATK_DATA).length > 0) {
+            if ($('#atk-adv').prop('checked')) {
+                var adv = 'adv';
+            } else if ($('#atk-dis').prop('checked')) {
+                var adv = 'dis';
+            } else {
+                var adv = '';
+            }
+
+            mPost(
+                '/initiative/run_attack/',
+                {
+                    target: ATK_TARGET,
+                    attack: ATK_DATA,
+                    adv: adv
+                },
+                function(data) {
+                    console.log(data);
+                    $('#attack-window').hide();
+                    ATK_SOURCE = null;
+                    ATK_TARGET = null;
+                },
+                {
+                    alert: true
+                }
+            );
+        }
     });
 });

@@ -96,6 +96,12 @@ def getmod(score):
     else:
         return 0
 
+def cond(c,t,f):
+    if c:
+        return t
+    else:
+        return f
+
 class Creature:
     def __init__(self,options={},**kwargs):
         self.src = None
@@ -193,7 +199,7 @@ class Creature:
             'name':atk['name'],
             'form':None,
             'desc':atk['desc'].replace('<i>','').replace('</i>',''),
-            'bonus':0,
+            'bonus_mod':0,
             'damage':[],
             'type':'',
             'automated':False
@@ -205,10 +211,12 @@ class Creature:
         
         try:
             ret['type'] = ret['desc'].split(': ')[0]
-            ret['bonus'] = int(ret['desc'].split(': ')[1].split(', ')[0].split(' ')[0].strip('+'))
+            ret['bonus_mod'] = int(ret['desc'].split(': ')[1].split(', ')[0].split(' ')[0].strip('+'))
 
-            hitparts = split_on(ret['desc'].lower().split('hit: ')[1],[', ',' and ',' plus '])
+            hitparts = split_on(ret['desc'].lower().split('hit: ')[1],[', ',' and ',' plus ','. '])
             for hit in hitparts:
+                if not 'damage' in hit:
+                    continue
                 damage = {}
                 damage['average'] = int(hit.split(' ')[0])
                 damage['roll'] = split_on(hit,['(',')'])[1].replace(' ','')
@@ -217,7 +225,13 @@ class Creature:
                     damage['type'] = typestr
                 else:
                     damage['type'] = ''
+                damage['mods'] = []
+                hit = hit.replace('non-magical','nonmagical').replace(' magic ',' magical ').split(' ')
+                for m in ['magical','nonmagical','adamantine','silvered']:
+                    if m in hit:
+                        damage['mods'].append(m)
                 ret['damage'].append(damage)
+
             ret['automated'] =  True
         except: 
             pass
@@ -410,6 +424,64 @@ class Creature:
                 return d20.roll('d20'+additional+'+'+str(self.abilities[skill_or_ability]['modifier']))
             else:
                 return d20.roll('d20'+additional+str(self.abilities[skill_or_ability]['modifier']))
+    
+    def recieve_attack(self,atk,adv=None,bonus_override=None):
+        if not atk['automated']:
+            raise ValueError('Attack is not automated.')
+
+        data_register = {
+            'hit':False,
+            'damage':0,
+            'damage_str':'',
+            'damage_raw':'',
+            'roll_total':0,
+            'roll_str':''
+        }
+        if bonus_override != None:
+            bonus = bonus_override
+        else:
+            bonus = atk['bonus_mod']
+        if adv == 'adv':
+            adstr = 'kh1'
+            ad2 = '2'
+        elif adv == 'dis':
+            adstr = 'kl1'
+            ad2 = '2'
+        else:
+            adstr = ''
+            ad2 = ''
+        roll = d20.roll(ad2+'d20'+adstr+cond(bonus<0,'','+')+str(bonus))
+        data_register['roll_total'] = roll.total
+        data_register['roll_str'] = str(roll)
+        if roll.total >= self.ac:
+            data_register['hit'] = True
+            dmg_str = ''
+            for d in atk['damage']:
+                dmg_str += '('
+                if len(d['mods']) == 0:
+                    mods = ['nonmagical']
+                else:
+                    mods = d['mods'][:]
+                dmg_str += d['roll']
+                if d['type'].lower() in self.vuln.keys():
+                    if any([i in self.vuln[d['type'].lower()]['damage_condtion'] for i in mods]) or len(self.vuln[d['type'].lower()]['damage_condtion']) == 0:
+                        dmg_str += '*2'
+                if d['type'].lower() in self.resist.keys():
+                    if any([i in self.resist[d['type'].lower()]['damage_condtion'] for i in mods]) or len(self.resist[d['type'].lower()]['damage_condtion']) == 0:
+                        dmg_str += '/2'
+                if d['type'].lower() in self.immune.keys():
+                    if any([i in self.immune[d['type'].lower()]['damage_condtion'] for i in mods]) or len(self.immune[d['type'].lower()]['damage_condtion']) == 0:
+                        dmg_str += '*0'
+                dmg_str += ')+'
+            dmg_str = dmg_str.strip('+')
+            data_register['damage_raw'] = dmg_str
+            dmg_roll = d20.roll(dmg_str)
+            data_register['damage'] = dmg_roll.total
+            data_register['damage_str'] = str(dmg_roll)
+            self.hp -= dmg_roll.total
+        
+        return data_register
+        
 
 def get_gapi(path,scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']): # From https://developers.google.com/sheets/api/quickstart/python
     creds = service_account.Credentials.from_service_account_file(path, scopes=scopes)
