@@ -189,6 +189,34 @@ async def get_static_file_paths():
     global web_paths
     return web_paths
 
+def fix():
+    for _f in [os.path.join('database','campaigns',i) for i in os.listdir(os.path.join('database','campaigns')) if i.endswith('.pkl')]:
+        with open(_f,'rb') as f:
+            obj = pickle.load(f)
+        for m in obj.maps.keys():
+            if not 'chat' in obj.maps[m].keys():
+                obj.maps[m]['chat'] = []
+            nchat = []
+            if (not eval(CONFIG['RUNTIME']['clear_chat'])):
+                for c in obj.maps[m]['chat']:
+                    if type(c) == dict:
+                        nchat.append(c)
+            obj.maps[m]['chat'] = nchat[:]
+            if not 'initiative' in obj.maps[m].keys():
+                obj.maps[m]['initiative'] = {
+                    'running':False,
+                    'order':{},
+                    'current':None,
+                    'started':False
+                }
+        load_user(obj.owner)
+        if not obj.id in server.users[obj.owner].owned_campaigns:
+            server.users[obj.owner].owned_campaigns.append(obj.id)
+        cache_user(obj.owner)
+        
+        with open(_f,'wb') as f:
+            pickle.dump(obj,f)
+
 # Start tasks
 @app.on_event('startup')
 async def load_users():
@@ -196,6 +224,7 @@ async def load_users():
     for u in reg.keys():
         if os.path.exists(os.path.join('database','users',u+'.pkl')):
             server.users[u] = os.path.join('database','users',u+'.pkl')
+    fix()
 
 # Load periodic functions
 @app.on_event('startup')
@@ -230,29 +259,6 @@ async def reload_cached():
             t.start()
             with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:
                 f.write(str(int(time.time())))
-
-for _f in [os.path.join('database','campaigns',i) for i in os.listdir(os.path.join('database','campaigns')) if i.endswith('.pkl')]:
-    with open(_f,'rb') as f:
-        obj = pickle.load(f)
-    for m in obj.maps.keys():
-        if not 'chat' in obj.maps[m].keys():
-            obj.maps[m]['chat'] = []
-        nchat = []
-        if (not eval(CONFIG['RUNTIME']['clear_chat'])):
-            for c in obj.maps[m]['chat']:
-                if type(c) == dict:
-                    nchat.append(c)
-        obj.maps[m]['chat'] = nchat[:]
-        if not 'initiative' in obj.maps[m].keys():
-            obj.maps[m]['initiative'] = {
-                'running':False,
-                'order':{},
-                'current':None,
-                'started':False
-            }
-    
-    with open(_f,'wb') as f:
-        pickle.dump(obj,f)
 
 if __name__ == "__main__":
     uvicorn.run('main:app', host=CONFIG['RUNTIME']['server_ip'], port=int(CONFIG['RUNTIME']['server_port']), log_level="info", access_log=False)
