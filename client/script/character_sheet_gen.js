@@ -1309,4 +1309,16 @@ function sheet_gen(char, panel_tab) {
         $('#new-item-cost').val('');
         $('#new-item-wt').val('');
     });
+
+    $('#char-img-input').on('change', function (event) {
+        var file = document.querySelector('#char-img-input').files[0];
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+            console.log(reader.result);
+            modify('image',reader.result);
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    });
 }
