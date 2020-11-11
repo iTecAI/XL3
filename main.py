@@ -255,4 +255,4 @@ for _f in [os.path.join('database','campaigns',i) for i in os.listdir(os.path.jo
         pickle.dump(obj,f)
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host="127.0.0.1", port=5000, log_level="info", access_log=False)
+    uvicorn.run('main:app', host=CONFIG['RUNTIME']['server_ip'], port=int(CONFIG['RUNTIME']['server_port']), log_level="info", access_log=False)

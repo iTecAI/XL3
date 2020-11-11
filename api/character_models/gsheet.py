@@ -189,22 +189,28 @@ class GSheet(Character):
         self.race = self.get('t7')
         class_str = self.get('t5')
         self.class_display = class_str
-        c = 0
         self.classes = []
+        jnr = []
         for i in class_str.split(' '):
-            if c == 0:
-                sub = i
-            elif c == 1:
-                _cls = i
-            else:
+            jnr.append(i)
+            if all([x in '1234567890' for x in i]):
+                if len(jnr) == 2:
+                    _sub = ''
+                    _cls = jnr[0]
+                    lvl = int(i)
+                elif len(jnr) > 2:
+                    _sub = jnr[:len(jnr)-2]
+                    _cls = jnr[len(jnr)-2]
+                    lvl = int(i)
+                else:
+                    jnr = []
+                    continue
                 self.classes.append({
                     'class':_cls.lower(),
-                    'subclass':sub.lower(),
-                    'level':int(i)
+                    'subclass':' '.join(_sub).lower(),
+                    'level':lvl
                 })
-                c = 0
-                continue
-            c += 1
+                jnr = []
         self.level = int(self.get('al6'))
         self.xp = int(base10(self.get('ae7')))
         self.proficiency_bonus = int(self.get('h14'))

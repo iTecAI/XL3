@@ -336,6 +336,7 @@ async def new_character(fingerprint: str, model: NewCharacterModel, response: Re
         try:
             sheet = GSheet(sheet_id=urlparse(model.url).path.split('/')[1:][2])
         except ValueError:
+            logger.exception('Failed to load character sheet.')
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {'result':'The submitted URL was incorrect. Make sure it is readable by link sharing, or that it is shared with '+CONFIG['CHARACTERS']['xl3_email']+' .'}
         logger.info(f'User {fingerprint} is creating a new character.')
