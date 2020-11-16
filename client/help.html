@@ -9,6 +9,7 @@
         <link rel="stylesheet" type="text/css" href="style/tooltips.css">
         <link rel="stylesheet" type="text/css" href="style/dialogs.css">
         <link rel="stylesheet" type="text/css" href="style/switches.css">
+        <link rel="stylesheet" type="text/css" href="style/help.css">
         
         <!-- Libraries -->
         <script src='lib/jsencrypt.min.js'></script>
@@ -24,11 +25,13 @@
         <script src='lib/cookies.min.js'></script>
         <script src='lib/sha.js'></script>
         <script src='lib/crc.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js" integrity="sha512-L03kznCrNOfVxOUovR6ESfCz9Gfny7gihUX/huVbQB9zjODtYpxaVtIaAkpetoiyV2eqWbvxMH9fiSv5enX7bw==" crossorigin="anonymous"></script>
 
         <!-- Scripts -->
         <script src='script/utils.js'></script>
-        <script src='script/refresh_index.js'></script>
+        <script src='script/refresh.js'></script>
         <script src='script/root.js'></script>
+        <script src='script/help.js'></script>
 
         <!-- Favicon -->
         <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
@@ -97,6 +100,16 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id='help-pages' class='noselect'>
+            <div id='pages-title'><span>Help</span></div>
+            <div id='pages-list' class='noscroll'>
+
+            </div>
+        </div>
+        <div id='help-title' class='noselect'><span></span></div>
+        <div id='help-content' class='noscroll'>
+
         </div>
     </body>
 </html>

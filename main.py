@@ -22,6 +22,7 @@ import pickle
 from endpoints import server_endpoint, client_endpoint, compendium_endpoint, character_endpoint, campaign_endpoint, image_endpoint, player_endpoint
 from _api import *
 from threading import Thread
+from markdown2 import Markdown
 
 # Configs
 VERSION = 0

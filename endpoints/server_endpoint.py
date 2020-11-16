@@ -215,4 +215,17 @@ async def server_config_batch(model: BatchConfigModel, response: Response):
         'values':vals
     }
 
+@router.get('/help/')
+async def get_help_listing():
+    return {'result':'Success.','pages':[i.split('.')[0] for i in os.listdir(os.path.join('client','docs'))]}
+
+@router.get('/help/{page}/')
+async def get_help_listing(page: str, response: Response):
+    if page+'.md' in os.listdir(os.path.join('client','docs')):
+        with open(os.path.join('client','docs',page+'.md'),'r') as f:
+            return {'result':'Success.','page':f.read()}
+    else:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {'result':f'Page {page} not found.'}
+
         
