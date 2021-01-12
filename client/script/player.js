@@ -7,8 +7,8 @@ var MAP_DATA = {};
 var CMP_CHARS = {};
 var CTX_TARGET = null;
 var NPC_SCROLLS = {};
-var ATK_SOURCE = '7WdlM4qpJLGH9QXpcrK_Xh0kUOpIEPxhGUJRDKIRESY';
-var ATK_TARGET = 'ea3YCI-tSwT4Wnh_fKC6DveULoIqc6c_Vx8joHtzWIU';
+var ATK_SOURCE = null;
+var ATK_TARGET = null;
 var ATK_DATA = {};
 
 // Context menu definitions
