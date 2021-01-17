@@ -228,22 +228,22 @@ async def load_users():
     fix()
 
 # Load periodic functions
-@app.on_event('startup')
-@repeat_every(seconds=5)
-async def check_connections_task():
+@app.on_event('startup') # Run on startup
+@repeat_every(seconds=5) # Run on startup
+async def check_connections_task(): # Task to check whether connections have timed out
     newconn = {}
-    oldconn = server.connections.copy()
-    for conn in oldconn.keys():
-        if oldconn[conn].timeout >= time.time():
-            newconn[conn] = oldconn[conn]
+    oldconn = server.connections.copy() # Create copy of old connections dictionary
+    for conn in oldconn.keys(): # Iterate through connection IDs
+        if oldconn[conn].timeout >= time.time(): # If not timed out
+            newconn[conn] = oldconn[conn] # Add to new dict
         else:
             logger.info('Timed out connection '+conn)
-            cache_user(server.connections[conn].uid)
-    server.connections = newconn.copy()
+            cache_user(server.connections[conn].uid) # Cache the user object to a pickle file
+    server.connections = newconn.copy() # Replace the old connections dictionary with the new one
 
 
-@app.on_event('startup')
-@repeat_every(seconds=120)
+@app.on_event('startup') # Run on startup
+@repeat_every(seconds=120) # Run every 2 minutes
 async def reload_cached():
     if not os.path.exists(os.path.join('database','cached','open5e','last_update.ini')):
         with open(os.path.join('database','cached','open5e','last_update.ini'),'w') as f:

@@ -51,12 +51,12 @@ async def connection_status(fingerprint: str, response: Response):
 
 @router.post('/connection/new/') # Make new connection
 async def new_connection(model: ConnectionModel):
-    if not model.fingerprint in server.connections.keys():
+    if not model.fingerprint in server.connections.keys(): # Checks that the requested session fingerprint is actually new
         logger.info('User '+model.fingerprint+' connected to server.')
-        server.connections[model.fingerprint] = Connection()
-        registry: dict = get_user_registry()
-        for u in registry.keys():
-            if registry[u]['connection'] == model.fingerprint:
+        server.connections[model.fingerprint] = Connection() # Creates a new blank connection object
+        registry: dict = get_user_registry() # Fetches the user registry
+        for u in registry.keys(): # Iterates through the registry to check whether any user has this connection fingerprint registered to it.
+            if registry[u]['connection'] == model.fingerprint: # If so, load that user and assign it to the new connection.
                 load_user(u)
                 server.connections[model.fingerprint].user = server.users[u]
                 server.connections[model.fingerprint].uid = u
